@@ -1,0 +1,264 @@
+SERVICO,MUNICIPIO,UF,cod_municipio
+Hospital das Clínicas do Acre,Rio Branco,AC,1200401
+"Hospital Infantil Yolanda Costa e Silva -
+Hospital da Criança",Rio Branco,AC,1200401
+Hospital Geral de Palmas,Palmas,TO,1721000
+Hospital Geral de Roraima,Boa Vista,RR,1400100
+Centrode Medicina Tropical -Cemetron,Porto Velho,RO,1100205
+Fundação de Hematologia e Hemoterapia do Estado de Rondônia,Porto Velho,RO,1100205
+Hospital 9 de Julho,Porto Velho,RO,1100205
+Hospital de Base Dr. Ary Pinheiro,Porto Velho,RO,1100205
+Hospital Prontocordis,Porto Velho,RO,1100205
+Hospital Unimed de Rondônia,Porto Velho,RO,1100205
+Hospital Santa Marcelina-Casa de Saúde Santa Marcelina,Porto Velho,RO,1100205
+Fundação Pública Estadual -Hospital de Clínicas Gaspar Vianna,Belém,PA,1501402
+Fundação Santa Casa de Misericórdia do Pará,Belém,PA,1501402
+Hospital Ophir Loyola,Belém,PA,1501402
+Hospital Universitário João de Barros Barreto,Belém,PA,1501402
+Hospital Universitário Francisca Mendes,Manaus,AM,1302603
+Hospital Universitário Getúlio Vargas AM,Manaus,AM,1302603
+Hospital Anchieta,Taguatinga,DF,1720903
+Hospital de Base do Distrito Federal,Brasília,DF,5300108
+HospitalMaterno Infantil de Brasília-HMIB,Brasília,DF,5300108
+Hospital Regional da Asa Norte,Brasília,DF,5300108
+Hospital Regional de Sobradinho,Sobradinho,DF,2930774
+Hospital Regional do Gama,Brasília,DF,5300108
+Hospital Universitário de Brasília,Brasília,DF,5300108
+Hospital das Clínicas/UFG,Goiânia,GO,5208707
+Hospital de Urgências de Goiânia Dr. Valdemirode Goiânia,Goiânia,GO,5208707
+Hospital Universitário Júlio Muller,Cuiabá,MT,5103403
+Hospital Unimed Campo Grande,Campo Grande,MS,2701506
+Hospital Regional de Mato Grosso do Sul,Campo Grande,MS,2701506
+Hemocentro Paraíba,João Pessoa,PB,2507507
+Hospital Municipal Santa Isabel,João Pessoa,PB,2507507
+Hospital Napoleão Laureano,João Pessoa,PB,2507507
+Hospital Universitário Alcides Carneiro,Campina Grande,PB,2504009
+Hospital UniversitarioLauro Wanderley,João Pessoa,PB,2507507
+Instituto Cândida Vargas,João Pessoa,PB,2507507
+Maternidade Frei Damião,João Pessoa,PB,2507507
+Procárdio -Instituto de Cardiologia da Paraíba LTDA,João Pessoa,PB,2507507
+Hospital de Urgência de Sergipe,Aracaju,SE,2800308
+Hospital Primavera,Aracaju,SE,2800308
+Hospital Universitário de Sergipe -SE,Aracaju,SE,2800308
+Centro Integrado de Saúde Amaury de Medeiros -CISAM/UPE,Recife,PE,2611606
+Hospital Agamenon Magalhães,Recife,PE,2611606
+Hospital da Restauração,Paulista,PE,2510907
+Hospital de Olhos de Pernambuco,Recife,PE,2611606
+Hospital de Olhos de Recife,Recife,PE,2611606
+Hospital e Maternidade São Luiz (Pronto-Olinda),Olinda,PE,2609600
+Hospital Geral Otávio de Freitas,Recife,PE,2611606
+Hospital Getúlio Vargas/PE,Recife,PE,2611606
+Hospital UNIMED Recife III,Recife,PE,2611606
+Hospital Universitário Oswaldo Cruz,Recife,PE,2611606
+IMIP -Instituto de Medicina Integral Prof. Fernando Figueira,Recife,PE,2611606
+Hospital de Messejana Dr. Carlos Alberto Studart Gomes,Fortaleza,CE,2304400
+Hospital do Coração Pr. José Linhares,Sobral,CE,2312908
+Hospital Regional Unimed,Fortaleza,CE,2304400
+Hospital Geral de Fortaleza,Fortaleza,CE,2304400
+Hospital Geral Dr. Cesar Calls de Oliveira,Fortaleza,CE,2304400
+Hospital Geral Dr. Waldemar Alcântara,Fortaleza,CE,2304400
+Hospital Infantil Albert Sabin,Fortaleza,CE,2304400
+Hospital Regional do Cariri-Instituto de Saúde e Gestão Hospitalar-ISGH,Juazeiro do Norte,CE,2307304
+Hospital Universitário Walter Cantídio,Fortaleza,CE,2304400
+Instituto Dr. José Frota,Fortaleza,CE,2304400
+MaternidadeEscolaAssisChateaubriand-UniversidadeFederal do Ceará –UFC,Fortaleza,CE,2304400
+Santa Casa da Misericórdia de Fortaleza,Fortaleza,CE,2304400
+Santa Casa de Misericórdia de Sobral,Sobral,CE,2312908
+Hospital Regional do Sertão Central,Quixeramobim,CE,2311405
+Hospital Regional Norte,Sobral,CE,2312908
+Associação Obras Sociais Irmã Dulce,Salvador,BA,2927408
+Cárdio Pulmonar da Bahia S.A,Salvador,BA,2927408
+Complexo Hospitalar Universitário Professor Edgard Santos,Salvador,BA,2927408
+Hospital Ana Nery,Salvador,BA,2927408
+Hospital Geral CleristonAndrade,Feira de Santana,BA,2910800
+Hospital Santa Izabel,Salvador,BA,2927408
+ItaigaraMemorial Hospital dia Ltda,Salvador,BA,2927408
+Hospital Unimed Maceió,Maceió,AL,2704302
+Hospital Universitário Prof. Alberto Antunes/UFAL,Maceió,AL,2704302
+Maternidade Escola Santa Mônica -MESM,Maceió,AL,2704302
+Santa Casa de Misericórdia de Maceió,Maceió,AL,2704302
+Hospital Regional Lindolfo Gomes Vidal,Natal,RN,2408102
+Hospital Universitário Ana Bezerra,Santa Cruz,RN,2411205
+Hospital Universitário Onofre Lopes,Natal,RN,2408102
+Maternidade Escola Januário Cicco,Natal,RN,2408102
+Hospital São Domingos,São Luís,MA,2111300
+Hospital Universitário da Universidade Federal do Maranhão,São Luís,MA,2111300
+Hospital Santa Casa de Misericórdia de Vitória,Vitória,ES,3205309
+Hospital Unimed Vitória –Unimed Vitória Cooperativa de Trabalho Médico,Vitória,ES,3205309
+Casa de Caridade de Carangola,Carangola,MG,3113305
+Casa de Caridade de Muriaé -Hospital São Paulo,Muriaé,MG,3143906
+Casa de Caridade de Viçosa Hospital São Sebastião,Viçosa,MG,2414902
+Fundação Cristiano Varella -Hospital do Câncer de Muriaé,Muriaé,MG,3143906
+Hospital Albert Sabin,Juiz de Fora,MG,3136702
+Hospital Arnaldo Gavazza,Ponte Nova,MG,3152105
+Hospital MaterDei S&A -Do Contorno,Belo Horizonte,MG,3106200
+Hospital das Clinicas da UFMG,Belo Horizonte,MG,3106200
+Hospital das Clinicas Samuel Libânio,Pouso Alegre,MG,3152501
+Hospital de Clínicas da Universidade Federal do Triângulo Mineiro,Uberaba,MG,3170107
+Hospital de Clínicas de Uberlândia,Uberlândia,MG,3170206
+Hospital Dia e Maternidade Unimed/BH,Belo Horizonte,MG,3106200
+Hospital Eduardo de Menezes,Belo Horizonte,MG,3106200
+Hospital Governador Israel Pinheiro,Belo Horizonte,MG,3106200
+Hospital João XXIII,Belo Horizonte,MG,3106200
+Hospital Mater. Dei,Belo Horizonte,MG,3106200
+Hospital São João Batista,Viçosa,MG,2414902
+Hospital Unimed Poços de Caldas,Poços de Caldas,MG,3151800
+Hospital Regional Antônio Dias,Patos de Minas,MG,3148004
+Hospital Universitário da UFJF,Juiz de Fora,MG,3136702
+Hospital Universitário da Universidade de Uberaba / Mário Palmério Hospital Universitário,Uberaba,MG,3170107
+Instituto Nacional de Traumatologia e Ortopedia -Hospital Universitário Clemente Faria,Montes Claros,MG,3143302
+Santa Casa de Misericórdia de Passos,Passos,MG,3147907
+Hospital e Maternidade Therezinha de Jesus,Juiz de Fora,MG,3136702
+Hospital Monte Sinai-Instituto de Clinicas e Cirurgias de Juiz de Fora,Juiz de Fora,MG,3136702
+Instituto Donato de Oftalmologia,Poços de Caldas,MG,3151800
+Hospital Unimed Varginha Cooperativa de Trabalho Médico,Varginha,MG,3170701
+Hospital Litoral Sul Unimed,Angra dos Reis,RJ,3300100
+ACSC -Casa de Saúde São José,Rio de Janeiro,RJ,3304557
+Centro de Transplante de Medula Óssea/INCA -MS,Rio de Janeiro,RJ,3304557
+Hospital de Câncer I /INCA -MS,Rio de Janeiro,RJ,3304557
+Hospital do Câncer II,Rio de Janeiro,RJ,3304557
+Hospital do Câncer III,Rio de Janeiro,RJ,3304557
+Hospital Estadual Rocha Faria,Rio de Janeiro,RJ,3304557
+Hospital Federal dos Servidores do Estado,Rio de Janeiro,RJ,3304557
+Hospital Geral de Bonsucesso,Rio de Janeiro,RJ,3304557
+HospitalNaval Marcílio Dias,Rio de Janeiro,RJ,3304557
+Hospital SãoVicente de Paulo,Rio de Janeiro,RJ,3304557
+Hospital Unimed Volta Redonda,Volta Redonda,RJ,3306305
+Hospital Universitário Antônio Pedro,Niterói,RJ,3303302
+Hospital Universitário Clementino Fraga Filho,Rio de Janeiro,RJ,3304557
+Hospital universitário Pedro Ernesto,Rio de Janeiro,RJ,3304557
+Hospital Vita Volta Redonda,Volta Redonda,RJ,3306305
+Instituto de Pesquisa Clínica Evandro Chagas,Rio de Janeiro,RJ,3304557
+Instituto Estadual de Hematologia Arthur de Siqueira Cavalcanti,Rio de Janeiro,RJ,3304557
+Instituto Fernandes Figueira / Fundação Oswaldo Cruz,Rio de Janeiro,RJ,3304557
+Instituto Nacional de Cardiologia,Rio de Janeiro,RJ,3304557
+Instituto Nacional de Traumatologia e Ortopedia,Rio de Janeiro,RJ,3304557
+Serviço de Assistência Médica de Resende S/C,Resende,RJ,3304201
+Complexo Hospitalar de Niterói-CHN,Niterói,RJ,3303302
+Hospital Federal de Ipanema,Rio de Janeiro,RJ,3304557
+ACSC -Hospital Santa Catarina SP,São Paulo,SP,3550308
+Associação do Sanatório Sírio -Hospital do Coração,São Paulo,SP,3550308
+Centro de Referência da Saúde da Mulher -Hospital Pérola Byington,São Paulo,SP,3550308
+Fundação Antonio Prudente -Hospital A.C.Camargo,São Paulo,SP,3550308
+Fundação Centro Médico de Campinas,Campinas,SP,3509502
+Fundação Faculdade Regional de Medicina de São José do Rio Preto,São José do Rio Preto,SP,3549805
+Fundação Pró-Sangue / Hemocentro de São Paulo,São Paulo,SP,3550308
+Fundação Santa Casa de Misericórdia de Franca,Franca,SP,3516200
+Hospital Amaral Carvalho,Jaú,SP,3525300
+Hospital Auxiliar de Cotoxó do Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Hospital Auxiliar de Suzano do Hospital das clínicas da Faculdade de Medicina da Universidade de São Paulo,Suzano,SP,3552502
+Hospital Central da Irmandade Santa Casa de Misericórdia de São Paulo,São Paulo,SP,3550308
+Hospital da Mulher Prof. Dr. José Aristodemo Pinotti -CAISM / Unicamp,Campinas,SP,3509502
+Hospital das Clínicas da Faculdade de Medicina de Botucatu -UNESP,Botucatu,SP,3507506
+Hospital das Clínicas da Faculdade de Medicina de Ribeirão Preto da Universidade de São Paulo,Ribeirão Preto,SP,3543402
+Hospital de Clinicas da UNICAMP,Campinas,SP,3509502
+Hospital de Ensino Fundação do ABC,São Bernardo do Campo,SP,3548708
+Hospital do Servidor Publico Estadual de SP -IAMSPE,São Paulo,SP,3550308
+Hospital do Servidor Público Municipal -HSPM,São Paulo,SP,3550308
+Hospital e Maternidade São Joaquim LTDA,Franca,SP,3516200
+Hospital e Pronto Socorro Central -Pronto Socorro Central Vereador José Tudo Azul Gines Ramble.,São Bernardo do Campo,SP,3548708
+Hospital Estadual Américo Brasiliense-HEAB,São Paulo,SP,3550308
+Hospital Escola Emilio Carlos,Catanduva,SP,3511102
+Hospital Estadual Bauru,Bauru,SP,3506003
+Hospital Estadual de Vila Alpina,São Paulo,SP,3550308
+Hospital Estadual de Sapobemba,São Paulo,SP,3550308
+Hospital Geral de Guarulhos -HGG,Guarulhos,SP,3518800
+Hospital Geral de Itapecerica da Serra,Itapecerica da Serra,SP,3522208
+Hospital Infantil Sabará,São Paulo,SP,3550308
+Hospital Israelita Albert Einstein,São Paulo,SP,3550308
+"Hospital Local Sapopemba ""Dr.DavidCapistrano Filho"" -HCFMUSP -",São Paulo,SP,3550308
+Hospital Municipal Antonio Giglio,Osasco,SP,3534401
+Hospital Municipal Dr. Arthur Ribeiro de Saboya,São Paulo,SP,3550308
+Hospital Municipal Dr. Carmino Caricchio-Tatuapé,São Paulo,SP,3550308
+Hospital Municipal Dr. Fernando Mauro Pires da Rocha,São Paulo,SP,3550308
+Hospital Municipal Dr. Mario Gatti,Campinas,SP,3509502
+Hospital Municipal Universitário de São Bernardo do Campo,Santo André,SP,2513851
+Hospital Municipal Vereador José Storopoli / SPDM,São Paulo,SP,3550308
+Hospital Municipal Vila Santa Catarina -HMVSC,São Paulo,SP,3550308
+Hospital Padre Albino,Catanduva,SP,3511102
+Hospital Policlin Nove de Julho (HPNJ),São José dos Campos,SP,3549904
+Hospital Regional de Cotia,Cotia,SP,3513009
+Hospital Samaritano São Paulo,São Paulo,SP,3550308
+Hospital Santa Lucinda,Sorocaba,SP,3552205
+Hospital Santa Marcelina,São Paulo,SP,3550308
+Hospital São José –Beneficência Portuguesa de São Paulo,São Paulo,SP,3550308
+Hospital São Paulo,São Paulo,SP,3550308
+"HostpitalUnimed Itapetininga ""Dr.. José Silva Dantas Filho""",Itapetininga,SP,3522307
+Hospital Unimed Sorocaba -Dr. Miguel Vila Nova Soeiro,Sorocaba,SP,3552205
+Hospital Universitário da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto de Medicina Física e Reabilitação do Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto Central do Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto da Criança do Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto Dante Pazzanesede Cardiologia (Fundação Adib Jatene ),São Paulo,SP,3550308
+Instituto de Infectologia Emílio Ribas,São Paulo,SP,3550308
+Instituto de Ortopedia e Traumatologia do Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto de Psiquiatriatriado Hospital das Clínicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto de Radiologia do Hospital das Clinicas da Faculdade de Medicina da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Instituto de Reabilitação Lucy Montoro,São Paulo,SP,3550308
+Instituto do Câncer do Estado de São Paulo,São Paulo,SP,3550308
+Instituto do Coração do Hospital das Clinicas da Faculdade de Medicina da Universidade de São Paulo,São Paulo,SP,3550308
+Irmandade da Santa Casa de Misericórdia de Santos,Santos,SP,3548500
+Real e Benemérita Associação Portuguesa de Beneficência –Unidade São Joaquim,São Paulo,SP,3550308
+Real e Benemérita Associação Portuguesa de Beneficência -Hospital BP Filantrópico,São Paulo,SP,3550308
+Santa Casa de Misericórdia de Itapeva,Itapeva,SP,3133600
+Sociedade Beneficente de Senhoras Hospital Sirio Libanês,São Paulo,SP,3550308
+UPA Demarchi Batistini,São Bernardo do Campo,SP,3548708
+UPA Vila São Pedro,São Bernardo do Campo,SP,3548708
+UPA União Alvarenga,São Bernardo do Campo,SP,3548708
+UPA Silvina Ferrazópolis,São Bernardo do Campo,SP,3548708
+UPA Rudge Ramos,São Bernardo do Campo,SP,3548708
+UPA Riacho Grande,São Bernardo do Campo,SP,3548708
+UPA Paulicéia/Taboão,São Bernardo do Campo,SP,3548708
+UPA Baeta Neves,São Bernardo do Campo,SP,3548708
+UPA Alves Dias/Assunção,São Bernardo do Campo,SP,3548708
+Unidade de Cuidados Continuados Integrados Santa Terezinha – Pequeno Cotolengo do Paraná,Curitiba,PR,4106902
+FUNEF -Hospital são Vicente,Curitiba,PR,4106902
+Hospital da Cruz Vermelha –Filial do Paraná,Curitiba,PR,4106902
+Hospital de Clínicas -UFPR,Curitiba,PR,4106902
+Hospital Erasto Gaertner,Curitiba,PR,4106902
+Hospital Marcelino Champagnat,Curitiba,PR,4106902
+Hospital Nossa Senhora das Graças,Curitiba,PR,4106902
+Hospital Universitário Cajuru,Curitiba,PR,4106902
+Hospital Universitário Evangélico de Curitiba,Curitiba,PR,4106902
+Hospital Universitário Regional de Maringá,Maringá,PR,4115200
+Hospital Universitário Regional do Norte do Paraná,Londrina,PR,4113700
+Hospital Universitário Regional dos Campos Gerais,Ponta Grossa,PR,4119905
+Pequeno Príncipe,Curitiba,PR,4106902
+Hospital do Câncer de Londrina,Londrina,PR,4113700
+Hospital Doutor EulalinoIgnácio deAndrade,Londrina,PR,4113700
+Associação Hospitalar Beneficente São Vicente de Paulo,Passo Fundo,RS,4314100
+Associação Hospitalar Moinhos de Vento,Porto Alegre,RS,4314902
+Hospital Cristo Redentor S.A.,Porto Alegre,RS,4314902
+Hospital da Criança Conceição,Porto Alegre,RS,4314902
+Hospital de Clínicas de Porto Alegre,Porto Alegre,RS,4314902
+Hospital Ernesto Dornelles,Porto Alegre,RS,4314902
+Hospital Escola da UFPEL Fundação de Apoio Universitário,Pelotas,RS,4314407
+Hospital Fêmina,Porto Alegre,RS,4314902
+Hospital Mãe de Deus,Porto Alegre,RS,4314902
+Hospital Nossa Senhora da Conceição-RS,Porto Alegre,RS,4314902
+Hospital São Lucas da PUC/RS,Porto Alegre,RS,4314902
+Hospital Universitário de Santa Maria,Santa Maria,RS,2409332
+Hospital Universitário São Francisco de Paula,Pelotas,RS,4314407
+Associação Paulista para o Desenvolvimento da Medicina(SPDM)-Hospital Florianópolis,Florianópolis,SC,4205407
+Centro Hospitalar Unimed Joinville,Joinville,SC,4209102
+Fundação Hospitalar Blumenau,Blumenau,SC,4202404
+Hospital e Maternidade Marieta Konder Bornhausen,Itajaí,SC,4208203
+Hospital e Maternidade Santa Luíza,Balneário Camboriú,SC,4202008
+Hospital Governador Celso Ramos,Florianópolis,SC,4205407
+Hospital Geral e Maternidade Tereza Ramos-Hospital Amigo da Criança,Lages,SC,4209300
+Hospital Infantil Joana de Gusmão,Florianópolis,SC,4205407
+Hospital Infantil Pequeno Anjo,Itajaí,SC,4208203
+Hospital Materno Infantil Dr. Jeser Amarante Faria,Joinville,SC,4209102
+Hospital Municipal São José,Joinville,SC,4209102
+Hospital Nossa Senhora da Conceição-SC,Tubarão,SC,4218707
+Sociedade Divina Providência Hospital Santa Isabel,Blumenau,SC,4202404
+Hospital Regional de São José Dr. Homero Miranda Gomes,São José,SC,4216602
+Hospital Regional Hans Dieter Schmidt,Joinville,SC,4209102
+Hospital Santa Catarina SC,Blumenau,SC,4202404
+Hospital Universitário Professor PolydoroErnani de São Thiago,Florianópolis,SC,4205407
+Irmandade do Senhor Jesus dos Passos e Imperial Hospital de Caridade,Florianópolis,SC,4205407
+Maternidade Carmela Dutra,Florianópolis,SC,4205407
+Maternidade Darcy Vargas,Joinville,SC,4209102
+Soc. Lit. e Carit. Santo Agostinho,Criciúma,SC,4204608
+Unimed Blumenau-Hospital Unidade Centro,Blumenau,SC,4202404
+Unimed Blumenau-Hospital Unidade Vila Nova,Blumenau,SC,4202404
