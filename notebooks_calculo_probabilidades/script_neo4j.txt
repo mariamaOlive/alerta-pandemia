@@ -1,0 +1,130 @@
+///////////////////Carregando Dados//////////////////////////////
+
+// WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/integrado/" AS base
+// WITH base + "municipio.csv" AS uri
+LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row
+MERGE (:Cidade {cod_mun: row.cod_mun, nome: row.nome_mun})
+
+
+
+And this query imports relationships:
+// WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/calculado/" AS base
+// WITH base + "fluxo_prob.csv" AS uri
+LOAD CSV WITH HEADERS FROM "file:///fluxo_prob.csv" AS row 
+MATCH (origem:Cidade {cod_mun: row.cod_origem})
+MATCH (destino:Cidade {cod_mun: row.cod_destino})
+MERGE (origem)-[r:FLUXO{ probabilidade: row.probabilidade }]->(destino)
+
+////////////////////Algoritmos de Centralidade////////////////////////
+
+//Closeness Centrality
+
+CALL gds.graph.project('myGraph', 'Cidade', 'FLUXO')
+
+CALL gds.beta.closeness.stream('myGraph')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).cod_mun AS id, gds.util.asNode(nodeId).nome AS nome, score
+ORDER BY score DESC
+
+//Betweenness Centrality
+CALL gds.betweenness.stream('myGraph')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).cod_mun AS id, gds.util.asNode(nodeId).nome AS nome, score
+ORDER BY score DESC
+
+
+//Page Rank
+CALL gds.graph.project(
+  'myGraph_peso',
+  'Cidade',
+  'FLUXO',
+  {
+    relationshipProperties: 'probabilidade'
+  }
+)
+
+CALL gds.pageRank.write.estimate('myGraph', {
+  writeProperty: 'pageRank',
+  maxIterations: 20,
+  dampingFactor: 0.85
+})
+YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
+
+CALL gds.pageRank.stream('myGraph')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nome AS nome, score
+ORDER BY score DESC, nome ASC
+
+
+//Article to Rank
+CALL gds.articleRank.write.estimate('myGraph', {
+  writeProperty: 'centrality',
+  maxIterations: 20
+})
+YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
+
+CALL gds.articleRank.stream('myGraph')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nome AS nome, score
+ORDER BY score DESC, nome ASC
+
+
+//Eigenvector Centrality
+CALL gds.eigenvector.stream('myGraph')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nome AS nome, score
+ORDER BY score DESC, nome ASC
+
+
+//Degree Centrality
+CALL gds.graph.project(
+  'myGraph_centrality',
+  'Cidade',
+  {
+    FLUXO: {
+      orientation: 'REVERSE',
+      properties: ['probabilidade']
+    }
+  }
+)
+
+CALL gds.degree.stream('myGraph_centrality')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nome AS nome, score AS conexoes
+ORDER BY conexoes DESC, nome DESC
+
+
+//Harmonic Centrality
+CALL gds.alpha.closeness.harmonic.stream('myGraph', {})
+YIELD nodeId, centrality
+RETURN gds.util.asNode(nodeId).nome AS nome, centrality
+ORDER BY centrality DESC
+
+//HITS
+CALL gds.alpha.hits.stream('myGraph', {hitsIterations: 20})
+YIELD nodeId, values
+RETURN gds.util.asNode(nodeId).nome AS nome, values.auth AS auth, values.hub as hub
+ORDER BY auth DESC
+
+////////////////////Comandos básicos////////////////////////
+MATCH (cidade)  
+WHERE cidade.cod_mun = 2611606
+RETURN cidade
+
+//Query
+MATCH (n)
+WHERE n.cod_mun = 3170008
+RETURN n
+
+
+//Deletar tudo
+MATCH (n) DELETE n;
+
+MATCH (n)
+DETACH DELETE n
+
+//Cast
+match (:Cidade)-[r]->(:Cidade)
+where r.probabilidade = toString(r.probabilidade) // make sure we only work string ratings
+set r.probabilidade = toInteger(r.probabilidade)
+return count(r)
