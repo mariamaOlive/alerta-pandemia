@@ -1,0 +1,8 @@
+.menu__dropdown{
+    width: 48%;
+    display: inline-block;
+}
+
+#div-dropdown-city{
+    float: right;
+}
