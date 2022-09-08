@@ -3,18 +3,19 @@ import psycopg2
 
 class BDRelacional:
 
-    conn_string = 'postgresql://uospmgae:kFBbjgeZBH7RFuJcY3D9hYseJXh0HZjE@motty.db.elephantsql.com/uospmgae'
+    connString = 'postgresql://uospmgae:kFBbjgeZBH7RFuJcY3D9hYseJXh0HZjE@motty.db.elephantsql.com/uospmgae'
     
     def __init__(self):
         pass
 
 
-    def carregarEstados(self, ):
+    def carregarEstados(self):
         query = "SELECT DISTINCT cod_uf, uf, nome_uf\
                 FROM municipio WHERE uf IS NOT NULL \
                 ORDER BY nome_uf ASC"
 
-        self.queryTabela(query)
+        resultado = self.queryTabela(query)
+        return resultado
 
 
     def carregarCidadesPorEstado(self, estadoId):

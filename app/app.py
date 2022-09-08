@@ -11,7 +11,6 @@ import camada_model.info_loader as il
 sistemaRecomendacao =  sr.SistemaRecomendacao()
 infoLoader = il.InfoLoader()
 
-
 #Inicializando aplicacao
 app = Dash(__name__)
 
@@ -22,13 +21,13 @@ app = Dash(__name__)
 
 app.layout = html.Div(children=[
     html.H1(children='Alerta Epidemia'),
-
+    
     html.Div([
 
         #Dropdown-State
         html.Div([
             dcc.Dropdown(
-                ['New York City', 'Montréal', 'San Francisco'],
+                infoLoader.dfEstados["nome_uf"],
                 'Estado',
                 id='dropdown-estado'
             )
@@ -53,7 +52,6 @@ app.layout = html.Div(children=[
 ##############################################
 
 # Callback - Dropdown menu
-
 # @app.callback(
 #     Output('map-graphic', 'figure'),
 #     Input('dropdown-state', 'value'),
