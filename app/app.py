@@ -1,9 +1,20 @@
+#Libraries imports
 from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
 
+#Model imports
+import camada_model.sistema_recomendacao as sr
+import camada_model.info_loader as il
 
+#Carregando Model classes 
+sistemaRecomendacao =  sr.SistemaRecomendacao()
+infoLoader = il.InfoLoader()
+
+
+#Inicializando aplicacao
 app = Dash(__name__)
+
 
 ##############################################
 #######     Application Layout      ##########
@@ -19,7 +30,7 @@ app.layout = html.Div(children=[
             dcc.Dropdown(
                 ['New York City', 'Montréal', 'San Francisco'],
                 'Estado',
-                id='dropdown-state'
+                id='dropdown-estado'
             )
         ], className="menu__dropdown"),
 
@@ -28,9 +39,9 @@ app.layout = html.Div(children=[
             dcc.Dropdown(
                 ['New York City', 'Montréal', 'San Francisco'],
                 'Município',
-                id='dropdown-city'
+                id='dropdown-cidade'
             )
-        ], id = "div-dropdown-city", className="menu__dropdown"
+        ], id = "div-dropdown-cidade", className="menu__dropdown"
         ) 
         
     ], id = 'menu')
