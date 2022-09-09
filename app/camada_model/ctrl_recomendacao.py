@@ -7,5 +7,6 @@ class CtrlRecomendacao:
 
   def calculoRecomendacao(self, idCidade):
     bdGrafo = BDGf.BDGrafo()
-    bdGrafo.buscarCidade(idCidade)
-    return 
+    resultado = bdGrafo.buscarCidade(idCidade)
+    bdGrafo.close()
+    return resultado

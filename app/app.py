@@ -81,8 +81,8 @@ def updateDropdownCidade(idEstado):
 def updateRecomendacaoCidade(idCidade):
     print("test 1")
     print(idCidade)
-    dicCidades = ctrlRecomedacao.calculoRecomendacao(str(idCidade))
-    return "Estou testanto"
+    listaCidades = ctrlRecomedacao.calculoRecomendacao(idCidade)
+    return f"{listaCidades}"
 
 
 if __name__ == '__main__':

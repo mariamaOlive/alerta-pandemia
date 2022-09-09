@@ -21,10 +21,8 @@ class BDGrafo:
         with self.driver.session(database="neo4j") as session:
             result = session.read_transaction(
                 self._buscarRetornaPessoa, idMunicipio)
-            for row in result:
-                print("Found city: {row}".format(row=row))
 
-        self.close()
+            return result
 
 
     @staticmethod
@@ -32,16 +30,12 @@ class BDGrafo:
         query = (
             "MATCH (c1)-[r]->(c2) "
             "WHERE c1.cod_mun =  $idMunicipio "
-            "AND r.probabilidade > 0.015 "
-            "RETURN c2.nome AS nome"
+            "RETURN c2.nome AS nome, c2.cod_mun  AS cod_mun, r.probabilidade AS score, "
+            "c2.latitude AS latitude, c2.longitude AS longitude "
+            "ORDER BY score DESC"
         )
         
         result = tx.run(query, idMunicipio=idMunicipio)
-        return [row["nome"] for row in result]
+        return result.values("nome", "cod_mun","latitude","longitude", "score")
 
 
-
-    # app = App(uri, user, password)
-    # app.create_friendship("Alice", "David")
-    # app.find_person("Alice")
-    # app.close()

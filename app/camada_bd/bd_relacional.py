@@ -10,7 +10,7 @@ class BDRelacional:
 
 
     def buscarEstados(self):
-        query = "SELECT DISTINCT cod_uf, uf, nome_uf\
+        query = "SELECT DISTINCT cod_uf, uf, nome_uf \
                 FROM municipio WHERE uf IS NOT NULL \
                 ORDER BY nome_uf ASC"
 
@@ -26,6 +26,10 @@ class BDRelacional:
         resultado = self.queryTabela(query)
         return resultado
 
+
+    #Buscar todas as informacoes de uma cidade            
+    def buscarCidade(self, cidadeId):
+        pass 
 
     # Realiza operações na tabela do BD com psycopg2
     def queryTabela(self, comandoSql):
