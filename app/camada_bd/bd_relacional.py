@@ -9,7 +9,7 @@ class BDRelacional:
         pass
 
 
-    def carregarEstados(self):
+    def buscarEstados(self):
         query = "SELECT DISTINCT cod_uf, uf, nome_uf\
                 FROM municipio WHERE uf IS NOT NULL \
                 ORDER BY nome_uf ASC"
@@ -18,8 +18,13 @@ class BDRelacional:
         return resultado
 
 
-    def carregarCidadesPorEstado(self, estadoId):
-        pass
+    def buscarCidadesPorEstado(self, estadoId):
+        query = f"SELECT cod_mun, nome_mun FROM municipio\
+                WHERE cod_uf = {estadoId}\
+                ORDER BY nome_mun ASC"
+
+        resultado = self.queryTabela(query)
+        return resultado
 
 
     # Realiza operações na tabela do BD com psycopg2

@@ -1,4 +1,4 @@
-class SistemaRecomendacao:
+class CtrlSistemaRecomendacao:
 
   def __init__(self):
     pass
