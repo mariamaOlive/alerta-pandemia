@@ -39,9 +39,9 @@ app.layout = html.Div(children=[
         ], className="menu__dropdown"),
 
         # Dropdown-Cidade
-        html.Div( 
-        id="div-dropdown-cidade", className="menu__dropdown"
-    )], id='menu'),
+        html.Div(id="div-dropdown-cidade", className="menu__dropdown")
+        
+        ], id='menu'),
     html.Div(id='my-output')
 ])
 
