@@ -53,6 +53,18 @@ app.layout = html.Div(children=[
     html.Div(id='my-output')
 ])
 
+#TODO: Remover essa funcao depois, isso eh so para TESTES
+def generate_table(dataframe, max_rows=10):
+    return html.Table([
+        html.Thead(
+            html.Tr([html.Th(col) for col in dataframe.columns])
+        ),
+        html.Tbody([
+            html.Tr([
+                html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+            ]) for i in range(min(len(dataframe), max_rows))
+        ])
+    ])
 
 ##############################################
 ############     Callbacks      ##############
@@ -79,10 +91,9 @@ def updateDropdownCidade(idEstado):
     Output('my-output', 'children'),
     Input('dropdown-cidade', 'value'))
 def updateRecomendacaoCidade(idCidade):
-    print("test 1")
     print(idCidade)
-    listaCidades = ctrlRecomedacao.calculoRecomendacao(idCidade)
-    return f"{listaCidades}"
+    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
+    return generate_table(dfRecomendacao)
 
 
 if __name__ == '__main__':

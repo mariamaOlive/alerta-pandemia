@@ -30,7 +30,7 @@ class BDGrafo:
         query = (
             "MATCH (c1)-[r]->(c2) "
             "WHERE c1.cod_mun =  $idMunicipio "
-            "RETURN c2.nome AS nome, c2.cod_mun  AS cod_mun, r.probabilidade AS score, "
+            "RETURN c2.cod_mun AS cod_mun, c2.nome AS nome, r.probabilidade AS score, "
             "c2.latitude AS latitude, c2.longitude AS longitude "
             "ORDER BY score DESC"
         )

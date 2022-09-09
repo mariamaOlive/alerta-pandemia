@@ -1,6 +1,6 @@
 import psycopg2
 
-
+#TODO: Transformar essa classe em singleton
 class BDRelacional:
 
     connString = 'postgresql://uospmgae:kFBbjgeZBH7RFuJcY3D9hYseJXh0HZjE@motty.db.elephantsql.com/uospmgae'
@@ -27,9 +27,16 @@ class BDRelacional:
         return resultado
 
 
-    #Buscar todas as informacoes de uma cidade            
+    #Buscar todas as informacoes de uma cidade
+    # TODO: Adicionar mais dados a ser buscado            
     def buscarCidade(self, cidadeId):
-        pass 
+        query = f"SELECT cod_mun, nome_mun, latitude, longitude FROM municipio\
+                WHERE cod_mun = {cidadeId}\
+                ORDER BY nome_mun ASC"
+
+        resultado = self.queryTabela(query)[0]
+        return resultado 
+
 
     # Realiza operações na tabela do BD com psycopg2
     def queryTabela(self, comandoSql):
