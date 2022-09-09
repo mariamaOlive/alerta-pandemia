@@ -39,15 +39,7 @@ app.layout = html.Div(children=[
         ], className="menu__dropdown"),
 
         # Dropdown-Cidade
-        html.Div(
-        #     [
-        #     dcc.Dropdown(
-        #         options=[{'label': i['nome_mun'], 'value': i['cod_mun']}
-        #                  for i in dicCidades],
-        #         value=dicCidades[0]['cod_mun'],
-        #         id='dropdown-cidade'
-        #     )
-        # ], 
+        html.Div( 
         id="div-dropdown-cidade", className="menu__dropdown"
     )], id='menu'),
     html.Div(id='my-output')
