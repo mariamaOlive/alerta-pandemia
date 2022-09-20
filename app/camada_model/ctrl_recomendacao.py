@@ -10,9 +10,8 @@ class CtrlRecomendacao:
     def __init__(self):
         pass
 
-    def calculoRecomendacao(self, idCidade):
+    def calculoRecomendacao(self, idCidade, nrCidades):
         bdGrafo = BDGf.BDGrafo()
-
         # TODO: Fazer consultas paralelamente no banco
         # Busca cidades de destino com conexao no grafo
         recomendacao = bdGrafo.buscarCidade(idCidade)
@@ -21,7 +20,7 @@ class CtrlRecomendacao:
         # Busca informacoes da cidade de origem
         infoCidade = self.bdRel.buscarCidade(idCidade)
 
-        dfRecomendacao = self.construirDfRecomendacao(infoCidade, recomendacao)
+        dfRecomendacao = self.construirDfRecomendacao(infoCidade, recomendacao)[:nrCidades]
         return dfRecomendacao
 
     #Funcao que agrega os dados para serem plotados no mapa

@@ -21,43 +21,56 @@ dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(dicEstados[0]['cod_uf']).to
 
 # Inicializando aplicacao
 app = Dash(__name__)
+app.title = 'Alerta Epidemia'
 
 ##############################################
 #######     Application Layout      ##########
 ##############################################
 
-app.layout = html.Div(children=[
-    html.H1(children='Alerta Epidemia'),
-
-    html.Div([
-
-        # Dropdown-Estado
-        html.Div([
-            dcc.Dropdown(
-                options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
-                         for i in dicEstados],
-                value=dicEstados[0]['cod_uf'],
-                id='dropdown-estado'
-            )
-        ], className="menu__dropdown"),
-
-        # Dropdown-Cidade
+app.layout = html.Div(
+    children=[
         html.Div(
-        #     [
-        #     dcc.Dropdown(
-        #         options=[{'label': i['nome_mun'], 'value': i['cod_mun']}
-        #                  for i in dicCidades],
-        #         value=dicCidades[0]['cod_mun'],
-        #         id='dropdown-cidade'
-        #     )
-        # ], 
-        id="div-dropdown-cidade", className="menu__dropdown"
-    )], id='menu'),
-    html.Div(id='my-output'),
-    dcc.Graph(
-        id='visualizacao'
-    )
+            className="header",
+            children=[
+                html.H1("Alerta Epidemia", className="header__text"),
+            ],
+    ),
+
+    html.Section([
+        html.Div([
+
+            # Dropdown-Estado
+            html.Div([
+                dcc.Dropdown(
+                    options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
+                            for i in dicEstados],
+                    value=dicEstados[0]['cod_uf'],
+                    id='dropdown-estado',
+                    style={'font-size': 15}
+                )
+            ], className="menu__dropdown"),
+
+            # Dropdown-Cidade
+            html.Div(
+            #     [
+            #     dcc.Dropdown(
+            #         options=[{'label': i['nome_mun'], 'value': i['cod_mun']}
+            #                  for i in dicCidades],
+            #         value=dicCidades[0]['cod_mun'],
+            #         id='dropdown-cidade'
+            #     )
+            # ], 
+            id="div-dropdown-cidade", className="menu__dropdown",
+            style={'font-size': 15}
+        )], id='menu'),
+        html.Div(id='world_line_2'),
+        dcc.Graph(
+            id='visualizacao'
+            
+        )
+    ]),    
 ])
+    
 
 #TODO: Remover essa funcao depois, isso eh so para TESTES
 def generate_table(dataframe, max_rows=10):
@@ -98,7 +111,7 @@ def updateDropdownCidade(idEstado):
     Input('dropdown-cidade', 'value'))
 def updateRecomendacaoCidade(idCidade):
     print(idCidade)
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
+    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, 20)
     #return generate_table(dfRecomendacao)
     return vis.carregarMapa(dfRecomendacao)
 
