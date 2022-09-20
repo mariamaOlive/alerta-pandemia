@@ -2,18 +2,18 @@
 
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/integrado/" AS base
 // WITH base + "municipio.csv" AS uri
-LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row
-MERGE (:Cidade {cod_mun: row.cod_mun, nome: row.nome_mun})
+LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row  with row where row.longitude is not null
+MERGE (:Cidade {cod_mun: toInteger(row.cod_mun), nome: row.nome_mun, latitude: toFloat(row.latitude), longitude: toFloat(row.longitude), populacao: toInteger(row.populacao_2021)})
 
 
 
-And this query imports relationships:
+//And this query imports relationships:
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/calculado/" AS base
 // WITH base + "fluxo_prob.csv" AS uri
 LOAD CSV WITH HEADERS FROM "file:///fluxo_prob.csv" AS row 
-MATCH (origem:Cidade {cod_mun: row.cod_origem})
-MATCH (destino:Cidade {cod_mun: row.cod_destino})
-MERGE (origem)-[r:FLUXO{ probabilidade: row.probabilidade }]->(destino)
+MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
+MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+MERGE (origem)-[r:FLUXO{ probabilidade: toFloat(row.probabilidade) }]->(destino)
 
 ////////////////////Algoritmos de Centralidade////////////////////////
 
@@ -26,12 +26,21 @@ YIELD nodeId, score
 RETURN gds.util.asNode(nodeId).cod_mun AS id, gds.util.asNode(nodeId).nome AS nome, score
 ORDER BY score DESC
 
+//Escrevendo
+CALL gds.beta.closeness.write('myGraph', { writeProperty: 'closeness' })
+YIELD centralityDistribution, nodePropertiesWritten
+RETURN centralityDistribution.min AS minimumScore, centralityDistribution.mean AS meanScore, nodePropertiesWritten
+
 //Betweenness Centrality
 CALL gds.betweenness.stream('myGraph')
 YIELD nodeId, score
 RETURN gds.util.asNode(nodeId).cod_mun AS id, gds.util.asNode(nodeId).nome AS nome, score
 ORDER BY score DESC
 
+//Escrever
+CALL gds.betweenness.write('myGraph', { writeProperty: 'betweenness' })
+YIELD centralityDistribution, nodePropertiesWritten
+RETURN centralityDistribution.min AS minimumScore, centralityDistribution.mean AS meanScore, nodePropertiesWritten
 
 //Page Rank
 CALL gds.graph.project(
@@ -50,11 +59,29 @@ CALL gds.pageRank.write.estimate('myGraph', {
 })
 YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
 
-CALL gds.pageRank.stream('myGraph')
+CALL gds.pageRank.stream('myGraph_peso')
 YIELD nodeId, score
 RETURN gds.util.asNode(nodeId).nome AS nome, score
 ORDER BY score DESC, nome ASC
 
+///Com peso
+CALL gds.pageRank.stream('myGraph_peso', {
+  maxIterations: 20,
+  dampingFactor: 0.85,
+  relationshipWeightProperty: 'probabilidade'
+})
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).nome AS nome, score
+ORDER BY score DESC, nome ASC
+
+//Escrevendo
+CALL gds.pageRank.write('myGraph_peso', {
+  maxIterations: 20,
+  dampingFactor: 0.85,
+  relationshipWeightProperty: 'probabilidade',
+  writeProperty: 'pagerank'
+})
+YIELD nodePropertiesWritten, ranIterations
 
 //Article to Rank
 CALL gds.articleRank.write.estimate('myGraph', {
@@ -70,10 +97,24 @@ ORDER BY score DESC, nome ASC
 
 
 //Eigenvector Centrality
-CALL gds.eigenvector.stream('myGraph')
+CALL gds.eigenvector.stream('myGraph_peso')
 YIELD nodeId, score
 RETURN gds.util.asNode(nodeId).nome AS nome, score
 ORDER BY score DESC, nome ASC
+
+
+CALL gds.eigenvector.write('myGraph', {
+  maxIterations: 20,
+  writeProperty: 'centrality'
+})
+YIELD nodePropertiesWritten, ranIterations
+
+//Escrever
+CALL gds.eigenvector.write('myGraph_peso', {
+  maxIterations: 20,
+  writeProperty: 'eigenvector'
+})
+YIELD nodePropertiesWritten, ranIterations
 
 
 //Degree Centrality
@@ -93,6 +134,11 @@ YIELD nodeId, score
 RETURN gds.util.asNode(nodeId).nome AS nome, score AS conexoes
 ORDER BY conexoes DESC, nome DESC
 
+//Escrever
+CALL gds.degree.write('myGraph', { writeProperty: 'degree' })
+YIELD centralityDistribution, nodePropertiesWritten
+RETURN centralityDistribution.min AS minimumScore, centralityDistribution.mean AS meanScore, nodePropertiesWritten
+
 
 //Harmonic Centrality
 CALL gds.alpha.closeness.harmonic.stream('myGraph', {})
@@ -108,14 +154,67 @@ ORDER BY auth DESC
 
 ////////////////////Comandos básicos////////////////////////
 MATCH (cidade)  
-WHERE cidade.cod_mun = 2611606
+WHERE cidade.cod_mun = 2611606 AND 
 RETURN cidade
 
 //Query
 MATCH (n)
-WHERE n.cod_mun = 3170008
+WHERE n.cod_mun = "3550308"
 RETURN n
+///2611606 --> Recife
 
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+AND r.probabilidade > 0.015
+RETURN c1,c2
+
+MAX
+
+
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+AND c2.pagerank > 13
+RETURN c1, c2 
+
+//Calculando valor e salvando
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+WITH c1, r, c2
+SET c2.salvador = c2.closeness*.1 + r.probabilidade*.9
+RETURN count(r)
+
+
+//Calculo
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408"  
+WITH c1, r, c2
+RETURN  c2.closeness*.1 + r.probabilidade*.9 
+
+
+
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+AND c2.salvador > 0.1
+RETURN c1, c2 
+
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+RETURN c2.nome AS nome, c2.salvador AS salvador
+ORDER BY salvador DESC
+
+
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+RETURN c2.nome AS nome, c2.salvador AS salvador
+ORDER BY salvador DESC
+
+
+
+//CODIGO RETORNAR NOS
+MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = "2927408" 
+RETURN c2, c2.salvador AS salvador
+ORDER BY salvador DESC LIMIT 10
 
 //Deletar tudo
 MATCH (n) DELETE n;
@@ -126,5 +225,19 @@ DETACH DELETE n
 //Cast
 match (:Cidade)-[r]->(:Cidade)
 where r.probabilidade = toString(r.probabilidade) // make sure we only work string ratings
-set r.probabilidade = toInteger(r.probabilidade)
+set r.probabilidade = toFloat(r.probabilidade)
 return count(r)
+
+
+//Consultas feitas no app
+MATCH (c1)-[r]->(c2) 
+WHERE c1.cod_mun =  2927408 
+RETURN c2.nome AS nome, c2.cod_mun  AS cod_mun, r.probabilidade AS score 
+ORDER BY score
+
+//Exportar nodes
+MATCH (c:Cidade)
+WITH collect(c) AS cidades
+CALL apoc.export.csv.data(cidades, [], "cidades.csv", {})
+YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
