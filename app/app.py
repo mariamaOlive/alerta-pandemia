@@ -45,8 +45,6 @@ app.layout = html.Div(children=[
         html.Div(
         id="div-dropdown-cidade", className="menu__dropdown"
     )], id='menu'),
-    
-    html.Div(id='my-output'),
 
     #Checkboxes
     dcc.Checklist(['Fluxo Rodoviário', 'Fluxo Aéreo'],['Fluxo Rodoviário', 'Fluxo Aéreo'], id='checkbox-fluxo'),
@@ -54,7 +52,9 @@ app.layout = html.Div(children=[
     #Visualização Mapa
     dcc.Graph(
         id='visualizacao'
-    )
+    ),
+
+    html.Div(id='my-output')
 ])
 
 #TODO: Remover essa funcao depois, isso eh so para TESTES
