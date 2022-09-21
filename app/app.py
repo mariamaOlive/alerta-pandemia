@@ -43,17 +43,15 @@ app.layout = html.Div(children=[
 
         # Dropdown-Cidade
         html.Div(
-        #     [
-        #     dcc.Dropdown(
-        #         options=[{'label': i['nome_mun'], 'value': i['cod_mun']}
-        #                  for i in dicCidades],
-        #         value=dicCidades[0]['cod_mun'],
-        #         id='dropdown-cidade'
-        #     )
-        # ], 
         id="div-dropdown-cidade", className="menu__dropdown"
     )], id='menu'),
+    
     html.Div(id='my-output'),
+
+    #Checkboxes
+    dcc.Checklist(['Fluxo Rodoviário', 'Fluxo Aéreo'],['Fluxo Rodoviário', 'Fluxo Aéreo'], id='checkbox-fluxo'),
+
+    #Visualização Mapa
     dcc.Graph(
         id='visualizacao'
     )
@@ -99,9 +97,25 @@ def updateDropdownCidade(idEstado):
 def updateRecomendacaoCidade(idCidade):
     print(idCidade)
     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
-    #return generate_table(dfRecomendacao)
     return vis.carregarMapa(dfRecomendacao)
 
+#TODO: Remover depois dos testes --> Callback print Dataframe
+@app.callback(
+    Output('my-output', 'children'),
+    Input('dropdown-cidade', 'value'))
+def updateRecomendacaoCidade(idCidade):
+    print(idCidade)
+    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
+    return generate_table(dfRecomendacao)
+
+#Callback - Seleção de Fluxo
+# @app.callback(
+#     Output('my-output', 'children'),
+#     Input('checkbox-fluxo', 'value'))
+# def updateRecomendacaoCidade(idCidade):
+#     print(idCidade)
+#     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
+#     return generate_table(dfRecomendacao)
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -14,7 +14,7 @@ def carregarMapa(dfRecomendacao):
 
     source_to_dest = zip(dfRecomendacao["latitude_ori"], dfRecomendacao["latitude_dest"],
                         dfRecomendacao["longitude_ori"], dfRecomendacao["longitude_dest"],
-                        dfRecomendacao["score"])
+                        dfRecomendacao["fluxo_geral"])
 
     ## Loop thorugh each flight entry to add line between source and destination
     for slat, dlat, slon, dlon, num_flights in source_to_dest:

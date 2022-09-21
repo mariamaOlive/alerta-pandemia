@@ -30,12 +30,13 @@ class BDGrafo:
         query = (
             "MATCH (c1)-[r]->(c2) "
             "WHERE c1.cod_mun =  $idMunicipio "
-            "RETURN c2.cod_mun AS cod_mun, c2.nome AS nome, r.probabilidade AS score, "
+            "RETURN c2.cod_mun AS cod_mun, c2.nome AS nome, "
+            "r.fluxo_geral AS fluxo_geral, r.fluxo_aereo AS fluxo_aereo, r.fluxo_rodo AS fluxo_rodo, "
             "c2.latitude AS latitude, c2.longitude AS longitude "
-            "ORDER BY score DESC"
+            "ORDER BY fluxo_geral DESC"
         )
         
         result = tx.run(query, idMunicipio=idMunicipio)
-        return result.values("nome", "cod_mun","latitude","longitude", "score")
+        return result.values("nome", "cod_mun","latitude","longitude", "fluxo_geral", "fluxo_aereo", "fluxo_rodo")
 
 

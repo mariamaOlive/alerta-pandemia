@@ -29,7 +29,8 @@ class CtrlRecomendacao:
       
         tupleRecomendacao = [(dadosCidadeOrigem + tuple(cidadeDestino)) for cidadeDestino in listaDadosCidadeDestino]
         nomesColunas = ["cod_ori", "nome_ori", "latitude_ori", "longitude_ori",
-                        "nome_dest", "cod_dest", "latitude_dest", "longitude_dest", "score"]
+                        "nome_dest", "cod_dest", "latitude_dest", "longitude_dest", 
+                        "fluxo_geral", "fluxo_aereo", "fluxo_rodo"]
         
         dfRecomendacao = pd.DataFrame(tupleRecomendacao, columns=nomesColunas)
         return dfRecomendacao
