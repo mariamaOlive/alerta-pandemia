@@ -37,6 +37,7 @@ class BDGrafo:
         )
         
         result = tx.run(query, idMunicipio=idMunicipio)
-        return result.values("nome", "cod_mun","latitude","longitude", "fluxo_geral", "fluxo_aereo", "fluxo_rodo")
+        return result.values("nome", "cod_mun","latitude","longitude", 
+                            "fluxo_geral", "fluxo_aereo", "fluxo_rodo")
 
 

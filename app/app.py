@@ -47,7 +47,13 @@ app.layout = html.Div(children=[
     )], id='menu'),
 
     #Checkboxes
-    dcc.Checklist(['Fluxo Rodoviário', 'Fluxo Aéreo'],['Fluxo Rodoviário', 'Fluxo Aéreo'], id='checkbox-fluxo'),
+    dcc.RadioItems(
+        options={
+        'fluxo_geral': 'Fluxo Rodoviário + Aéreo',
+        'fluxo_aereo': 'Fluxo Aéreo',
+        'fluxo_rodo': 'Fluxo Rodoviário'
+        },
+        value='fluxo_geral', id='checkbox-fluxo'),
 
     #Visualização Mapa
     dcc.Graph(
@@ -93,29 +99,24 @@ def updateDropdownCidade(idEstado):
 # Callback - Busca recomendação da cidade
 @app.callback(
     Output('visualizacao', 'figure'),
-    Input('dropdown-cidade', 'value'))
-def updateRecomendacaoCidade(idCidade):
-    print(idCidade)
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
+    Input('dropdown-cidade', 'value'),
+    Input('checkbox-fluxo', 'value'))
+def updateRecomendacaoCidade(idCidade, tipoFluxo):
+    print(tipoFluxo)
+    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
     return vis.carregarMapa(dfRecomendacao)
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
+#Callback - Seleção de Fluxo - Rodoviário/Aéreo
 @app.callback(
     Output('my-output', 'children'),
-    Input('dropdown-cidade', 'value'))
-def updateRecomendacaoCidade(idCidade):
-    print(idCidade)
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
-    return generate_table(dfRecomendacao)
+    Input('dropdown-cidade', 'value'),
+    Input('checkbox-fluxo', 'value'))
+def updateRecomendacaoCidade(idCidade, tipoFluxo):
+    print(tipoFluxo)
 
-#Callback - Seleção de Fluxo
-# @app.callback(
-#     Output('my-output', 'children'),
-#     Input('checkbox-fluxo', 'value'))
-# def updateRecomendacaoCidade(idCidade):
-#     print(idCidade)
-#     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade)
-#     return generate_table(dfRecomendacao)
+    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
+    return generate_table(dfRecomendacao)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
