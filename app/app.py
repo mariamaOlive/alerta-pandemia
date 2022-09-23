@@ -180,6 +180,9 @@ def updateDropdownCidade(idEstado):
     Input('checkbox-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
+    # #Funcao com as infos da cidade de origem 
+    # infoCidade = ctrlRecomedacao.infoCidadeOrigem(cod_cidade)
+    #Funcao com daf
     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
     return vis.carregarMapa(dfRecomendacao)
 
