@@ -17,7 +17,7 @@ def carregarMapa(dfRecomendacao):
                         dfRecomendacao["longitude_ori"], dfRecomendacao["longitude_dest"],
                         dfRecomendacao["fluxo"])
 
-    teste = len(dfRecomendacao["score"])*2
+    teste = len(dfRecomendacao["fluxo"])*2
     ## Loop thorugh each flight entry to add line between source and destination
     for slat, dlat, slon, dlon, score in source_to_dest:
         fig.add_trace(go.Scattermapbox(
