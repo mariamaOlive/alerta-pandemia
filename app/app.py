@@ -38,18 +38,20 @@ radioButtonsFluxo = dcc.RadioItems(
         },
         value='fluxo_geral', id='checkbox-fluxo')
 
-#Componente dos drops de Estados
+    html.Section([
+    #Componente dos drops de Estados
 dropDownEstados = html.Div([
 
-        # Dropdown-Estado
-        html.Div([
-            dcc.Dropdown(
-                options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
-                         for i in dicEstados],
-                value=dicEstados[0]['cod_uf'],
-                id='dropdown-estado'
-            )
-        ], className="menu__dropdown"),
+            # Dropdown-Estado
+            html.Div([
+                dcc.Dropdown(
+                    options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
+                            for i in dicEstados],
+                    value=dicEstados[0]['cod_uf'],
+                    id='dropdown-estado',
+                    style={'font-size': 15}
+                )
+            ], className="menu__dropdown"),
 
         # Dropdown-Cidade
         html.Div(
@@ -74,6 +76,59 @@ tabFluxo = html.Div([
 tabAtributos = html.Div([
         containerDf
 ])
+
+##############################################
+#######     Application Layout      ##########
+##############################################
+
+app.layout = html.Div(children=[
+    #Título da aplicacao
+    html.H1(children='Alerta Epidemia'),
+
+    #Tabs da aplicação 
+    dcc.Tabs(id="tabs-vis", value='tab-fluxo', children=[
+        dcc.Tab(label='Fluxo', value='tab-fluxo'),
+        dcc.Tab(label='Atributos gerais', value='tab-atributos'),
+    ]),
+
+    #Container das tabs da aplicação
+    html.Div(id='tabs-content')
+]
+)
+
+#     html.Div([
+
+#         # Dropdown-Estado
+#         html.Div([
+#             dcc.Dropdown(
+#                 options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
+#                          for i in dicEstados],
+#                 value=dicEstados[0]['cod_uf'],
+#                 id='dropdown-estado'
+#             )
+#         ], className="menu__dropdown"),
+
+#         # Dropdown-Cidade
+#         html.Div(
+#         id="div-dropdown-cidade", className="menu__dropdown"
+#     )], id='menu'),
+
+#     #Checkboxes
+#     dcc.RadioItems(
+#         options={
+#         'fluxo_geral': 'Fluxo Rodoviário + Aéreo',
+#         'fluxo_aereo': 'Fluxo Aéreo',
+#         'fluxo_rodo': 'Fluxo Rodoviário'
+#         },
+#         value='fluxo_geral', id='checkbox-fluxo'),
+
+#     #Visualização Mapa
+#     dcc.Graph(
+#         id='visualizacao'
+#     ),
+
+#     html.Div(id='my-output')
+# ])
 
 ##############################################
 #######     Application Layout      ##########

@@ -1,8 +1,100 @@
+
+html {
+    font-size: 62.5%;
+  }
+  body {
+    font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+    line-height: 1.6;
+    font-weight: 400;
+    font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgb(50, 50, 50);
+  }
+
 .menu__dropdown{
     width: 48%;
     display: inline-block;
 }
 
+
 #div-dropdown-cidade{
     float: right;
+    justify-content: center;
 }
+
+
+ /* Custom
+  –––––––––––––––––––––––––––––––––––––––––––––––––– */
+   
+  body {
+    background-color: #f2f2f2;
+}
+
+.pretty_container {
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin: 10px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 2px 2px 2px lightgrey;
+}
+
+.bare_container {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+.dcc_control {
+  margin: 0;
+  padding: 5px;
+  width: calc(100%-40px);
+}
+
+.control_label {
+  margin: 0;
+  padding: 10px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  width: calc(100%-40px);
+}
+h1,
+
+h1 {
+    font-size: 4.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.1rem;
+    margin-bottom: 2rem;
+  }
+
+
+/*–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+section {
+width:100%;
+max-width:100%;
+display: flex;
+flex-direction: column;
+}
+
+.header {
+display: flex;
+flex-direction: column;
+justify-content: center; 
+align-items: center;
+margin: auto;
+
+}
+
+#world_line_1{
+    display: flex;
+  
+    justify-content: center;
+}
+
+#world_line_2{
+display: flex;
+width: 100%;
+justify-content: center;
+align-items: center;
+
+}
+

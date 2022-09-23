@@ -12,7 +12,6 @@ class CtrlRecomendacao:
 
     def calculoRecomendacao(self, idCidade, tipoFluxo):
         bdGrafo = BDGf.BDGrafo()
-
         # TODO: Fazer consultas paralelamente no banco
         # Busca cidades de destino com conexao no grafo
         recomendacao = bdGrafo.buscarCidade(idCidade)
