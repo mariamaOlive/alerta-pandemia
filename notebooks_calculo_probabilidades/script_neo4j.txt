@@ -1,11 +1,22 @@
 ///////////////////Carregando Dados//////////////////////////////
+//Colocar csvs nessa pastas
+C:\Users\mcso\.Neo4jDesktop\relate-data\dbmss\dbms-69782ce3-52fa-480a-8249-0bafb6cbe2a3\import
 
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/integrado/" AS base
 // WITH base + "municipio.csv" AS uri
 LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row  with row where row.longitude is not null
 MERGE (:Cidade {cod_mun: toInteger(row.cod_mun), nome: row.nome_mun, latitude: toFloat(row.latitude), longitude: toFloat(row.longitude), populacao: toInteger(row.populacao_2021)})
 
-
+//Updating
+LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row  
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.PIB= toInteger(row.PIB), c.hierarquia= row.hierarquia, 
+c.nome_hierarquia= row.nome_hierarquia, c.indice_atracao= toFloat(row.indice_atracao),
+c.ia_saude_bm= toFloat(row.ia_saude_bm), c.ia_saude_a= toFloat(row.ia_saude_a),
+c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_transporte),
+c.num_leitos= toFloat(row.num_leitos)
+//ON MATCH SET n.TotalRevenue = csvLine[2] --> Faz um update
+//ON CREATE --> Cria o nó caso precise
 
 //And this query imports relationships:
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/calculado/" AS base
@@ -13,7 +24,7 @@ MERGE (:Cidade {cod_mun: toInteger(row.cod_mun), nome: row.nome_mun, latitude: t
 LOAD CSV WITH HEADERS FROM "file:///fluxo_prob.csv" AS row 
 MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
 MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
-MERGE (origem)-[r:FLUXO{ probabilidade: toFloat(row.probabilidade) }]->(destino)
+MERGE (origem)-[r:FLUXO{ fluxo_geral: toFloat(row.prob_geral), fluxo_aereo: toFloat(row.prob_aereo), fluxo_rodo: toFloat(row.prob_rodo) }]->(destino)
 
 ////////////////////Algoritmos de Centralidade////////////////////////
 
@@ -164,6 +175,10 @@ RETURN n
 ///2611606 --> Recife
 
 MATCH (c1)-[r]->(c2)
+WHERE c1.cod_mun = 3550308 AND  c2.cod_mun = 2927408
+RETURN c1, c2
+
+MATCH (c1)-[r]->(c2)
 WHERE c1.cod_mun = "2927408" 
 AND r.probabilidade > 0.015
 RETURN c1,c2
@@ -209,7 +224,6 @@ RETURN c2.nome AS nome, c2.salvador AS salvador
 ORDER BY salvador DESC
 
 
-
 //CODIGO RETORNAR NOS
 MATCH (c1)-[r]->(c2)
 WHERE c1.cod_mun = "2927408" 
@@ -241,3 +255,15 @@ WITH collect(c) AS cidades
 CALL apoc.export.csv.data(cidades, [], "cidades.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+
+
+sql = """
+    UPDATE final_table AS f
+    SET PIB= t.PIB, hierarquia= t.hierarquia, 
+    nome_hierarquia= t.nome_hierarquia, indice_atracao= t.indice_atracao,
+    ia_saude_bm= t.ia_saude_bm, ia_saude_a= t.ia_saude_a,
+    ia_aeroporto= t.ia_aeroporto, ia_transporte= t.ia_transporte,
+    num_leitos= t.num_leitos
+    FROM temp_table AS t
+    WHERE f.id = t.id
+"""
