@@ -40,7 +40,7 @@ class BDRelacional:
     
     #Bucar todas as cidades 
     def buscarTodasCidades(self):
-        query = "SELECT cod_mun, nome_mun, latitude, longitude FROM municipio"
+        query = "SELECT * FROM municipio"
         resultado = self.queryTabela(query)
         return resultado
 
