@@ -6,6 +6,7 @@ import pandas as pd
 # Model imports
 import camada_model.ctrl_recomendacao as sr
 import camada_model.ctrl_info_loader as il
+import camada_model.ctrl_atributos_cidade as ac
 
 # Visualizações imports
 import visualizacao.vis_mapa as vis
@@ -13,6 +14,7 @@ import visualizacao.vis_mapa as vis
 # Carregando Model classes
 ctrlRecomedacao = sr.CtrlRecomendacao()
 ctrlInfoLoader = il.CtrlInfoLoader()
+ctrlAtrCidade = ac.CtrlAtributosCidade()
 
 # Carregando dados iniciais
 dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
@@ -22,14 +24,22 @@ dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(dicEstados[0]['cod_uf']).to
 # Inicializando aplicacao
 app = Dash(__name__)
 
+
 ##############################################
-#######     Application Layout      ##########
+#######    Componetes do Layout     ##########
 ##############################################
 
-app.layout = html.Div(children=[
-    html.H1(children='Alerta Epidemia'),
+#Componente RadioButtons do tipos de Fluxo
+radioButtonsFluxo = dcc.RadioItems(
+        options={
+        'fluxo_geral': 'Fluxo Rodoviário + Aéreo',
+        'fluxo_aereo': 'Fluxo Aéreo',
+        'fluxo_rodo': 'Fluxo Rodoviário'
+        },
+        value='fluxo_geral', id='checkbox-fluxo')
 
-    html.Div([
+#Componente dos drops de Estados
+dropDownEstados = html.Div([
 
         # Dropdown-Estado
         html.Div([
@@ -44,24 +54,79 @@ app.layout = html.Div(children=[
         # Dropdown-Cidade
         html.Div(
         id="div-dropdown-cidade", className="menu__dropdown"
-    )], id='menu'),
+    )], id='menu')
 
-    #Checkboxes
-    dcc.RadioItems(
-        options={
-        'fluxo_geral': 'Fluxo Rodoviário + Aéreo',
-        'fluxo_aereo': 'Fluxo Aéreo',
-        'fluxo_rodo': 'Fluxo Rodoviário'
-        },
-        value='fluxo_geral', id='checkbox-fluxo'),
+#Componente que contem a visualização do mapa
+containerMapa = dcc.Graph(id='visualizacao')
 
-    #Visualização Mapa
-    dcc.Graph(
-        id='visualizacao'
-    ),
+#TODO: Remover após testes
+containerDf = html.Div(id='my-output')
 
-    html.Div(id='my-output')
+#Componente da tab de Fluxo 
+tabFluxo = html.Div([
+        dropDownEstados, 
+        radioButtonsFluxo, 
+        containerMapa,
+        containerDf
 ])
+
+#Componente da tab de Atributos 
+tabAtributos = html.Div([
+        containerDf
+])
+
+##############################################
+#######     Application Layout      ##########
+##############################################
+
+app.layout = html.Div(children=[
+    #Título da aplicacao
+    html.H1(children='Alerta Epidemia'),
+
+    #Tabs da aplicação 
+    dcc.Tabs(id="tabs-vis", value='tab-fluxo', children=[
+        dcc.Tab(label='Fluxo', value='tab-fluxo'),
+        dcc.Tab(label='Atributos gerais', value='tab-atributos'),
+    ]),
+
+    #Container das tabs da aplicação
+    html.Div(id='tabs-content')
+]
+)
+
+#     html.Div([
+
+#         # Dropdown-Estado
+#         html.Div([
+#             dcc.Dropdown(
+#                 options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
+#                          for i in dicEstados],
+#                 value=dicEstados[0]['cod_uf'],
+#                 id='dropdown-estado'
+#             )
+#         ], className="menu__dropdown"),
+
+#         # Dropdown-Cidade
+#         html.Div(
+#         id="div-dropdown-cidade", className="menu__dropdown"
+#     )], id='menu'),
+
+#     #Checkboxes
+#     dcc.RadioItems(
+#         options={
+#         'fluxo_geral': 'Fluxo Rodoviário + Aéreo',
+#         'fluxo_aereo': 'Fluxo Aéreo',
+#         'fluxo_rodo': 'Fluxo Rodoviário'
+#         },
+#         value='fluxo_geral', id='checkbox-fluxo'),
+
+#     #Visualização Mapa
+#     dcc.Graph(
+#         id='visualizacao'
+#     ),
+
+#     html.Div(id='my-output')
+# ])
 
 #TODO: Remover essa funcao depois, isso eh so para TESTES
 def generate_table(dataframe, max_rows=10):
@@ -79,6 +144,18 @@ def generate_table(dataframe, max_rows=10):
 ##############################################
 ############     Callbacks      ##############
 ##############################################
+
+# Callback - Carregar conteúdo de cada tab
+@app.callback(Output('tabs-content', 'children'),
+              Input('tabs-vis', 'value'))
+def render_content(tab):
+    if(tab == "tab-fluxo"):
+        return tabFluxo
+    elif(tab == "tab-atributos"):
+        df = ctrlAtrCidade.carregarTodasCidades()
+
+        return generate_table(df)
+
 
 # Callback - Update dropdown de Cidades
 @app.callback(
@@ -105,6 +182,7 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
     return vis.carregarMapa(dfRecomendacao)
+
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
 #Callback - Seleção de Fluxo - Rodoviário/Aéreo

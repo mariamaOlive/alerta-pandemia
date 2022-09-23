@@ -37,6 +37,13 @@ class BDRelacional:
         resultado = self.queryTabela(query)[0]
         return resultado 
 
+    
+    #Bucar todas as cidades 
+    def buscarTodasCidades(self):
+        query = "SELECT cod_mun, nome_mun, latitude, longitude FROM municipio"
+        resultado = self.queryTabela(query)
+        return resultado
+
 
     # Realiza operações na tabela do BD com psycopg2
     def queryTabela(self, comandoSql):
