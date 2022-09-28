@@ -1,10 +1,10 @@
 import pandas as pd
-import camada_bd.bd_relacional as BDRel
+from camada_bd.bd_relacional import BDRelacional
 
 
 class CtrlAtributosCidade:
 
-    bdRel = BDRel.BDRelacional()
+    bdRel = BDRelacional()
     nomeColunasMunicipio = ["cod_mun","cod_uf","cod_reg_saude","nome_mun","latitude","longitude",
                         "populacao_2011","populacao_2021","densidade_2021","area","uf","nome_uf",
                         "pais","pib","hierarquia","nome_hierarquia","indice_atracao","ia_saude_bm",
