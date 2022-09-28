@@ -4,17 +4,17 @@ import plotly.express as px
 import pandas as pd
 
 # Model imports
-import camada_model.ctrl_fluxo as sr
-import camada_model.ctrl_info_loader as il
-import camada_model.ctrl_atributos_cidade as ac
+from camada_model.ctrl_fluxo import CtrlFluxo
+from camada_model.ctrl_info_loader import CtrlInfoLoader
+from camada_model.ctrl_atributos_cidade import CtrlAtributosCidade
 
 # Visualizações imports
 import visualizacao.vis_mapa as vis
 
 # Carregando Model classes
-ctrlFluxo = sr.CtrlFluxo()
-ctrlInfoLoader = il.CtrlInfoLoader()
-ctrlAtrCidade = ac.CtrlAtributosCidade()
+ctrlFluxo = CtrlFluxo()
+ctrlInfoLoader = CtrlInfoLoader()
+ctrlAtrCidade = CtrlAtributosCidade()
 
 # Carregando dados iniciais
 dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
