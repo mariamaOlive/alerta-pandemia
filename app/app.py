@@ -4,7 +4,7 @@ import plotly.express as px
 import pandas as pd
 
 # Model imports
-import camada_model.ctrl_recomendacao as sr
+import camada_model.ctrl_fluxo as sr
 import camada_model.ctrl_info_loader as il
 import camada_model.ctrl_atributos_cidade as ac
 
@@ -12,7 +12,7 @@ import camada_model.ctrl_atributos_cidade as ac
 import visualizacao.vis_mapa as vis
 
 # Carregando Model classes
-ctrlRecomedacao = sr.CtrlRecomendacao()
+ctrlFluxo = sr.CtrlFluxo()
 ctrlInfoLoader = il.CtrlInfoLoader()
 ctrlAtrCidade = ac.CtrlAtributosCidade()
 
@@ -152,10 +152,10 @@ def updateDropdownCidade(idEstado):
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
     # #Funcao com as infos da cidade de origem 
-    # infoCidade = ctrlRecomedacao.infoCidadeOrigem(cod_cidade)
+    # infoCidade = ctrlFluxo.infoCidadeOrigem(cod_cidade)
     #Funcao com daf
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
-    return vis.carregarMapa(dfRecomendacao)
+    dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    return vis.carregarMapa(dfFluxo)
 
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
@@ -167,8 +167,8 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
 
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
-    return generate_table(dfRecomendacao)
+    dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    return generate_table(dfFluxo)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
