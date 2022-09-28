@@ -13,6 +13,8 @@ class CtrlFluxo:
     def __init__(self):
         pass
 
+
+    #Funcao retorna dataframe com o fluxo e as info da cidade    
     def percentualFluxo(self, idCidade, tipoFluxo, qtdCidades=20):
 
         if(self.cacheCidade is None) or (idCidade != self.cacheCidade.id):
@@ -21,21 +23,15 @@ class CtrlFluxo:
             # Busca cidades de destino com conexao no grafo
             fluxo = bdGrafo.buscarFluxoCidade(idCidade)
             bdGrafo.close()
-            print(1)
 
             # Busca informacoes da cidade de origem
             # Pega as 4 seguintes informacoes -> "cod_ori", "nome_ori", "latitude_ori", "longitude_ori"
             infoCidade = self.bdRel.buscarCidadeCoordenadas(idCidade)
-            print(1.1)
             self.cacheCidade = Cidade(*infoCidade)
-            print(1.2)
-            print(self.cacheCidade.getInfoCidade())
             self.cacheCidade.setFluxo(fluxo)
-            print(2)
 
-        dfFluxo = self.construirDfFluxo(self.cacheCidade.getInfoCidade(), self.cacheCidade.fluxo, tipoFluxo)
-        return dfFluxo[:qtdCidades]
-
+        dfFluxo = self.construirDfFluxo(self.cacheCidade.getInfoCidade(), self.cacheCidade.fluxo, tipoFluxo)    
+        return (self.cacheCidade, dfFluxo[:qtdCidades])
 
 
     #Funcao que agrega os dados para serem plotados no mapa

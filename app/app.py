@@ -151,10 +151,9 @@ def updateDropdownCidade(idEstado):
     Input('checkbox-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
-    # #Funcao com as infos da cidade de origem 
-    # infoCidade = ctrlFluxo.infoCidadeOrigem(cod_cidade)
-    #Funcao com daf
-    dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    #Funcao com as infos da cidade de origem 
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+
     return vis.carregarMapa(dfFluxo)
 
 
@@ -167,7 +166,7 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
 
-    dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return generate_table(dfFluxo)
 
 if __name__ == '__main__':
