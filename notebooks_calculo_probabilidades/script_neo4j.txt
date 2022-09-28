@@ -18,6 +18,7 @@ c.num_leitos= toFloat(row.num_leitos)
 //ON MATCH SET n.TotalRevenue = csvLine[2] --> Faz um update
 //ON CREATE --> Cria o nó caso precise
 
+
 //And this query imports relationships:
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/calculado/" AS base
 // WITH base + "fluxo_prob.csv" AS uri
@@ -26,6 +27,22 @@ MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
 MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
 MERGE (origem)-[r:FLUXO{ fluxo_geral: toFloat(row.prob_geral), fluxo_aereo: toFloat(row.prob_aereo), fluxo_rodo: toFloat(row.prob_rodo) }]->(destino)
 
+
+//Updating relationship
+LOAD CSV WITH HEADERS FROM "file:///fluxo_saude.csv" AS row 
+MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
+MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+MERGE (origem)-[r:FLUXO]->(destino) 
+ON CREATE SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
+ON MATCH SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
+
+//Updating node
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.PIB= toInteger(row.PIB), c.hierarquia= row.hierarquia, 
+c.nome_hierarquia= row.nome_hierarquia, c.indice_atracao= toFloat(row.indice_atracao),
+c.ia_saude_bm= toFloat(row.ia_saude_bm), c.ia_saude_a= toFloat(row.ia_saude_a),
+c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_transporte),
+c.num_leitos= toFloat(row.num_leitos)
 ////////////////////Algoritmos de Centralidade////////////////////////
 
 //Closeness Centrality
@@ -170,7 +187,7 @@ RETURN cidade
 
 //Query
 MATCH (n)
-WHERE n.cod_mun = "3550308"
+WHERE n.cod_mun = 2603454
 RETURN n
 ///2611606 --> Recife
 
@@ -236,6 +253,11 @@ MATCH (n) DELETE n;
 MATCH (n)
 DETACH DELETE n
 
+//Remover propriedade de um relatioship
+MATCH (c1)-[r]->(c2)
+REMOVE r.saude_baixa_media, r.saude_alta
+
+
 //Cast
 match (:Cidade)-[r]->(:Cidade)
 where r.probabilidade = toString(r.probabilidade) // make sure we only work string ratings
@@ -245,9 +267,12 @@ return count(r)
 
 //Consultas feitas no app
 MATCH (c1)-[r]->(c2) 
-WHERE c1.cod_mun =  2927408 
-RETURN c2.nome AS nome, c2.cod_mun  AS cod_mun, r.probabilidade AS score 
-ORDER BY score
+WHERE c1.cod_mun =  2603454
+RETURN c2.cod_mun AS cod_mun, c2.nome AS nome, 
+r.fluxo_geral AS fluxo_geral, r.fluxo_aereo AS fluxo_aereo, r.fluxo_rodo AS fluxo_rodo, 
+r.saude_alta AS saude_alta, r.saude_baixa_media AS saude_baixa_media, 
+c2.latitude AS latitude, c2.longitude AS longitude
+
 
 //Exportar nodes
 MATCH (c:Cidade)
@@ -256,6 +281,12 @@ CALL apoc.export.csv.data(cidades, [], "cidades.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 
+
+
+
+
+
+//TODO: Remover consultas SQL
 
 sql = """
     UPDATE final_table AS f
