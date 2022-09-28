@@ -7,6 +7,7 @@ from entidades.cidade import Cidade
 class CtrlFluxo:
 
     bdRel = BDRelacional()
+    bdGrafo = BDGrafo()
     cacheCidade = None
 
     def __init__(self):
@@ -17,11 +18,11 @@ class CtrlFluxo:
     def percentualFluxo(self, idCidade, tipoFluxo, qtdCidades=20):
 
         if(self.cacheCidade is None) or (idCidade != self.cacheCidade.id):
-            bdGrafo = BDGrafo()
+            
             # TODO: Fazer consultas paralelamente no banco
             # Busca cidades de destino com conexao no grafo
-            fluxo = bdGrafo.buscarFluxoCidade(idCidade)
-            bdGrafo.close()
+            fluxo = self.bdGrafo.buscarFluxoCidade(idCidade)
+            self.bdGrafo.close()
 
             # Busca informacoes da cidade de origem
             # Pega as 4 seguintes informacoes -> "cod_ori", "nome_ori", "latitude_ori", "longitude_ori"

@@ -1,7 +1,7 @@
 import psycopg2
+from camada_bd.singleton import SingletonMeta
 
-#TODO: Transformar essa classe em singleton
-class BDRelacional:
+class BDRelacional(metaclass=SingletonMeta):
 
     connString = 'postgresql://uospmgae:kFBbjgeZBH7RFuJcY3D9hYseJXh0HZjE@motty.db.elephantsql.com/uospmgae'
     

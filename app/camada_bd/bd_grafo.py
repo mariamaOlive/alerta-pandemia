@@ -1,16 +1,18 @@
 from neo4j import GraphDatabase
 import logging
 from neo4j.exceptions import ServiceUnavailable
+from camada_bd.singleton import SingletonMeta
 
 
-class BDGrafo:
+class BDGrafo(metaclass=SingletonMeta):
 
     uri = "neo4j+s://af76534a.databases.neo4j.io"
     user = "neo4j"
     password = "Ez5RDE71XQXpRO9kzufUTrVGGNtw9mo5KAa83226V6M"
+    driver = None
 
     def __init__(self):
-        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
+        pass
 
 
     def close(self):
@@ -18,6 +20,8 @@ class BDGrafo:
 
 
     def buscarFluxoCidade(self, idMunicipio):
+        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
+
         with self.driver.session(database="neo4j") as session:
             result = session.read_transaction(
                 self._buscarFluxoCidade, idMunicipio)
