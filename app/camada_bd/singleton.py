@@ -1,3 +1,4 @@
+#Exemplo: https://refactoring.guru/design-patterns/singleton/python/example
 class SingletonMeta(type):
     """
     The Singleton class can be implemented in different ways in Python. Some
