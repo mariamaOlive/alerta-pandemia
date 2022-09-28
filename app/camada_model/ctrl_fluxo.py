@@ -1,13 +1,12 @@
-from linecache import cache
 import pandas as pd
-import camada_bd.bd_grafo as BDGf
-import camada_bd.bd_relacional as BDRel
+from camada_bd.bd_grafo import BDGrafo
+from camada_bd.bd_relacional import BDRelacional
 from entidades.cidade import Cidade
 
 
 class CtrlFluxo:
 
-    bdRel = BDRel.BDRelacional()
+    bdRel = BDRelacional()
     cacheCidade = None
 
     def __init__(self):
@@ -18,7 +17,7 @@ class CtrlFluxo:
     def percentualFluxo(self, idCidade, tipoFluxo, qtdCidades=20):
 
         if(self.cacheCidade is None) or (idCidade != self.cacheCidade.id):
-            bdGrafo = BDGf.BDGrafo()
+            bdGrafo = BDGrafo()
             # TODO: Fazer consultas paralelamente no banco
             # Busca cidades de destino com conexao no grafo
             fluxo = bdGrafo.buscarFluxoCidade(idCidade)
