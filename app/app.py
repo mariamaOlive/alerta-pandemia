@@ -62,11 +62,11 @@ dropDownEstados = html.Div([
 
 #Componente que contem a visualização do mapa
 containerMapa = dcc.Graph(id='visualizacao')
-
 containerMapa_2 = dcc.Graph(id='visualizacao_2')
 
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
+containerDf_2 = html.Div(id='my-output-2')
 
 #Componente da tab de Fluxo 
 tabFluxo = html.Div([
@@ -79,7 +79,7 @@ tabFluxo = html.Div([
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
         containerMapa_2,
-        containerDf
+        containerDf_2
 ])
 
 
@@ -121,6 +121,8 @@ def generate_table(dataframe, max_rows=10):
 ############     Callbacks      ##############
 ##############################################
 
+############     Callbacks: Geral      ##############
+
 # Callback - Carregar conteúdo de cada tab
 @app.callback(Output('tabs-content', 'children'),
               Input('tabs-vis', 'value'))
@@ -130,6 +132,8 @@ def render_content(tab):
     elif(tab == "tab-atributos"):
         df = ctrlAtrCidade.carregarTodasCidades()
         return tabAtributos  
+
+############     Callbacks: Tab Fluxo de Transporte     ##############
 
 # Callback - Update dropdown de Cidades
 @app.callback(
@@ -147,7 +151,7 @@ def updateDropdownCidade(idEstado):
     return dropdownCidades
 
 
-# Callback - Busca recomendação da cidade
+# Callback - Renderiza fluxo de transporte da cidade
 @app.callback(
     Output('visualizacao', 'figure'),
     Input('dropdown-cidade', 'value'),
@@ -158,6 +162,15 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return vis.carregarMapa(dfFluxo)
 
+
+
+############     Callbacks: Tab Fluxo de Saúde     ##############
+
+
+
+############     Callbacks: Tab Atributos     ##############
+
+# Callback - Renderiza diversos atributos da cidade
 @app.callback(
     Output('visualizacao_2', 'figure'),
     Input(tabAtributos, 'children'))
@@ -167,6 +180,9 @@ def updateAtributosCidades(tabvalue):
     df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
     return vis_2.carregarMapa(df_filtrado)
 
+
+
+############     Callbacks: Testes --> REMOVER DEPOIS     ##############
 #TODO: Remover depois dos testes --> Callback print Dataframe
 #Callback - Seleção de Fluxo - Rodoviário/Aéreo
 @app.callback(
@@ -178,6 +194,18 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return generate_table(dfFluxo)
+
+#TODO: Remover depois dos testes --> Callback print Dataframe
+@app.callback(
+    Output('my-output-2', 'children'),
+    Input(tabAtributos, 'children'))
+def updateAtributosCidades(tabvalue):
+    #Funcao com as infos da cidade de origem 
+    atributoCidade = ctrlAtrCidade.carregarTodasCidades()
+    df_filtrado = atributoCidade[atributoCidade['rede_sentinela'].notna()]
+    print(df_filtrado['rede_sentinela'].apply(type))
+    return generate_table(df_filtrado)
+
 
 # def updateupdateAtributosCidades(idCidade):
 #     dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()

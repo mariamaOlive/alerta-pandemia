@@ -12,7 +12,7 @@ class BDRelacional(metaclass=SingletonMeta):
     def buscarEstados(self):
         query = "SELECT DISTINCT cod_uf, uf, nome_uf \
                 FROM municipio WHERE uf IS NOT NULL \
-                ORDER BY nome_uf ASC"
+                ORDER BY nome_uf ASC;"
 
         resultado = self.queryTabela(query)
         return resultado
@@ -22,7 +22,7 @@ class BDRelacional(metaclass=SingletonMeta):
     def buscarCidadesPorEstado(self, estadoId):
         query = f"SELECT cod_mun, nome_mun FROM municipio\
                 WHERE cod_uf = {estadoId}\
-                ORDER BY nome_mun ASC"
+                ORDER BY nome_mun ASC;"
 
         resultado = self.queryTabela(query)
         return resultado
@@ -31,7 +31,7 @@ class BDRelacional(metaclass=SingletonMeta):
     #Buscar coordenadas de uma cidade         
     def buscarCidadeCoordenadas(self, cidadeId):
         query = f"SELECT cod_mun, nome_mun, latitude, longitude FROM municipio\
-                WHERE cod_mun = {cidadeId}"
+                WHERE cod_mun = {cidadeId};"
 
         resultado = self.queryTabela(query)[0]
         return resultado 
@@ -40,7 +40,7 @@ class BDRelacional(metaclass=SingletonMeta):
     #Buscar cidade pelo ID
     def buscarCidade(self, cidadeId):
         query = f"SELECT * FROM municipio\
-                WHERE cod_mun = {cidadeId}"
+                WHERE cod_mun = {cidadeId};"
 
         resultado = self.queryTabela(query)[0]
         return resultado 
@@ -48,7 +48,7 @@ class BDRelacional(metaclass=SingletonMeta):
     
     #Buscar todas as cidades 
     def buscarTodasCidades(self):
-        query = "SELECT * FROM municipio"
+        query = "SELECT * FROM municipio;"
         resultado = self.queryTabela(query)
         return resultado
 
@@ -59,7 +59,6 @@ class BDRelacional(metaclass=SingletonMeta):
                 FROM municipio mu \
                 LEFT JOIN servico_sentinela ss ON mu.cod_mun = ss.cod_mun \
                 GROUP BY mu.cod_mun;"
-        print(query[13][-1])
         resultado = self.queryTabela(query)
         return resultado
 
@@ -71,7 +70,7 @@ class BDRelacional(metaclass=SingletonMeta):
 
     #Busca toda a tabela de Rede Sentinela
     def buscarTodaRedeSentinela(self):
-        query = "SELECT * FROM servico_sentinela"
+        query = "SELECT * FROM servico_sentinela;"
         resultado = self.queryTabela(query)
         return resultado
         
