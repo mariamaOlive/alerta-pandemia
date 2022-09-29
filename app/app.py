@@ -161,10 +161,11 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
 @app.callback(
     Output('visualizacao_2', 'figure'),
     Input(tabAtributos, 'children'))
-def updateAtributosCidades(idCidade):
+def updateAtributosCidades(tabvalue):
     #Funcao com as infos da cidade de origem 
     atributoCidade = ctrlAtrCidade.carregarTodasCidades()
-    return vis_2.carregarMapa(atributoCidade)
+    df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
+    return vis_2.carregarMapa(df_filtrado)
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
 #Callback - Seleção de Fluxo - Rodoviário/Aéreo
@@ -178,9 +179,9 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return generate_table(dfFluxo)
 
-def updateupdateAtributosCidades(idCidade):
-    dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
-    return generate_table(dfAtributosCidades)    
+# def updateupdateAtributosCidades(idCidade):
+#     dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
+#     return generate_table(dfAtributosCidades)    
 
 if __name__ == '__main__':
     app.run_server(debug=True)

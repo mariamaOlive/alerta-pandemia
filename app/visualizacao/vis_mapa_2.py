@@ -14,12 +14,11 @@ def carregarMapa(dfAtributosCidades):
                         dfAtributosCidades["nome_mun"], dfAtributosCidades["indice_atracao"],dfAtributosCidades["densidade_2021"])
 
     fig.add_trace(
-        go.Scattermapbox.Marker(
+        go.Scattermapbox(
                     lon = dfAtributosCidades["longitude"],
                     lat = dfAtributosCidades["latitude"],
-                    size= dfAtributosCidades['indice_atracao']/100 * 0.5,
-                    color= (dfAtributosCidades['indice_atracao']/dfAtributosCidades["densidade_2021"]) * 100,
-                    showscale=True),
+                    mode = 'markers',
+                    marker = dict(size = 10)),
     )
 
     ## Update graph layout to improve graph styling.
