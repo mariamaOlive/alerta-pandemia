@@ -1,7 +1,7 @@
 import psycopg2
+from camada_bd.singleton import SingletonMeta
 
-#TODO: Transformar essa classe em singleton
-class BDRelacional:
+class BDRelacional(metaclass=SingletonMeta):
 
     connString = 'postgresql://uospmgae:kFBbjgeZBH7RFuJcY3D9hYseJXh0HZjE@motty.db.elephantsql.com/uospmgae'
     
@@ -29,10 +29,17 @@ class BDRelacional:
 
     #Buscar todas as informacoes de uma cidade
     # TODO: Adicionar mais dados a ser buscado            
-    def buscarCidade(self, cidadeId):
+    def buscarCidadeCoordenadas(self, cidadeId):
         query = f"SELECT cod_mun, nome_mun, latitude, longitude FROM municipio\
-                WHERE cod_mun = {cidadeId}\
-                ORDER BY nome_mun ASC"
+                WHERE cod_mun = {cidadeId}"
+
+        resultado = self.queryTabela(query)[0]
+        return resultado 
+
+    
+    def buscarCidade(self, cidadeId):
+        query = f"SELECT * FROM municipio\
+                WHERE cod_mun = {cidadeId}"
 
         resultado = self.queryTabela(query)[0]
         return resultado 

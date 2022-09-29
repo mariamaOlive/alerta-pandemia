@@ -4,9 +4,9 @@ import plotly.express as px
 import pandas as pd
 
 # Model imports
-import camada_model.ctrl_recomendacao as sr
-import camada_model.ctrl_info_loader as il
-import camada_model.ctrl_atributos_cidade as ac
+from camada_model.ctrl_fluxo import CtrlFluxo
+from camada_model.ctrl_info_loader import CtrlInfoLoader
+from camada_model.ctrl_atributos_cidade import CtrlAtributosCidade
 
 
 # Visualizações imports
@@ -14,9 +14,9 @@ import visualizacao.vis_mapa as vis
 import visualizacao.vis_mapa_2 as vis_2
 
 # Carregando Model classes
-ctrlRecomedacao = sr.CtrlRecomendacao()
-ctrlInfoLoader = il.CtrlInfoLoader()
-ctrlAtrCidade = ac.CtrlAtributosCidade()
+ctrlFluxo = CtrlFluxo()
+ctrlInfoLoader = CtrlInfoLoader()
+ctrlAtrCidade = CtrlAtributosCidade()
 
 # Carregando dados iniciais
 dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
@@ -154,11 +154,10 @@ def updateDropdownCidade(idEstado):
     Input('checkbox-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
-    # #Funcao com as infos da cidade de origem 
-    # infoCidade = ctrlRecomedacao.infoCidadeOrigem(cod_cidade)
-    #Funcao com daf
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
-    return vis.carregarMapa(dfRecomendacao)
+    #Funcao com as infos da cidade de origem 
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+
+    return vis.carregarMapa(dfFluxo)
 
 def updateAtributosCidades(idCidade):
     # #Funcao com as infos da cidade de origem 
@@ -176,8 +175,14 @@ def updateAtributosCidades(idCidade):
     Input('checkbox-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
+<<<<<<< HEAD
     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
     return generate_table(dfRecomendacao)
+=======
+
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    return generate_table(dfFluxo)
+>>>>>>> mariama
 
 def updateupdateAtributosCidades(idCidade):
     dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()

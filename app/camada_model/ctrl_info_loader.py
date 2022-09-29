@@ -1,11 +1,10 @@
 import pandas as pd
-import camada_bd.bd_relacional as BDRel
-
+from camada_bd.bd_relacional import BDRelacional
 
 class CtrlInfoLoader:
 
     dfEstados = None
-    bdRel = BDRel.BDRelacional()
+    bdRel = BDRelacional()
 
     def __init__(self):
         self.dfEstados = self.carregarEstados()
