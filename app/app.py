@@ -175,14 +175,9 @@ def updateAtributosCidades(idCidade):
     Input('checkbox-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
-<<<<<<< HEAD
-    dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
-    return generate_table(dfRecomendacao)
-=======
 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return generate_table(dfFluxo)
->>>>>>> mariama
 
 def updateupdateAtributosCidades(idCidade):
     dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
