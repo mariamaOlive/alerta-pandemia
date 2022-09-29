@@ -63,6 +63,8 @@ dropDownEstados = html.Div([
 #Componente que contem a visualização do mapa
 containerMapa = dcc.Graph(id='visualizacao')
 
+containerMapa_2 = dcc.Graph(id='visualizacao_2')
+
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
 
@@ -76,7 +78,7 @@ tabFluxo = html.Div([
 
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
-        containerMapa,
+        containerMapa_2,
         containerDf
 ])
 
@@ -127,9 +129,7 @@ def render_content(tab):
         return tabFluxo
     elif(tab == "tab-atributos"):
         df = ctrlAtrCidade.carregarTodasCidades()
-
-        #return generate_table(df)
-        return tabAtributos, generate_table(df)
+        return tabAtributos  
 
 # Callback - Update dropdown de Cidades
 @app.callback(
@@ -156,16 +156,15 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
     #Funcao com as infos da cidade de origem 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
-
     return vis.carregarMapa(dfFluxo)
 
+@app.callback(
+    Output('visualizacao_2', 'figure'),
+    Input(tabAtributos, 'children'))
 def updateAtributosCidades(idCidade):
-    # #Funcao com as infos da cidade de origem 
-    # infoCidade = ctrlRecomedacao.infoCidadeOrigem(cod_cidade)
-    #Funcao com daf
-    dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
-    return vis_2.carregarMapa(dfAtributosCidades)    
-
+    #Funcao com as infos da cidade de origem 
+    atributoCidade = ctrlAtrCidade.carregarTodasCidades()
+    return vis_2.carregarMapa(atributoCidade)
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
 #Callback - Seleção de Fluxo - Rodoviário/Aéreo

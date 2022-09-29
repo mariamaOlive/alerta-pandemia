@@ -2,6 +2,7 @@ from turtle import width
 import plotly.graph_objects as go
 
 
+
 # Chave de acesso MapBox 
 mapbox_access_token = 'pk.eyJ1IjoibmF0YWxpYW9saXZlaXJhIiwiYSI6ImNrd25sd3Q0NTBxcnoyb3ByYXNodTl0dGkifQ.MeGjMDVrvJXxj1zS6MfeHQ'
 
@@ -16,8 +17,8 @@ def carregarMapa(dfAtributosCidades):
         go.Scattermapbox.Marker(
                     lon = dfAtributosCidades["longitude"],
                     lat = dfAtributosCidades["latitude"],
-                    size= dfAtributosCidades['indice_atracao'].apply(lambda x: (np.sqrt(x/100) + 1) if x > 500 else (np.log(x) / 2 + 1)).replace(np.NINF, 0) * 0.5,
-                    color= (dfAtributosCidades['indice_atracao']/dfAtributosCidades["densidade_2021"]).fillna(0).replace(np.inf , 0) * 100,
+                    size= dfAtributosCidades['indice_atracao']/100 * 0.5,
+                    color= (dfAtributosCidades['indice_atracao']/dfAtributosCidades["densidade_2021"]) * 100,
                     showscale=True),
     )
 
