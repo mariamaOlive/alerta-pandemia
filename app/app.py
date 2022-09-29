@@ -8,8 +8,10 @@ from camada_model.ctrl_fluxo import CtrlFluxo
 from camada_model.ctrl_info_loader import CtrlInfoLoader
 from camada_model.ctrl_atributos_cidade import CtrlAtributosCidade
 
+
 # Visualizações imports
 import visualizacao.vis_mapa as vis
+import visualizacao.vis_mapa_2 as vis_2
 
 # Carregando Model classes
 ctrlFluxo = CtrlFluxo()
@@ -61,6 +63,8 @@ dropDownEstados = html.Div([
 #Componente que contem a visualização do mapa
 containerMapa = dcc.Graph(id='visualizacao')
 
+containerMapa_2 = dcc.Graph(id='visualizacao_2')
+
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
 
@@ -74,6 +78,7 @@ tabFluxo = html.Div([
 
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
+        containerMapa_2,
         containerDf
 ])
 
@@ -124,9 +129,7 @@ def render_content(tab):
         return tabFluxo
     elif(tab == "tab-atributos"):
         df = ctrlAtrCidade.carregarTodasCidades()
-
-        return generate_table(df)
-
+        return tabAtributos  
 
 # Callback - Update dropdown de Cidades
 @app.callback(
@@ -153,9 +156,16 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
     #Funcao com as infos da cidade de origem 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
-
     return vis.carregarMapa(dfFluxo)
 
+@app.callback(
+    Output('visualizacao_2', 'figure'),
+    Input(tabAtributos, 'children'))
+def updateAtributosCidades(tabvalue):
+    #Funcao com as infos da cidade de origem 
+    atributoCidade = ctrlAtrCidade.carregarTodasCidades()
+    df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
+    return vis_2.carregarMapa(df_filtrado)
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
 #Callback - Seleção de Fluxo - Rodoviário/Aéreo
@@ -168,6 +178,10 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return generate_table(dfFluxo)
+
+# def updateupdateAtributosCidades(idCidade):
+#     dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
+#     return generate_table(dfAtributosCidades)    
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -2,10 +2,6 @@ from turtle import width
 import plotly.graph_objects as go
 
 
-
-
-
-
 # Chave de acesso MapBox 
 mapbox_access_token = 'pk.eyJ1IjoibmF0YWxpYW9saXZlaXJhIiwiYSI6ImNrd25sd3Q0NTBxcnoyb3ByYXNodTl0dGkifQ.MeGjMDVrvJXxj1zS6MfeHQ'
 
