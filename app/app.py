@@ -8,8 +8,10 @@ import camada_model.ctrl_recomendacao as sr
 import camada_model.ctrl_info_loader as il
 import camada_model.ctrl_atributos_cidade as ac
 
+
 # Visualizações imports
 import visualizacao.vis_mapa as vis
+import visualizacao.vis_mapa_2 as vis_2
 
 # Carregando Model classes
 ctrlRecomedacao = sr.CtrlRecomendacao()
@@ -74,6 +76,7 @@ tabFluxo = html.Div([
 
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
+        containerMapa,
         containerDf
 ])
 
@@ -125,8 +128,8 @@ def render_content(tab):
     elif(tab == "tab-atributos"):
         df = ctrlAtrCidade.carregarTodasCidades()
 
-        return generate_table(df)
-
+        #return generate_table(df)
+        return tabAtributos, generate_table(df)
 
 # Callback - Update dropdown de Cidades
 @app.callback(
@@ -157,6 +160,13 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
     return vis.carregarMapa(dfRecomendacao)
 
+def updateAtributosCidades(idCidade):
+    # #Funcao com as infos da cidade de origem 
+    # infoCidade = ctrlRecomedacao.infoCidadeOrigem(cod_cidade)
+    #Funcao com daf
+    dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
+    return vis_2.carregarMapa(dfAtributosCidades)    
+
 
 #TODO: Remover depois dos testes --> Callback print Dataframe
 #Callback - Seleção de Fluxo - Rodoviário/Aéreo
@@ -166,9 +176,12 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
     Input('checkbox-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
-
     dfRecomendacao = ctrlRecomedacao.calculoRecomendacao(idCidade, tipoFluxo)
     return generate_table(dfRecomendacao)
+
+def updateupdateAtributosCidades(idCidade):
+    dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
+    return generate_table(dfAtributosCidades)    
 
 if __name__ == '__main__':
     app.run_server(debug=True)
