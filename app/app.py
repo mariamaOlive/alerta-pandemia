@@ -22,6 +22,8 @@ ctrlAtrCidade = CtrlAtributosCidade()
 dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
 dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(dicEstados[0]['cod_uf']).to_dict('records')
 
+#Variáveis de estado
+tabSelecionada = "fluxo_geral"
 
 # Inicializando aplicacao
 app = Dash(__name__)
@@ -32,13 +34,20 @@ app = Dash(__name__)
 ##############################################
 
 #Componente RadioButtons do tipos de Fluxo
-radioButtonsFluxo = dcc.RadioItems(
+radioBtnFluxoTrans = dcc.RadioItems(
         options={
         'fluxo_geral': 'Fluxo Rodoviário + Aéreo',
         'fluxo_aereo': 'Fluxo Aéreo',
         'fluxo_rodo': 'Fluxo Rodoviário'
         },
-        value='fluxo_geral', id='checkbox-fluxo')
+        value='fluxo_geral', id='radio-fluxo')
+
+radioBtnFluxoSaude = dcc.RadioItems(
+        options={
+        'saude_alta': 'Alta complexidade',
+        'saude_baixa_media': 'Baixa e média complexidade',
+        },
+        value='saude_alta', id='radio-fluxo')
 
 
     #Componente dos drops de Estados
@@ -63,15 +72,26 @@ dropDownEstados = html.Div([
 #Componente que contem a visualização do mapa
 containerMapa = dcc.Graph(id='visualizacao')
 containerMapa_2 = dcc.Graph(id='visualizacao_2')
+containerMapa_3 = dcc.Graph(id='visualizacao_3')
 
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
 containerDf_2 = html.Div(id='my-output-2')
+containerDf_3 = html.Div(id='my-output-3')
 
-#Componente da tab de Fluxo 
-tabFluxo = html.Div([
+
+#Componente da tab de Fluxo Transporte
+tabFluxoTransporte = html.Div([
         dropDownEstados, 
-        radioButtonsFluxo, 
+        radioBtnFluxoTrans, 
+        containerMapa,
+        containerDf
+])
+
+#Componente da tab de Fluxo Saude
+tabFluxoSaude = html.Div([
+        dropDownEstados, 
+        radioBtnFluxoSaude, 
         containerMapa,
         containerDf
 ])
@@ -92,9 +112,10 @@ app.layout = html.Div(children=[
     html.H1(children='Alerta Epidemia'),
 
     #Tabs da aplicação 
-    dcc.Tabs(id="tabs-vis", value='tab-fluxo', children=[
-        dcc.Tab(label='Fluxo', value='tab-fluxo'),
-        dcc.Tab(label='Atributos gerais', value='tab-atributos'),
+    dcc.Tabs(id="tabs-vis", value='tab-fluxo-transporte', children=[
+        dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte'),
+        dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude'),
+        dcc.Tab(label='Atributos gerais', value='tab-atributos')
     ]),
 
     #Container das tabs da aplicação
@@ -127,10 +148,14 @@ def generate_table(dataframe, max_rows=10):
 @app.callback(Output('tabs-content', 'children'),
               Input('tabs-vis', 'value'))
 def render_content(tab):
-    if(tab == "tab-fluxo"):
-        return tabFluxo
+    global tabSelecionada
+    tabSelecionada = tab
+    
+    if(tab == "tab-fluxo-transporte"):
+        return tabFluxoTransporte
+    elif(tab == "tab-fluxo-saude"):
+        return tabFluxoSaude    
     elif(tab == "tab-atributos"):
-        df = ctrlAtrCidade.carregarTodasCidades()
         return tabAtributos  
 
 ############     Callbacks: Tab Fluxo de Transporte     ##############
@@ -155,8 +180,10 @@ def updateDropdownCidade(idEstado):
 @app.callback(
     Output('visualizacao', 'figure'),
     Input('dropdown-cidade', 'value'),
-    Input('checkbox-fluxo', 'value'))
-def updateRecomendacaoCidade(idCidade, tipoFluxo):
+    Input('radio-fluxo', 'value')
+    # Input('radio-fluxo-saude', 'value') 
+    )
+def updateFluxoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
     #Funcao com as infos da cidade de origem 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
@@ -165,6 +192,16 @@ def updateRecomendacaoCidade(idCidade, tipoFluxo):
 
 
 ############     Callbacks: Tab Fluxo de Saúde     ##############
+
+# Callback - Renderiza fluxo de saude
+@app.callback(
+    Output('visualizacao_3', 'figure'),
+    Input(tabFluxoSaude, 'children'))
+def updateAtributosCidades(tabvalue):
+    #Funcao com as infos da cidade de origem 
+    atributoCidade = ctrlAtrCidade.carregarTodasCidades()
+    df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
+    return vis_2.carregarMapa(df_filtrado)
 
 
 
@@ -188,7 +225,7 @@ def updateAtributosCidades(tabvalue):
 @app.callback(
     Output('my-output', 'children'),
     Input('dropdown-cidade', 'value'),
-    Input('checkbox-fluxo', 'value'))
+    Input('radio-fluxo', 'value'))
 def updateRecomendacaoCidade(idCidade, tipoFluxo):
     print(tipoFluxo)
 
