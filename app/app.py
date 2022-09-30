@@ -49,10 +49,25 @@ radioBtnFluxoSaude = dcc.RadioItems(
         },
         value='saude_alta', id='radio-fluxo')
 
+#Dropdown com atributos variados
+dropdownAtributos = dcc.Dropdown(
+                options=[
+                {"label":"PIB", "value":"pib"},
+                {"label":"Densidade populacional", "value":"densidade_2021"},
+                {"label":"Hierarquia", "value":"hierarquia"},
+                {"label":"Índice de atração", "value":"indice_atracao"}, 
+                {"label":"IA saúde Baixa/Média", "value":"ia_saude_bm"},
+                {"label":"IA saúde Alta", "value":"ia_saude_a"},
+                {"label":"IA aeroportos", "value":"ia_aeroporto"},
+                {"label":"IA transportes", "value":"ia_transporte"},
+                {"label":"Leitos/mil hab.", "value":"num_leitos"}
+                ],
+                id='dropdown-atributos',
+                multi=True
+            )
 
-    #Componente dos drops de Estados
-dropDownEstados = html.Div([
-
+#Componente do drop de Estados
+dropDownsFluxo= html.Div([
         # Dropdown-Estado
         html.Div([
             dcc.Dropdown(
@@ -90,7 +105,8 @@ containerDf_2 = html.Div(id='my-output-2')
 
 #Componente da tab de Fluxo Transporte
 tabFluxoTransporte = html.Div([
-        dropDownEstados, 
+        dropDownsFluxo,
+        dropdownAtributos,  
         radioBtnFluxoTrans, 
         containerMapa,
         containerDf
@@ -98,7 +114,8 @@ tabFluxoTransporte = html.Div([
 
 #Componente da tab de Fluxo Saude
 tabFluxoSaude = html.Div([
-        dropDownEstados, 
+        dropDownsFluxo,
+        dropdownAtributos, 
         radioBtnFluxoSaude, 
         containerMapa,
         containerDf
@@ -106,6 +123,7 @@ tabFluxoSaude = html.Div([
 
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
+        dropdownAtributos, 
         containerMapa_2,
         containerDf_2
 ])
