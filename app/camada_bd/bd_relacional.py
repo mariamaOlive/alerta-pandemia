@@ -28,6 +28,18 @@ class BDRelacional(metaclass=SingletonMeta):
         return resultado
 
 
+    #Retorna todas as regiões de saúde de um estado
+    def buscarRegioesPorEstado(self, estadoId): 
+        query = f"SELECT rs.cod_reg_saude,rs.nome_reg_saude  \
+                FROM regiao_saude rs \
+                JOIN municipio mu ON mu.cod_reg_saude = rs.cod_reg_saude \
+                WHERE mu.cod_uf = {estadoId} \
+                GROUP BY rs.cod_reg_saude ORDER BY rs.nome_reg_saude ASC;"
+
+        resultado = self.queryTabela(query)
+        return resultado
+
+
     #Buscar coordenadas de uma cidade         
     def buscarCidadeCoordenadas(self, cidadeId):
         query = f"SELECT cod_mun, nome_mun, latitude, longitude FROM municipio\

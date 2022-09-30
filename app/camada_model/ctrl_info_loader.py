@@ -22,3 +22,10 @@ class CtrlInfoLoader:
         listaCidades = self.bdRel.buscarCidadesPorEstado(estadoId)
         dfCidades = pd.DataFrame(listaCidades, columns=['cod_mun', 'nome_mun'])
         return dfCidades
+    
+    
+    #Retorna todos as regioes de saúde de um estados em ordem asc
+    def carregarRegioesPorEstado(self, estadoId):
+        listaRegioes = self.bdRel.buscarRegioesPorEstado(estadoId)
+        dfRegioes = pd.DataFrame(listaRegioes, columns=["cod_reg_saude","nome_reg_saude"])
+        return dfRegioes

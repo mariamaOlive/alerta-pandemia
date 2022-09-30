@@ -53,32 +53,40 @@ radioBtnFluxoSaude = dcc.RadioItems(
     #Componente dos drops de Estados
 dropDownEstados = html.Div([
 
-            # Dropdown-Estado
-            html.Div([
-                dcc.Dropdown(
-                    options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
-                            for i in dicEstados],
-                    value=dicEstados[0]['cod_uf'],
-                    id='dropdown-estado',
-                    style={'font-size': 15}
-                )
-            ], className="menu__dropdown"),
+        # Dropdown-Estado
+        html.Div([
+            dcc.Dropdown(
+                options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
+                        for i in dicEstados],
+                value=dicEstados[0]['cod_uf'],
+                id='dropdown-estado'   
+            )
+        ], className="menu__dropdown"),
 
-        # Dropdown-Cidade
+         # Dropdown-Analise
+        html.Div([
+            dcc.Dropdown(
+                options=[
+                {"label":"Cidade", "value":"cidade"},
+                {"label":"Região de Saúde", "value":"regiao"}
+                ],
+                value="cidade",
+                id='dropdown-analise'
+            )
+        ], className="menu__dropdown"),
+
+        # Dropdown-Dinâmico
         html.Div(
-        id="div-dropdown-cidade", className="menu__dropdown"
-    )], id='menu')
+        id="div-dropdown-dinamico", className="menu__dropdown")
+], id='menu')
 
 #Componente que contem a visualização do mapa
 containerMapa = dcc.Graph(id='visualizacao')
 containerMapa_2 = dcc.Graph(id='visualizacao_2')
-containerMapa_3 = dcc.Graph(id='visualizacao_3')
 
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
 containerDf_2 = html.Div(id='my-output-2')
-containerDf_3 = html.Div(id='my-output-3')
-
 
 #Componente da tab de Fluxo Transporte
 tabFluxoTransporte = html.Div([
@@ -158,22 +166,36 @@ def render_content(tab):
     elif(tab == "tab-atributos"):
         return tabAtributos  
 
-############     Callbacks: Tab Fluxo de Transporte     ##############
+############     Callbacks: Tab Fluxo de Transporte + Tab Saúde     ##############
 
-# Callback - Update dropdown de Cidades
+# Callback - Update dropdown dinamico
 @app.callback(
-    Output('div-dropdown-cidade', 'children'),
-    Input('dropdown-estado', 'value'))
-def updateDropdownCidade(idEstado):
+    Output('div-dropdown-dinamico', 'children'),
+    Input('dropdown-estado', 'value'), 
+    Input('dropdown-analise', 'value'))
+def updateDropdownCidade(idEstado, tipoDropdown):
+    if tipoDropdown == "cidade":
+        return carregarDropdownCidades(idEstado)
+    elif tipoDropdown == "regiao":
+        return carregarDropdownRegiao(idEstado)
 
+#Funcao de apoio de carregamento de dropdown
+def carregarDropdownCidades(idEstado):
     dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(idEstado).to_dict('records')
-
-    dropdownCidades = dcc.Dropdown(
+    return dcc.Dropdown(
         options=[{'label': i['nome_mun'], 'value': i['cod_mun']} for i in dicCidades],
         value=dicCidades[0]['cod_mun'],
         id='dropdown-cidade'
     )
-    return dropdownCidades
+
+#Funcao de apoio de carregamento de dropdown
+def carregarDropdownRegiao(idEstado):
+    dicRegiao = ctrlInfoLoader.carregarRegioesPorEstado(idEstado).to_dict('records')
+    return  dcc.Dropdown(
+        options=[{'label': i['nome_reg_saude'], 'value': i['cod_reg_saude']} for i in dicRegiao],
+        value=dicRegiao[0]['cod_reg_saude'],
+        id='dropdown-regiao'
+    )
 
 
 # Callback - Renderiza fluxo de transporte da cidade
@@ -188,21 +210,6 @@ def updateFluxoCidade(idCidade, tipoFluxo):
     #Funcao com as infos da cidade de origem 
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     return vis.carregarMapa(dfFluxo)
-
-
-
-############     Callbacks: Tab Fluxo de Saúde     ##############
-
-# Callback - Renderiza fluxo de saude
-@app.callback(
-    Output('visualizacao_3', 'figure'),
-    Input(tabFluxoSaude, 'children'))
-def updateAtributosCidades(tabvalue):
-    #Funcao com as infos da cidade de origem 
-    atributoCidade = ctrlAtrCidade.carregarTodasCidades()
-    df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
-    return vis_2.carregarMapa(df_filtrado)
-
 
 
 ############     Callbacks: Tab Atributos     ##############
