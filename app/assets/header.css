@@ -1,5 +1,5 @@
 body{
-  /* background-color: #182E2B; */
+  background-color: #f1f3f1;
 }
 
 
@@ -40,6 +40,16 @@ body{
   /* background-color: #219481 !important; */
 }
 
+.Select-control{
+  /* background-color: #454747; */
+  background-color: #191A1A;
+}
+
+.Select-menu-outer {
+  /* background-color: #454747; */
+  background-color: #191A1A;
+}
+
 .dropdown-ctn-text{
   display: block;
   margin: 0;
@@ -55,34 +65,55 @@ body{
   display: flex !important;
   align-items: center;
   justify-content: center;
+  background-color: #f1f3f1 !important;
 }
 
 #tabs-content > div:first-child{
-  border: 1px solid;
+  display: flex;
+  
   margin-top: 15px;
-  border-radius: 4px;
-  background-color: #191A1A;
+
+  /* background-color: #191A1A; */
+  border-color: #435055;
 }
 
 #mapa-selecao-container{
-  color: #f1f3f1;
-  padding: 5px;
+  /* color: #f1f3f1; */
+  background-color: #f1f3f1;
+  padding: 15px 10px;
   display: flex;
-  margin: 5px 10px 0 10px;
+  justify-content:start;
+  
+  position: absolute;
+  width: 50%;
+  top: 0;
+  left: 0;
+  margin: 10px;
+  border-radius: 5px;
+
+
+  /* -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+  width: 100px;
+  height: 100px;
+  background-color: #ccc; */
 }
 
 #radio-fluxo{
-  width: 33.3%;
+  width: 40%;
+  margin-right: 20px;
 }
 
 #dropdown-atributos{
   display: flex;
   align-items: center;
-  /* width: 100%; */
 }
 
 #dropdown-atributos-container{
-  width: 36.7%;
+  width: 60%;
 }
 
 .Select--multi{
@@ -91,13 +122,19 @@ body{
 
 /* VISUALIZACAO */
 #vis-container{
-  display: flex;
-  margin: 0 10px;
+  border-radius: 5px;
+  border: 2px solid;
+  width: 70%;
+  height: 550px;
+  position: relative;
 }
 
 #visualizacao{
-  width: 70%;
-  padding: 10px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 #vis_lat-container{

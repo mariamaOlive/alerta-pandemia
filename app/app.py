@@ -108,16 +108,13 @@ containerDf_2 = html.Div(id='my-output-2')
 
 #Componente da tab de Fluxo Transporte
 tabFluxoTransporte = html.Div([
-        # dropDownsFluxo,
-        html.Div([
-            radioBtnFluxoTrans,
-            dropdownAtributos  
-        ], id="mapa-selecao-container"), 
+        # dropDownsFluxo
         html.Div([
             containerMapa,
-            html.Div("Visualizacao auxiliar", id="vis_lat-container")
-        ], id="vis-container"),
-        containerDf
+            html.Div([radioBtnFluxoTrans,dropdownAtributos], id="mapa-selecao-container")
+            ], id="vis-container"),                
+        html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+        # containerDf
 ])
 
 #Componente da tab de Fluxo Saude
