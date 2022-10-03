@@ -53,6 +53,7 @@ def carregarMapa(dfRecomendacao):
             'zoom':3,
             'style':'dark',
             },
+        margin = dict(l = 0, r = 0, t = 0, b = 0)
     )
 
     fig.update_layout(modebar_remove='zoomInMapbox')

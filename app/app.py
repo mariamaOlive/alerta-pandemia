@@ -40,17 +40,19 @@ radioBtnFluxoTrans = dcc.RadioItems(
         'fluxo_aereo': 'Fluxo Aéreo',
         'fluxo_rodo': 'Fluxo Rodoviário'
         },
-        value='fluxo_geral', id='radio-fluxo')
+        value='fluxo_geral', id='radio-fluxo', labelStyle={'display': 'block'})
 
 radioBtnFluxoSaude = dcc.RadioItems(
         options={
         'saude_alta': 'Alta complexidade',
         'saude_baixa_media': 'Baixa e média complexidade',
         },
-        value='saude_alta', id='radio-fluxo')
+        value='saude_alta', id='radio-fluxo', inline=False)
 
 #Dropdown com atributos variados
-dropdownAtributos = dcc.Dropdown(
+dropdownAtributos = html.Div([
+                html.Label("Adicione camadas de visualização", className="dropdown-ctn-text"),
+                dcc.Dropdown(
                 options=[
                 {"label":"PIB", "value":"pib"},
                 {"label":"Densidade populacional", "value":"densidade_2021"},
@@ -63,23 +65,25 @@ dropdownAtributos = dcc.Dropdown(
                 {"label":"Leitos/mil hab.", "value":"num_leitos"}
                 ],
                 id='dropdown-atributos',
-                multi=True
-            )
+                multi=True)
+    ], id = 'dropdown-atributos-container')
 
 #Componente do drop de Estados
 dropDownsFluxo= html.Div([
         # Dropdown-Estado
         html.Div([
+            html.P("Estado", className="dropdown-ctn-text"),
             dcc.Dropdown(
                 options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
                         for i in dicEstados],
                 value=dicEstados[0]['cod_uf'],
-                id='dropdown-estado'   
+                id='dropdown-estado'    
             )
         ], className="menu__dropdown"),
 
          # Dropdown-Analise
         html.Div([
+            html.P("Nível de Análise", className="dropdown-ctn-text"),
             dcc.Dropdown(
                 options=[
                 {"label":"Cidade", "value":"cidade"},
@@ -91,8 +95,7 @@ dropDownsFluxo= html.Div([
         ], className="menu__dropdown"),
 
         # Dropdown-Dinâmico
-        html.Div(
-        id="div-dropdown-dinamico", className="menu__dropdown")
+        html.Div(id="div-dropdown-dinamico", className="menu__dropdown")
 ], id='menu')
 
 #Componente que contem a visualização do mapa
@@ -105,16 +108,21 @@ containerDf_2 = html.Div(id='my-output-2')
 
 #Componente da tab de Fluxo Transporte
 tabFluxoTransporte = html.Div([
-        dropDownsFluxo,
-        dropdownAtributos,  
-        radioBtnFluxoTrans, 
-        containerMapa,
+        # dropDownsFluxo,
+        html.Div([
+            radioBtnFluxoTrans,
+            dropdownAtributos  
+        ], id="mapa-selecao-container"), 
+        html.Div([
+            containerMapa,
+            html.Div("texto", id="vis_lat-container")
+        ], id="vis-container"),
         containerDf
 ])
 
 #Componente da tab de Fluxo Saude
 tabFluxoSaude = html.Div([
-        dropDownsFluxo,
+        # dropDownsFluxo,
         dropdownAtributos, 
         radioBtnFluxoSaude, 
         containerMapa,
@@ -134,14 +142,22 @@ tabAtributos = html.Div([
 ##############################################
 
 app.layout = html.Div(children=[
-    #Título da aplicacao
-    html.H1(children='Alerta Epidemia'),
 
+    html.Div(id="top-container", children=[
+        #Título da aplicacao
+        html.Div(id = "title-container",
+            children = [html.H1(children='Alerta Epidemia', id = "app-title")]
+        ),
+
+        #Dropdown Estado/Nivel analise/Cidade ou Regiao 
+        dropDownsFluxo
+    ]),
+    
     #Tabs da aplicação 
     dcc.Tabs(id="tabs-vis", value='tab-fluxo-transporte', children=[
-        dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte'),
-        dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude'),
-        dcc.Tab(label='Atributos gerais', value='tab-atributos')
+        dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte', className="tab-parte"),
+        dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude', className="tab-parte"),
+        dcc.Tab(label='Atributos gerais', value='tab-atributos', className="tab-parte")
     ]),
 
     #Container das tabs da aplicação
@@ -200,20 +216,25 @@ def updateDropdownCidade(idEstado, tipoDropdown):
 #Funcao de apoio de carregamento de dropdown
 def carregarDropdownCidades(idEstado):
     dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(idEstado).to_dict('records')
-    return dcc.Dropdown(
-        options=[{'label': i['nome_mun'], 'value': i['cod_mun']} for i in dicCidades],
-        value=dicCidades[0]['cod_mun'],
-        id='dropdown-cidade'
-    )
+    return [
+            html.P("Cidade", className="dropdown-ctn-text"),
+            dcc.Dropdown(
+                options=[{'label': i['nome_mun'], 'value': i['cod_mun']} for i in dicCidades],
+                value=dicCidades[0]['cod_mun'],
+                id='dropdown-cidade'
+            )]
+    
 
 #Funcao de apoio de carregamento de dropdown
 def carregarDropdownRegiao(idEstado):
     dicRegiao = ctrlInfoLoader.carregarRegioesPorEstado(idEstado).to_dict('records')
-    return  dcc.Dropdown(
-        options=[{'label': i['nome_reg_saude'], 'value': i['cod_reg_saude']} for i in dicRegiao],
-        value=dicRegiao[0]['cod_reg_saude'],
-        id='dropdown-regiao'
-    )
+    return [
+        html.P("Região de Saúde", className="dropdown-ctn-text"),
+        dcc.Dropdown(
+            options=[{'label': i['nome_reg_saude'], 'value': i['cod_reg_saude']} for i in dicRegiao],
+            value=dicRegiao[0]['cod_reg_saude'],
+            id='dropdown-regiao'
+    )]
 
 
 # Callback - Renderiza fluxo de transporte da cidade
