@@ -1,7 +1,6 @@
 from turtle import width
 import plotly.graph_objects as go
-import dash_leaflet as dl
-import dash_leaflet.express as dlx
+
 
 
 
