@@ -115,7 +115,7 @@ tabFluxoTransporte = html.Div([
         ], id="mapa-selecao-container"), 
         html.Div([
             containerMapa,
-            html.Div("texto", id="vis_lat-container")
+            html.Div("Visualizacao auxiliar", id="vis_lat-container")
         ], id="vis-container"),
         containerDf
 ])

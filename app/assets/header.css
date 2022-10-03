@@ -1,41 +1,49 @@
+body{
+  /* background-color: #182E2B; */
+}
+
 
 /* TOP MENU */
 #top-container{
   display: flex;
-  background-color: greenyellow;
+  /* background-color: greenyellow; */
   height: 80px;
   align-items: center;
 }
 
 #title-container{
-  width: 25%;
-  margin:10+px 10px;
-  /* display:flex;
-  justify-content:space-between; */
+  width: 33.33%;
+  padding:10px 0px 10px 10px;
 }
 
 #menu{
-  width: 75%;
-  margin:10px 0px;
+  width: 66.66%;
+  margin-left: -10px;
   display:flex;
   justify-content:space-between;
 }
 
 .menu__dropdown{
-  background-color: blueviolet;
+  /* background-color: blueviolet; */
   width: 100%;
-  align-items: center;
   justify-content:space-between;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 20px 0  0;
+}
+
+.menu__dropdown:last-child{
+  padding-right: 10px;
 }
 
 .dash-dropdown{
   width: 100%;
+  /* background-color: #219481 !important; */
 }
 
 .dropdown-ctn-text{
+  display: block;
   margin: 0;
+  padding-bottom: 2px;
 }
 
 
@@ -49,10 +57,18 @@
   justify-content: center;
 }
 
+#tabs-content > div:first-child{
+  border: 1px solid;
+  margin-top: 15px;
+  border-radius: 4px;
+  background-color: #191A1A;
+}
+
 #mapa-selecao-container{
+  color: #f1f3f1;
   padding: 5px;
   display: flex;
-  border: 1px solid;
+  margin: 5px 10px 0 10px;
 }
 
 #radio-fluxo{
@@ -66,7 +82,7 @@
 }
 
 #dropdown-atributos-container{
-  width: 33.33%;
+  width: 36.7%;
 }
 
 .Select--multi{
@@ -75,17 +91,18 @@
 
 /* VISUALIZACAO */
 #vis-container{
-  border: 1px solid;
   display: flex;
+  margin: 0 10px;
 }
 
 #visualizacao{
   width: 70%;
+  padding: 10px;
 }
 
 #vis_lat-container{
-  border: 1px solid;
   width: 30%;
+  padding: 10px;
 }
 
 
