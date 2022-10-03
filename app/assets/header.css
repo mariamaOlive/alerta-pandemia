@@ -102,6 +102,10 @@ body{
   background-color: #ccc; */
 }
 
+#tab-atributos #mapa-selecao-container{
+  width: 30%;
+}
+
 #radio-fluxo{
   width: 40%;
   margin-right: 20px;
@@ -114,6 +118,10 @@ body{
 
 #dropdown-atributos-container{
   width: 60%;
+}
+
+#tab-atributos #dropdown-atributos-container{
+  width: 100%;
 }
 
 .Select--multi{
@@ -129,7 +137,7 @@ body{
   position: relative;
 }
 
-#visualizacao{
+.visualizacao-mapa{
   width: 100%;
   height: 100%;
   position: absolute;

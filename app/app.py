@@ -99,8 +99,8 @@ dropDownsFluxo= html.Div([
 ], id='menu')
 
 #Componente que contem a visualização do mapa
-containerMapa = dcc.Graph(id='visualizacao')
-containerMapa_2 = dcc.Graph(id='visualizacao_2')
+containerMapa = dcc.Graph(id='visualizacao', className='visualizacao-mapa')
+containerMapa_2 = dcc.Graph(id='visualizacao_2', className='visualizacao-mapa')
 
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
@@ -108,30 +108,36 @@ containerDf_2 = html.Div(id='my-output-2')
 
 #Componente da tab de Fluxo Transporte
 tabFluxoTransporte = html.Div([
-        # dropDownsFluxo
         html.Div([
             containerMapa,
             html.Div([radioBtnFluxoTrans,dropdownAtributos], id="mapa-selecao-container")
-            ], id="vis-container"),                
+            ], id="vis-container"),   
+
         html.Div("Visualizacao auxiliar", id="vis_lat-container"),
         # containerDf
 ])
 
 #Componente da tab de Fluxo Saude
 tabFluxoSaude = html.Div([
-        # dropDownsFluxo,
-        dropdownAtributos, 
-        radioBtnFluxoSaude, 
-        containerMapa,
-        containerDf
+        html.Div([
+            containerMapa,
+            html.Div([radioBtnFluxoSaude,dropdownAtributos], id="mapa-selecao-container")
+            ], id="vis-container"),   
+                      
+        html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+        # containerDf
 ])
 
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
-        dropdownAtributos, 
-        containerMapa_2,
-        containerDf_2
-])
+        html.Div([
+            containerMapa_2,
+            html.Div([dropdownAtributos], id="mapa-selecao-container")
+            ], id="vis-container"),   
+                      
+        html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+        # containerDf
+], id="tab-atributos")
 
 
 ##############################################
