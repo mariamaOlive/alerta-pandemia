@@ -118,7 +118,7 @@ body{
   display: flex;
   justify-content:start;
   position: absolute;
-  width: 40%;
+  /* width: 50%; */
   top: 0;
   left: 0;
   margin: 10px;
@@ -131,7 +131,7 @@ body{
 }
 
 #radio-fluxo{
-  width: 50%;
+  /* width: 35%; */
   margin-right: 20px;
 }
 
@@ -152,11 +152,25 @@ body{
 }
 
 #dropdown-atributos-container{
-  width: 60%;
+  /* width: 40%; */
+  width: 220px;
+  margin-right: 20px;
+}
+
+#dropdown-atributos-container label{
+  width: 200px;
+}
+
+#tab-atributos #mapa-selecao-container #dropdown-atributos-container{
+  margin-right: 0px;
 }
 
 #tab-atributos #dropdown-atributos-container{
   width: 100%;
+}
+
+#mapa-selecao-container > div:last-child{
+  width: 80px;
 }
 
 .Select--multi{
