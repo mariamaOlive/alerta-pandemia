@@ -3,6 +3,7 @@ from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
 import pandas as pd
 
+
 # Model imports
 from camada_model.ctrl_fluxo import CtrlFluxo
 from camada_model.ctrl_info_loader import CtrlInfoLoader
