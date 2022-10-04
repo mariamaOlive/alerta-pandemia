@@ -118,7 +118,7 @@ body{
   display: flex;
   justify-content:start;
   position: absolute;
-  width: 50%;
+  width: 40%;
   top: 0;
   left: 0;
   margin: 10px;
@@ -130,7 +130,7 @@ body{
 }
 
 #radio-fluxo{
-  width: 40%;
+  width: 50%;
   margin-right: 20px;
 }
 
