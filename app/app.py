@@ -130,15 +130,14 @@ tabFluxoSaude = html.Div([
 
 #Componente da tab de Atributos 
 tabAtributos = html.Div([
-        html.Div([
-            containerMapa_2,
-            html.Div([dropdownAtributos], id="mapa-selecao-container")
-            ], id="vis-container"),   
-                      
-        html.Div("Visualizacao auxiliar", id="vis_lat-container"),
-        # containerDf
+            html.Div([
+                containerMapa_2,
+                html.Div([dropdownAtributos], id="mapa-selecao-container")
+                ], id="vis-container"),   
+                        
+            html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+            # containerDf
 ], id="tab-atributos")
-
 
 ##############################################
 #######     Application Layout      ##########

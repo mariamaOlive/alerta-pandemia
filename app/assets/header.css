@@ -1,3 +1,8 @@
+body{
+  background-color: #FFFFFF;
+  font-family: Arial;
+}
+
 /* TOP MENU */
 #top-container{
   display: flex;
@@ -13,7 +18,7 @@
 
 #menu{
   width: 66.66%;
-  margin-left: -10px;
+  margin-left: -5px;
   display:flex;
   justify-content:space-between;
 }
@@ -27,28 +32,38 @@
 }
 
 .menu__dropdown:last-child{
-  padding-right: 10px;
+  padding-right: 5px;
 }
 
 .dash-dropdown{
   width: 100%;
-  /* background-color: #219481 !important; */
+  color: #4B4E4E;
+  font-size: 13px;
 }
 
 .Select-control{
+  background-color: #FFFFFF;
+  /* box-shadow: 0 1px 2px rgb(0 0 0 / 30%); */
+}
+
+.Select-control:hover{
   /* background-color: #454747; */
-  background-color: #191A1A;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
 }
 
 .Select-menu-outer {
   /* background-color: #454747; */
-  background-color: #191A1A;
+  background-color: #FFFFFF;
 }
 
 .dropdown-ctn-text{
   display: block;
   margin: 0;
   padding-bottom: 2px;
+  color: #4B4E4E;
+  font-weight: bold;
+  font-size: 13px;
 }
 
 
@@ -56,25 +71,40 @@
 .tab{
   padding: 0px 0px !important;
   height: 40px;
-  margin: 0 0;
+  margin: 0 5px;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  background-color: #f1f3f1 !important;
+  background-color: #FFE8D6 !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px;
+  color: #4B4E4E;
+  font-size: 15px;
+}
+
+.tab:hover{
+  border: 1px solid #FF971D !important;
+}
+
+.tab--selected {
+  border-top: 1px solid transparent !important;
+  background-color: #FF971D !important;
+  font-weight: bolder;
 }
 
 
 /* VISUALIZACAO */
 #tabs-content > div:first-child{
-  height: calc(100vh - 150px);
+  height: calc(100vh - 160px);
   display: flex;
   margin-top: 15px;
+  margin-left: 5px;
 }
 
 
 /* VISUALIZACAO - RADIO + DROPDOWN */
 #mapa-selecao-container{
-  background-color: #f1f3f1;
+  background-color: #FFFFFF;
   padding: 15px 10px;
   display: flex;
   justify-content:start;
@@ -83,7 +113,7 @@
   top: 0;
   left: 0;
   margin: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 #tab-atributos #mapa-selecao-container{
@@ -93,6 +123,17 @@
 #radio-fluxo{
   width: 40%;
   margin-right: 20px;
+}
+
+#radio-fluxo > label{
+  display: block;
+  padding-bottom: 5px;
+  color: #4B4E4E;
+  font-size: 13px;
+}
+
+#radio-fluxo > label:last-child{
+  padding-bottom: 0px;
 }
 
 #dropdown-atributos{
@@ -115,10 +156,11 @@
 
 /* VISUALIZACAO MAPA */
 #vis-container{
-  width: 70%;
+  width: 67%;
   height: 100%;
   position: relative;
   padding: 0;
+  margin-right: 5px;
 }
 
 .visualizacao-mapa{
@@ -130,10 +172,10 @@
 }
 
 #visualizacao{
-  height: 100%;
+  height: 100% !important;
 }
 #visualizacao_2{
-  height: 100%;
+  height: 100% !important;
 }
 
 .mapboxgl-canvas{
@@ -143,7 +185,9 @@
 
 /* VISUALIZACAO LATERAL */
 #vis_lat-container{
-  width: 30%;
-  padding: 10px;
+  width: 33%;
+  margin: 0 5px;
+  border: 2px solid #E1E1E1;
+  border-radius: 5px;
 }
 
