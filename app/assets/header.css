@@ -92,6 +92,7 @@ body{
 
 .tab:hover{
   border: 1px solid #FF971D !important;
+  font-weight: bolder;
 }
 
 .tab--selected {
