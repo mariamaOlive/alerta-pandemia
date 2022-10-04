@@ -15,7 +15,7 @@ class CtrlFluxo:
 
 
     #Funcao retorna dataframe com o fluxo e as info da cidade    
-    def percentualFluxo(self, idCidade, tipoFluxo, qtdCidades=20):
+    def percentualFluxo(self, idCidade, tipoFluxo):
 
         if(self.cacheCidade is None) or (idCidade != self.cacheCidade.id):
             
@@ -31,7 +31,7 @@ class CtrlFluxo:
             self.cacheCidade.setFluxo(fluxo)
 
         dfFluxo = self.construirDfFluxo(self.cacheCidade.getInfoCidade(), self.cacheCidade.fluxo, tipoFluxo)    
-        return (self.cacheCidade, dfFluxo[:qtdCidades])
+        return (self.cacheCidade, dfFluxo)
 
 
     #Funcao que agrega os dados para serem plotados no mapa

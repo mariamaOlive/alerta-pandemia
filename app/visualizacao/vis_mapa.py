@@ -56,6 +56,7 @@ def carregarMapa(dfRecomendacao):
         margin = dict(l = 0, r = 0, t = 0, b = 0)
     )
 
+    fig.layout.update(showlegend=False)
     fig.update_layout(modebar_remove='zoomInMapbox')
 
     return fig
