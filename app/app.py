@@ -62,7 +62,8 @@ dropdownAtributos = html.Div([
                 {"label":"IA saúde Alta", "value":"ia_saude_a"},
                 {"label":"IA aeroportos", "value":"ia_aeroporto"},
                 {"label":"IA transportes", "value":"ia_transporte"},
-                {"label":"Leitos/mil hab.", "value":"num_leitos"}
+                {"label":"Leitos/mil hab.", "value":"num_leitos"},
+                {"label":"Rede Sentinela", "value":"sentinela"}
                 ],
                 id='dropdown-atributos',
                 multi=True)
