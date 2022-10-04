@@ -196,7 +196,24 @@ body{
 #vis_lat-container{
   width: 33%;
   margin: 0 5px;
+  /* border: 2px solid #E1E1E1;
+  border-radius: 5px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.small_container-vis{
+  margin: 10px 0;
+  height: 50%;
   border: 2px solid #E1E1E1;
   border-radius: 5px;
+}
+
+.small_container-vis:first-child{
+  margin-top: 0;
+}
+.small_container-vis:last-child{
+  margin-bottom: 0;
 }
 

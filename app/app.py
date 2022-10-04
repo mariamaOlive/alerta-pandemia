@@ -102,6 +102,13 @@ dropDownsFluxo= html.Div([
 containerMapa = dcc.Graph(id='visualizacao', className='visualizacao-mapa')
 containerMapa_2 = dcc.Graph(id='visualizacao_2', className='visualizacao-mapa')
 
+#Componente visualizacao lateral
+containerVisLateral = html.Div([
+    html.Div("TODO: VISUALIZAÇÃO AUXILIAR", id="vis_lateral", className="small_container-vis"),
+    html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CALCULOS ETC", id="vis_explicacao", className="small_container-vis")
+    ]
+    , id="vis_lat-container")
+
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
 containerDf_2 = html.Div(id='my-output-2')
@@ -113,7 +120,7 @@ tabFluxoTransporte = html.Div([
             html.Div([radioBtnFluxoTrans,dropdownAtributos], id="mapa-selecao-container")
             ], id="vis-container"),   
 
-        html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+        containerVisLateral,
         # containerDf
 ])
 
@@ -124,7 +131,7 @@ tabFluxoSaude = html.Div([
             html.Div([radioBtnFluxoSaude,dropdownAtributos], id="mapa-selecao-container")
             ], id="vis-container"),   
                       
-        html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+        containerVisLateral,
         # containerDf
 ])
 
@@ -135,7 +142,7 @@ tabAtributos = html.Div([
                 html.Div([dropdownAtributos], id="mapa-selecao-container")
                 ], id="vis-container"),   
                         
-            html.Div("Visualizacao auxiliar", id="vis_lat-container"),
+            containerVisLateral,
             # containerDf
 ], id="tab-atributos")
 
