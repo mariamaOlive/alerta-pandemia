@@ -1,15 +1,5 @@
 from turtle import width
 import plotly.graph_objects as go
-import urllib.request
-from urllib.request import urlopen
-import json
-import shapely
-import warnings
-from shapely.errors import ShapelyDeprecationWarning
-warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning) 
-import geobr
-from geobr import read_municipality
-
 
 
 # Chave de acesso MapBox 
