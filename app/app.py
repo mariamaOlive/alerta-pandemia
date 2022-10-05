@@ -1,5 +1,6 @@
 # Libraries imports
 from dash import Dash, html, dcc, Input, Output, State, ctx
+import dash
 import plotly.express as px
 import pandas as pd
 
@@ -106,7 +107,7 @@ containerMapa_2 = dcc.Graph(id='visualizacao_2', className='visualizacao-mapa')
 
 #Componente visualizacao lateral
 containerVisLateral = html.Div([
-    html.Div("TODO: VISUALIZAÇÃO AUXILIAR", id="vis_lateral", className="small_container-vis"),
+    html.Div("", id="vis_lateral", className="small_container-vis"),
     html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
     ]
     , id="vis_lat-container")
@@ -115,14 +116,22 @@ containerVisLateral = html.Div([
 containerDf = html.Div(id='my-output')
 containerDf_2 = html.Div(id='my-output-2')
 
+#Funcao que gera o dropdown do numeroMax de cidades mostradas
+def generateDropdown(numMaxCidades=20):
+
+    opcoesDropdown = [i for i in range(0, numMaxCidades+1)]
+    numeroDefault = numMaxCidades if numMaxCidades<20 else 20
+    print("opcoes ", opcoesDropdown)
+    print("numeroMaxCidades ", numMaxCidades)
+
+    return [html.Label("Número de conexões", className="dropdown-ctn-text"),
+            dcc.Dropdown(options=opcoesDropdown,value=numeroDefault,id='dropdown-numero')]
+
 #Componente da tab de Fluxo Transporte
 def criarComponentesTabFluxo(tipoFluxo):
-    
+
     componenteFluxo = radioBtnFluxoTrans if tipoFluxo=="transporte" else radioBtnFluxoSaude
-    dropdownNumero = html.Div([
-            html.Label("Número de conexões", className="dropdown-ctn-text"),
-            dcc.Dropdown(options=[ i for i in range(0,21)],value=20,id='dropdown-numero')],
-            id="container-dropdown-numero")
+    dropdownNumero = html.Div(generateDropdown(),id="container-dropdown-numero")
 
     tabFluxo = html.Div([
         html.Div([
@@ -249,55 +258,43 @@ def carregarDropdownRegiao(idEstado):
 
 # Callback - Renderiza fluxo de transporte da cidade
 @app.callback(
-    Output('visualizacao', 'figure'),
-    Output('container-dropdown-numero', 'children'),
-    State('dropdown-analise', 'value'),
-    Input('dropdown-cid_reg', 'value'),
+    [Output('visualizacao', 'figure'),
+    Output('container-dropdown-numero', 'children')],
+    [State('dropdown-analise', 'value')],
+    [Input('dropdown-cid_reg', 'value'),
     Input('radio-fluxo', 'value'),
-    Input('dropdown-numero', 'value')
+    Input('dropdown-numero', 'value')]
     )
 def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
-    print(id)
-    print(tipoAnalise)
+ 
     triggered_id = ctx.triggered_id
-    print(triggered_id)
-
-    numeroCidades = numeroCidades if triggered_id=="dropdown-numero" else 20
-    triggeredNumero = True if triggered_id=="dropdown-numero" else False
+    print("trigger: ", triggered_id)
     print("numero: ", numeroCidades)
 
-    if tipoAnalise == 'cidade':
-        return updateFluxoCidade(id, tipoFluxo, numeroCidades, triggeredNumero)
-    elif tipoAnalise == 'regiao':
-        return updateFluxoRegiao(id, tipoFluxo, numeroCidades)    
-
-
-def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades, triggeredNumero):
-    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
-    dfFluxoCortado = dfFluxo[:numeroCidades]
-    visualizacao = vis.carregarMapa(dfFluxoCortado)
-    dropDown = generateDropDown(dfFluxo, triggeredNumero, numeroCidades)
-    return visualizacao, dropDown
-def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades, triggeredNumero):
-    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(2611606, tipoFluxo)#--->Coloquei pra nao quebrar
-    visualizacao = vis.carregarMapa(dfFluxo, numeroCidades)
-    dropDown = generateDropDown(dfFluxo, triggeredNumero)
-    return visualizacao, dropDown
-
-
-def generateDropDown(dfFluxo, trigger, numeroCidadesSelec):
-
-    numeroCidades = dfFluxo.shape[0] 
-    print("shape ", numeroCidades)
-    numeroRange = 0 if numeroCidades==0 else (numeroCidades + 1)
-
-    numeroDefault = 0
-    if(not trigger):
-        numeroDefault = 20 if numeroCidades>=20 else numeroCidades
+    if triggered_id == "dropdown-numero":
+        numeroMaxCidades, visualizacao = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
+        return visualizacao, dash.no_update
     else:
-        numeroDefault = numeroCidadesSelec
-    return [html.Label("Número de conexões", className="dropdown-ctn-text"),
-            dcc.Dropdown(options=[ i for i in range(0,numeroRange)],value=numeroDefault,id='dropdown-numero')]
+        numeroMaxCidades, visualizacao = updateFluxoTipo(tipoAnalise, id, tipoFluxo)
+        return visualizacao, generateDropdown(numeroMaxCidades)
+
+def updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades=20):
+    if tipoAnalise == 'cidade':
+            return updateFluxoCidade(id, tipoFluxo, numeroCidades)
+    elif tipoAnalise == 'regiao':
+            return updateFluxoRegiao(id, tipoFluxo, numeroCidades)  
+
+def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+    #Retorna a numero de ligacoes e visualizacao 
+    return dfFluxo.shape[0],visualizacao
+def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(2611606, tipoFluxo)
+    visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+    #Retorna a numero de ligacoes e visualizacao 
+    return dfFluxo.shape[0],visualizacao
+
 
 
 # @app.callback(
