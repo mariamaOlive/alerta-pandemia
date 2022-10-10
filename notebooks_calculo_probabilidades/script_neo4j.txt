@@ -2,10 +2,54 @@
 //Colocar csvs nessa pastas
 C:\Users\mcso\.Neo4jDesktop\relate-data\dbmss\dbms-69782ce3-52fa-480a-8249-0bafb6cbe2a3\import
 
+LOAD CSV WITH HEADERS FROM "file:///estado.csv" AS row
+MERGE (:Estado {
+cod_uf: toInteger(row.cod_uf), 
+nome: row.nome_uf, 
+uf: row.uf,
+populacao: toInteger(row.populacao_2021),
+densidade_pop: toFloat(row.densidade_2021)})
+
+
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/integrado/" AS base
 // WITH base + "municipio.csv" AS uri
 LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row  with row where row.longitude is not null
-MERGE (:Cidade {cod_mun: toInteger(row.cod_mun), nome: row.nome_mun, latitude: toFloat(row.latitude), longitude: toFloat(row.longitude), populacao: toInteger(row.populacao_2021)})
+MERGE (:Cidade {cod_mun: toInteger(row.cod_mun), 
+nome: row.nome_mun, 
+latitude: toFloat(row.latitude), 
+longitude: toFloat(row.longitude), 
+populacao: toInteger(row.populacao_2021),
+densidade_pop: toFloat(row.densidade_2021)})
+
+LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row  with row where row.densidade_2021 is not null
+MERGE (:Cidade {
+cod_mun: toInteger(row.cod_mun), 
+nome: row.nome_mun, 
+latitude: toFloat(row.latitude), 
+longitude: toFloat(row.longitude), 
+populacao: toInteger(row.populacao_2021),
+densidade_pop: toFloat(row.densidade_2021),
+cod_uf:toInteger(row.cod_uf),
+cod_reg_saude:toInteger(row.cod_reg_saude)})
+
+//Criando nó de Regiao de Saúde
+LOAD CSV WITH HEADERS FROM "file:///regiao_saude.csv" AS row  
+MERGE (:Regiao_Saude {
+cod_reg_saude: toInteger(row.cod_reg_saude), 
+nome: row.nome_reg_saude, 
+latitude: toFloat(row.latitude), 
+longitude: toFloat(row.longitude)})
+
+//Criando nó de Rede Sentinela
+LOAD CSV WITH HEADERS FROM "file:///servico_sentinela.csv" AS row  
+MERGE (:Rede_Sentinela {
+cod_mun: toInteger(row.cod_mun), 
+nome_servico: row.nome_serv})
+
+LOAD CSV WITH HEADERS FROM "file:///hierarquia.csv" AS row  
+MERGE (:Hierarquia {
+hierarquia: row.hierarquia, 
+nome_hierarquia: row.nome_hierarquia})
 
 //Updating
 LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row  
@@ -17,6 +61,9 @@ c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_trans
 c.num_leitos= toFloat(row.num_leitos)
 //ON MATCH SET n.TotalRevenue = csvLine[2] --> Faz um update
 //ON CREATE --> Cria o nó caso precise
+LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row  
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.hierarquia= row.hierarquia
 
 
 //And this query imports relationships:
@@ -25,16 +72,32 @@ c.num_leitos= toFloat(row.num_leitos)
 LOAD CSV WITH HEADERS FROM "file:///fluxo_prob.csv" AS row 
 MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
 MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
-MERGE (origem)-[r:FLUXO{ fluxo_geral: toFloat(row.prob_geral), fluxo_aereo: toFloat(row.prob_aereo), fluxo_rodo: toFloat(row.prob_rodo) }]->(destino)
+MERGE (origem)-[r:TEM_CONEXAO{ fluxo_geral: toFloat(row.prob_geral), fluxo_aereo: toFloat(row.prob_aereo), fluxo_rodo: toFloat(row.prob_rodo) }]->(destino)
+
+LOAD CSV WITH HEADERS FROM "file:///fluxo_prob_qtd.csv" AS row 
+MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
+MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+MERGE (origem)-[r:FLUXO_TRANSPORTE{ 
+  fluxo_geral: toFloat(row.prob_geral), 
+  fluxo_aereo: toFloat(row.prob_aereo), 
+  fluxo_rodo: toFloat(row.prob_rodo),
+  total_pessoas:toInteger(row.total_pessoas) }]->(destino)
 
 
 //Updating relationship
 LOAD CSV WITH HEADERS FROM "file:///fluxo_saude.csv" AS row 
 MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
 MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
-MERGE (origem)-[r:FLUXO]->(destino) 
+MERGE (origem)-[r:TEM_CONEXAO]->(destino) 
 ON CREATE SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
 ON MATCH SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
+
+//Updating relationship - add inverse probability
+MATCH (c_origem:Cidade)-[r:FLUXO_TRANSPORTE]->(c_destino:Cidade)
+WHERE r.fluxo_geral>0
+SET r.fluxo_invertido = 1 - r.fluxo_geral
+RETURN count(r)
+
 
 //Updating node
 MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
@@ -43,6 +106,48 @@ c.nome_hierarquia= row.nome_hierarquia, c.indice_atracao= toFloat(row.indice_atr
 c.ia_saude_bm= toFloat(row.ia_saude_bm), c.ia_saude_a= toFloat(row.ia_saude_a),
 c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_transporte),
 c.num_leitos= toFloat(row.num_leitos)
+
+
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.PIB= toInteger(row.PIB), c.hierarquia= row.hierarquia, 
+c.nome_hierarquia= row.nome_hierarquia, c.indice_atracao= toFloat(row.indice_atracao),
+c.ia_saude_bm= toFloat(row.ia_saude_bm), c.ia_saude_a= toFloat(row.ia_saude_a),
+c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_transporte),
+c.num_leitos= toFloat(row.num_leitos)
+
+//Criando relationship de estado com cidade
+MATCH (c:Cidade), (e:Estado) 
+WHERE c.cod_uf = e.cod_uf 
+CREATE (c)-[r: PERTENCE]->(e) 
+RETURN c,e 
+
+//Criando relationship de cidade com regiao de saude
+MATCH (c:Cidade), (rs:Regiao_Saude) 
+WHERE c.cod_reg_saude = rs.cod_reg_saude 
+CREATE (c)-[r: PERTENCE]->(rs) 
+RETURN c,rs 
+
+MATCH (c:Cidade)
+WITH c
+MATCH (s:Regiao_Saude) 
+WHERE c.cod_reg_saude = s.cod_reg_saude
+CREATE (c)-[r:FAZ_PARTE]->(s)
+RETURN c,s 
+
+MATCH (c:Cidade)
+WITH c
+MATCH (rs:Rede_Sentinela) 
+WHERE c.cod_mun = rs.cod_mun
+CREATE (rs)-[r:ESTA_LOCALIZADO]->(c)
+RETURN c,rs 
+
+MATCH (c:Cidade)
+WITH c
+MATCH (h:Hierarquia) 
+WHERE c.hierarquia = h.hierarquia
+CREATE (c)-[r:CLASSIFICADA]->(h)
+RETURN c,h
+
 ////////////////////Algoritmos de Centralidade////////////////////////
 
 //Closeness Centrality
@@ -192,8 +297,10 @@ RETURN n
 ///2611606 --> Recife
 
 MATCH (c1)-[r]->(c2)
-WHERE c1.cod_mun = 3550308 AND  c2.cod_mun = 2927408
+WHERE c1.cod_mun = 2304400 AND  c2.cod_mun = 4204202
 RETURN c1, c2
+
+MATCH (c)-[r]->(c) WHERE c.cod_mun = 2304400 RETURN COUNT(r)
 
 MATCH (c1)-[r]->(c2)
 WHERE c1.cod_mun = "2927408" 
@@ -298,3 +405,96 @@ sql = """
     FROM temp_table AS t
     WHERE f.id = t.id
 """
+
+//Algoritmos de caminho
+
+//Find K-shortest paths
+CALL gds.graph.project(
+    'myGraph',
+    'Cidade',
+    'FLUXO_TRANSPORTE',
+    {
+        relationshipProperties: 'fluxo_invertido'
+    }
+)
+
+
+MATCH (source:Cidade {cod_mun: 2611606}), (target:Cidade {cod_mun: 4204202})
+CALL gds.shortestPath.yens.stream('myGraph', {
+    sourceNode: source,
+    targetNode: target,
+    k: 3,
+    relationshipWeightProperty: 'fluxo_invertido'
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).nome AS sourceNodeName,
+    gds.util.asNode(targetNode).nome AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).nome] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY totalCost 
+
+
+//Find shortes path to a list of pairs
+
+//Algoritmo nao utiliza peso+
+MATCH (c:Cidade{cod_mun:2611309}),(c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
+WITH collect(c) AS node_source, collect(c_spreader) AS nodes
+UNWIND nodes AS list_spreaders
+UNWIND node_source AS c
+WITH c,list_spreaders
+WHERE c <> list_spreaders
+MATCH p = allShortestPaths((c)-[*]->(list_spreaders))
+RETURN p["start"]
+
+
+CALL gds.graph.project(
+    'myGraph',
+    'Cidade',
+    'FLUXO_TRANSPORTE',
+    {
+        relationshipProperties: 'fluxo_invertido'
+    }
+)
+
+//Delta - primeiro faz para todos os nós e depois filtra
+MATCH (source:Cidade {cod_mun: 2611309})
+CALL gds.allShortestPaths.delta.stream('myGraph', {
+    sourceNode: source,
+    relationshipWeightProperty: 'fluxo_invertido',
+    delta: 3.0
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+WITH sourceNode AS source, targetNode AS target, nodeIds, path
+MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
+AND gds.util.asNode(target).cod_mun = c_spreader.cod_mun
+RETURN
+    gds.util.asNode(source).nome AS sourceNodeName,
+    gds.util.asNode(target).nome AS targetNodeName,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).nome] AS nodeNames,
+    nodes(path) as path
+
+//Dijkstra
+MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
+WITH collect(c_spreader) AS nodes
+UNWIND nodes AS ct
+MATCH (source:Cidade {cod_mun: 2611309}), (target:Cidade {cod_mun: ct.cod_mun})
+CALL gds.shortestPath.dijkstra.stream('myGraph', {
+    sourceNode: source,
+    targetNode: target,
+    relationshipWeightProperty: 'fluxo_invertido'})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).nome AS sourceNodeName,
+    gds.util.asNode(targetNode).nome AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).nome] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY totalCost ASC
+
+
