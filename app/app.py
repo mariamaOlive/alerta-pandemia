@@ -324,7 +324,7 @@ def updateAtributosCidades(tabvalue):
     #Funcao com as infos da cidade de origem 
     atributoCidade = ctrlAtrCidade.carregarTodasCidades()
     df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
-    return vis_2.carregarMapa(df_filtrado)
+    return vis_2.carregarMapa()
 
 
 
