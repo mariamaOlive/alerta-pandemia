@@ -80,4 +80,14 @@ def carregarMapa():
 
     fig.update_layout(modebar_remove='zoomInMapbox')
 
+    fig.update_layout(legend_title_text='Rotas - Nós')
+
+#     fig.update_layout(legend=dict(
+#     orientation="h",
+#     yanchor="bottom",
+#     y=1.02,
+#     xanchor="right",
+#     x=1
+# ))
+
     return fig
