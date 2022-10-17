@@ -9,6 +9,7 @@ import pandas as pd
 from camada_model.ctrl_fluxo import CtrlFluxo
 from camada_model.ctrl_info_loader import CtrlInfoLoader
 from camada_model.ctrl_atributos_cidade import CtrlAtributosCidade
+from camada_model.ctrl_spreaders import CtrlSpreader
 
 
 # Visualizações imports
@@ -19,6 +20,7 @@ import visualizacao.vis_mapa_2 as vis_2
 ctrlFluxo = CtrlFluxo()
 ctrlInfoLoader = CtrlInfoLoader()
 ctrlAtrCidade = CtrlAtributosCidade()
+ctrlSpreader = CtrlSpreader()
 
 # Carregando dados iniciais
 dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
@@ -269,8 +271,6 @@ def carregarDropdownRegiao(idEstado):
 def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
  
     triggered_id = ctx.triggered_id
-    print("trigger: ", triggered_id)
-    print("numero: ", numeroCidades)
 
     if triggered_id == "dropdown-numero":
         numeroMaxCidades, visualizacao = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
@@ -295,67 +295,20 @@ def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao
-
-
-
-# @app.callback(
-#     Output('container-dropdown-numero', 'children'),
-#     State('dropdown-analise', 'value'),
-#     State('dropdown-cid_reg', 'value'),
-#     State('radio-fluxo', 'value'),
-#     Input('visualizacao', 'figure')
-#     )
-# def carregarDropdownNumero(tipoAnalise, id, tipoFluxo, fig):
-#     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(id, tipoFluxo)
-    # numeroCidades = dfFluxo.shape[0]
-    # numeroRange = 0 if numeroCidades==0 else (numeroCidades + 1)
-    # numeroDefault = 20 if numeroCidades>=20 else numeroCidades
-    # return [html.Label("Número de conexões", className="dropdown-ctn-text"),
-    #         dcc.Dropdown(options=[ i for i in range(0,numeroRange)],value=numeroDefault,id='dropdown-numero')]
-
+ 
 
 ############     Callbacks: Tab Atributos     ##############
 
 # Callback - Renderiza diversos atributos da cidade
 @app.callback(
     Output('visualizacao_2', 'figure'),
-    Input(tabAtributos, 'children'))
-def updateAtributosCidades(tabvalue):
-    #Funcao com as infos da cidade de origem 
-    atributoCidade = ctrlAtrCidade.carregarTodasCidades()
-    df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
-    return vis_2.carregarMapa()
+    Input('tab-atributos', 'children'),
+    Input('dropdown-cid_reg', 'value'))
+def updateAtributosCidades(tabvalue, id):
+    listaPath = ctrlSpreader.buscarSpreaders(id)
+    return vis_2.carregarMapa(listaPath)
 
 
-
-############     Callbacks: Testes --> REMOVER DEPOIS     ##############
-#TODO: Remover depois dos testes --> Callback print Dataframe
-#Callback - Seleção de Fluxo - Rodoviário/Aéreo
-# @app.callback(
-#     Output('my-output', 'children'),
-#     Input('dropdown-cidade', 'value'),
-#     Input('radio-fluxo', 'value'))
-# def updateRecomendacaoCidade(idCidade, tipoFluxo):
-#     print(tipoFluxo)
-
-#     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
-#     return generate_table(dfFluxo)
-
-# #TODO: Remover depois dos testes --> Callback print Dataframe
-# @app.callback(
-#     Output('my-output-2', 'children'),
-#     Input(tabAtributos, 'children'))
-# def updateAtributosCidades(tabvalue):
-#     #Funcao com as infos da cidade de origem 
-#     atributoCidade = ctrlAtrCidade.carregarTodasCidades()
-#     df_filtrado = atributoCidade[atributoCidade['rede_sentinela'].notna()]
-#     print(df_filtrado['rede_sentinela'].apply(type))
-#     return generate_table(df_filtrado)
-
-
-# def updateupdateAtributosCidades(idCidade):
-#     dfAtributosCidades = ctrlAtrCidade.carregarTodasCidades()
-#     return generate_table(dfAtributosCidades)    
 
 if __name__ == '__main__':
     app.run_server(debug=True)

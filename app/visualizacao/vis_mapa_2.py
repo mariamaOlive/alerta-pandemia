@@ -20,7 +20,7 @@ mapbox_access_token = 'pk.eyJ1IjoibmF0YWxpYW9saXZlaXJhIiwiYSI6ImNrd25sd3Q0NTBxcn
 # Read all municipalities in the country at a given year
 # mun = read_municipality(code_muni="all", year=2020)
 
-def carregarMapa():
+def carregarMapa(listaPath):
 
     fig = go.Figure()
 
@@ -46,14 +46,16 @@ def carregarMapa():
        
     
     
-    for caminho in entrada:
+    for caminho in listaPath:
         caminho_lat =[]
         caminho_lon = []
         nome_municipio = []
-        for pontos_caminho in caminho:
-            caminho_lat.append(pontos_caminho['properties']['latitude'])
-            caminho_lon.append(pontos_caminho['properties']['longitude'])
-            nome_municipio.append(pontos_caminho['properties']['nome'])
+        print(caminho.probabilidade)
+        for pontos_caminho in caminho.path:
+            print(type(pontos_caminho))
+            caminho_lat.append(pontos_caminho.latitude)
+            caminho_lon.append(pontos_caminho.longitude)
+            nome_municipio.append(pontos_caminho.nome)
         fig.add_trace(go.Scattermapbox(
         mode="markers+lines",
         lon=caminho_lon,
