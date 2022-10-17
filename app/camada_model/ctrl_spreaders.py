@@ -1,7 +1,8 @@
 import pandas as pd
 from camada_bd.bd_grafo import BDGrafo
 from camada_bd.bd_relacional import BDRelacional
-from entidades.cidade import Cidade
+from entidades.path import Path
+
 
 
 class CtrlSpreader:
@@ -16,5 +17,30 @@ class CtrlSpreader:
 
     def buscarSpreaders(self, idCidadeOrigem):
 
-        queryInfo = self.bdGrafo.buscarMenorCaminho(2611309, "1C")
+        strIdCidadeOrigem = str(idCidadeOrigem)
+        queryInfo = self.bdGrafo.buscarMenorCaminho(strIdCidadeOrigem, "1C")
         self.bdGrafo.close()
+
+        paths = self.tratarCaminho(queryInfo)
+
+        for caminho in paths:
+            print(caminho.probabilidade)
+
+    def tratarCaminho(self, query):
+
+        listaCaminhos = []
+        for probInvertida, caminho in query:
+            probabilidade = self.calcularProbabilidade(probInvertida)
+            listaCaminhos.append(Path(caminho, probabilidade))
+
+        return listaCaminhos
+         
+
+    def calcularProbabilidade(self, listaProbabilidades):
+
+        probCorrigida = 1
+        listaProbabilidades.reverse()
+        for idx, prob in enumerate(listaProbabilidades[:-1]):
+            probCorrigida *= (1 - (prob-listaProbabilidades[idx+1]))
+        
+        return probCorrigida

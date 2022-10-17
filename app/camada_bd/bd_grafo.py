@@ -60,7 +60,7 @@ class BDGrafo(metaclass=SingletonMeta):
     @staticmethod
     def _buscarMenorCaminhoFluxo(tx, idMunicipioOrigem, tipoDestino):
         query = (
-            "MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = " + tipoDestino+ "\
+            "MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = \"" + tipoDestino+ "\"\
             WITH collect(c_spreader) AS nodes \
             UNWIND nodes AS ct \
             MATCH (source:Cidade {cod_mun:"+ idMunicipioOrigem +"}), (target:Cidade {cod_mun: ct.cod_mun}) \
