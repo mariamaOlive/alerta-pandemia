@@ -4,6 +4,7 @@ import dash
 import plotly.express as px
 import pandas as pd
 
+
 # Model imports
 from camada_model.ctrl_fluxo import CtrlFluxo
 from camada_model.ctrl_info_loader import CtrlInfoLoader
@@ -323,7 +324,7 @@ def updateAtributosCidades(tabvalue):
     #Funcao com as infos da cidade de origem 
     atributoCidade = ctrlAtrCidade.carregarTodasCidades()
     df_filtrado = atributoCidade[atributoCidade['indice_atracao'].notna()]
-    return vis_2.carregarMapa(df_filtrado)
+    return vis_2.carregarMapa()
 
 
 
