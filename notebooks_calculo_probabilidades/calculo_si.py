@@ -27,31 +27,38 @@ def calculoDerivada(dia, r, s, I, N, cidadeAtual, df_si, df_fluxo_entrada, df_fl
         if(conexao in df_fluxo_entrada.index):
             Nd = df_si.loc[conexao,"populacao_2021"] #Populacao da cidade vizinha
             Md = df_fluxo_entrada.loc[conexao, "total_pessoas"]/365 #Numero de pessoas entrando da outra cidade
+            Md = Md if Md<(Nd*0.8) else Nd*0.8 #
             Id = df_si.loc[conexao,f"dia_{dia-1}"] # Numero de infectados da cidade vizinha
             resultadoEntrada = (Md/Nd)*Id
-            resultadoEntrada = resultadoEntrada if resultadoEntrada<(Nd*0.8) else Nd*0.8
             somaEntrada += resultadoEntrada
-            # if(cidadeAtual==3304557):
-            #     print("Md", Md)
+            # if(conexao==3550308):
+            #     print("conexoes: ",len(listaConexoes))
+            #     print("Id", Id)
+            #     print("Md", Md)             
+            #     print("Nd", Nd)
 
         #Verifica se há conexao de saída
         if(conexao in df_fluxo_saida.index):
             M = df_fluxo_saida.loc[conexao, "total_pessoas"]/365
+            M = M if M<(N*0.8) else N*0.8
             resultadoSaida = (M/N)*I
-            resultadoSaida = resultadoSaida if resultadoSaida<(N*0.8) else N*0.8
             somaSaida += resultadoSaida
+            # if(conexao==3550308):
+            #     print("I", I)
+            #     print("M", M)
+
 
     dExterna = s*(somaEntrada - somaSaida)
-    dExternaCorrigida = dExterna if dExterna>0 else 0
+    # dExternaCorrigida = dExterna if dExterna>0 else 0
     # if(cidadeAtual==3304557):
     #     print("dExterna", dExternaCorrigida)
     # print((I, dExternaCorrigida, dInterna))
-    dTotal = dInterna + dExternaCorrigida
-    return dTotal
+    dTotal = dInterna + dExterna
+    return dTotal if dTotal>0 else 0
 
 def calculoSI(cidadeAtual, dia, df_si, df_fluxo):
     
-    r = 0.4
+    r = 0.2
     s = 1
     N = df_si.loc[cidadeAtual,"populacao_2021"]#populacao do conjunto
     I = df_si.loc[cidadeAtual,f"dia_{dia-1}"] # Infectados na populacao
@@ -69,15 +76,15 @@ def calculoSI(cidadeAtual, dia, df_si, df_fluxo):
 
 
 
-    dt = 1
-    dt2 = dt/2.0
-    k1 = calculoDerivada(dia, r, s, I, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
-    k2 = calculoDerivada(dia, r, s, I + dt2*k1, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
-    k3 = calculoDerivada(dia, r, s, I + dt2*k2, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
-    k4 = calculoDerivada(dia, r, s, I + dt2*k3, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
-    novoI = I + (dt/6.0)*(k1 + 2*k2 + 2*k3 + k4)
+    # dt = 1
+    # dt2 = dt/2.0
+    # k1 = calculoDerivada(dia, r, s, I, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
+    # k2 = calculoDerivada(dia, r, s, I + dt2*k1, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
+    # k3 = calculoDerivada(dia, r, s, I + dt2*k2, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
+    # k4 = calculoDerivada(dia, r, s, I + dt2*k3, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
+    # novoI = I + (dt/6.0)*(k1 + 2*k2 + 2*k3 + k4)
 
-    # novoI = I + dTotal
+    novoI = calculoDerivada(dia, r, s, I, N, cidadeAtual, df_si, df_fluxo_entrada, df_fluxo_saida )
     # df_si.loc[cidadeAtual,f"dia_{dia}"] = novoI
     # print(novoI)
     # infeccoesDia.append(novoI)
@@ -105,7 +112,9 @@ if __name__ == '__main__':
 
     df_regic = pd.read_csv("../data/integrado/cidades_regic.csv")
     lista_spreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
-    # lista_spreader = [3304557]
+    # lista_spreader = [4209003,3550308, 2611606, 2910800, 2604106,2507507]
+    #Joa, sao paulo, recife, feira de sa, caruaru, joao
+    # lista_spreader = [3550308]
     #Municipio Incial
     for municipio_zero in lista_spreader:
 
@@ -142,6 +151,10 @@ if __name__ == '__main__':
 
             sortedInfeccoes = sorted(infeccoesDia, key=lambda tup: tup[0])
             listaInfeccoes = [ numInfectados for cod_mun, numInfectados in sortedInfeccoes]
+
+
+            valorCidade = list(filter(lambda x:municipio_zero==x[0], sortedInfeccoes))
+            # print(sum(listaInfeccoes)-valorCidade[0][1])
             df_si[f"dia_{dia}"] = listaInfeccoes
 
         df_si.drop(columns=['conexoes'], inplace=True)
