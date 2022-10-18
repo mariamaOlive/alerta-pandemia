@@ -39,7 +39,7 @@ class CtrlFluxo:
 
         tupleFluxo = [(dadosCidadeOrigem + tuple(cidadeDestino)) for cidadeDestino in listaDadosCidadeDestino]
         nomesColunas = ["cod_ori", "nome_ori", "latitude_ori", "longitude_ori",
-                        "nome_dest", "cod_dest", "latitude_dest", "longitude_dest", 
+                        "cod_dest", "nome_dest", "latitude_dest", "longitude_dest", 
                         "fluxo_geral", "fluxo_aereo", "fluxo_rodo",
                         "saude_alta", "saude_baixa_media"]
 
