@@ -111,7 +111,7 @@ containerMapa_2 = dcc.Graph(id='visualizacao_2', className='visualizacao-mapa')
 
 #Componente visualizacao lateral
 containerVisLateral = html.Div([
-    html.Div("", id="vis_lateral", className="small_container-vis"),
+    html.Div(dcc.Graph(id='visualizacao-barchart'), id="vis_lateral", className="small_container-vis"),
     html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
     ]
     , id="vis_lat-container")
@@ -263,7 +263,8 @@ def carregarDropdownRegiao(idEstado):
 # Callback - Renderiza fluxo de transporte da cidade
 @app.callback(
     [Output('visualizacao', 'figure'),
-    Output('container-dropdown-numero', 'children')],
+    Output('container-dropdown-numero', 'children'),
+    Output('visualizacao-barchart', 'figure')],
     [State('dropdown-analise', 'value')],
     [Input('dropdown-cid_reg', 'value'),
     Input('radio-fluxo', 'value'),
@@ -274,11 +275,11 @@ def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
-        numeroMaxCidades, visualizacao = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
-        return visualizacao, dash.no_update
+        numeroMaxCidades, visualizacao, visBarChart = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
+        return visualizacao, dash.no_update, visBarChart
     else:
-        numeroMaxCidades, visualizacao = updateFluxoTipo(tipoAnalise, id, tipoFluxo)
-        return visualizacao, generateDropdown(numeroMaxCidades)
+        numeroMaxCidades, visualizacao, visBarChart  = updateFluxoTipo(tipoAnalise, id, tipoFluxo)
+        return visualizacao, generateDropdown(numeroMaxCidades), visBarChart
 
 def updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades=20):
     if tipoAnalise == 'cidade':
