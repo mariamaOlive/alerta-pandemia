@@ -15,6 +15,7 @@ from camada_model.ctrl_spreaders import CtrlSpreader
 # Visualizações imports
 import visualizacao.vis_mapa as vis
 import visualizacao.vis_mapa_2 as vis_2
+import visualizacao.vis_bar_chart as visBarchart
 
 # Carregando Model classes
 ctrlFluxo = CtrlFluxo()
@@ -288,8 +289,11 @@ def updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades=20):
 def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+
+    visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo)
     #Retorna a numero de ligacoes e visualizacao 
-    return dfFluxo.shape[0],visualizacao
+    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart
+     
 def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(2611606, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
