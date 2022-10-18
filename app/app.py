@@ -180,7 +180,7 @@ app.layout = html.Div(children=[
     dcc.Tabs(id="tabs-vis", value='tab-fluxo-transporte', children=[
         dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte', className="tab-parte"),
         dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude', className="tab-parte"),
-        dcc.Tab(label='Atributos gerais', value='tab-atributos', className="tab-parte")
+        dcc.Tab(label='Análise de propagação', value='tab-atributos', className="tab-parte")
     ]),
 
     #Container das tabs da aplicação
@@ -269,7 +269,7 @@ def carregarDropdownRegiao(idEstado):
     Input('dropdown-numero', 'value')]
     )
 def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
- 
+    print("Entrei aqui danado")
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
