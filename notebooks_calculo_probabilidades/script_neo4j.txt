@@ -148,6 +148,13 @@ WHERE c.hierarquia = h.hierarquia
 CREATE (c)-[r:CLASSIFICADA]->(h)
 RETURN c,h
 
+//Removendo propriedades
+MATCH (c:Cidade)
+REMOVE c.cod_reg_saude, c.cod_uf, c.hierarquia
+
+MATCH (r:Rede_Sentinela)
+REMOVE r.cod_mun
+
 ////////////////////Algoritmos de Centralidade////////////////////////
 
 //Closeness Centrality
