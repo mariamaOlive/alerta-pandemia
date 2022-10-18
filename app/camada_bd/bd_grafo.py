@@ -14,13 +14,63 @@ class BDGrafo(metaclass=SingletonMeta):
     driver = None
 
     def __init__(self):
-        pass
+        #Cria projecao do fluxo para rodar algoritmos
+        self.criarProjecao()
+        self.close()
 
 
     def close(self):
         self.driver.close()
 
 
+    #Funcao que cria a projecao do grafo
+    def criarProjecao(self):
+        #Abre conexao com o BD
+        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
+        
+        #Primeiro verifica se grafo existe, caso não exista cria o grafo
+        existeGrafo = self.checarExistenciaGrafo('grafoFluxo')[0][1]
+        if(not existeGrafo):
+            with self.driver.session(database="neo4j") as session:
+                result = session.read_transaction(
+                    self._criarProjecaoGrafoFluxo)
+                return result
+
+    @staticmethod
+    def _criarProjecaoGrafoFluxo(tx):
+        query = (
+                "CALL gds.graph.project("
+                "'grafoFluxo',"
+                "'Cidade', "
+                "'FLUXO_TRANSPORTE',"
+                "{"
+                    "relationshipProperties: 'fluxo_invertido'"
+                "})"
+            )
+        return tx.run(query) #TODO: Verificar se criou corretamente com o try/catch
+
+
+    #Funcao que verifica a existencia do grafo
+    def checarExistenciaGrafo(self, nomeGrafo):
+        with self.driver.session(database="neo4j") as session:
+            result = session.read_transaction(
+                self._verificarGrafo, nomeGrafo)
+
+            return result
+
+    #Funcao com query de verificacao de grafo
+    @staticmethod 
+    def _verificarGrafo(tx, nomeGrafo):
+        query = (
+            f"CALL gds.graph.exists ('{nomeGrafo}') "
+            "YIELD graphName, exists "
+            "RETURN graphName, exists"
+            )
+        result = tx.run(query, nomeGrafo=nomeGrafo)
+        return result.values("graphName","exists")
+
+
+    #Funcao busca no BD fluxos que a cidade de origem possui com outras cidades
     def buscarFluxoCidade(self, idMunicipio):
         self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
 
@@ -30,7 +80,7 @@ class BDGrafo(metaclass=SingletonMeta):
 
             return result
 
-
+    #Funcao com a query de busca
     @staticmethod
     def _buscarFluxoCidade(tx, idMunicipio):
         query = (
@@ -48,6 +98,8 @@ class BDGrafo(metaclass=SingletonMeta):
                             "saude_alta", "saude_baixa_media")
 
 
+
+    #Funcao busca os menores caminho da cidade de origem e o conjunto de cidades especificada
     def buscarMenorCaminho(self, idMunicipioOrigem, tipoDestino):
         self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
 
@@ -57,6 +109,7 @@ class BDGrafo(metaclass=SingletonMeta):
 
             return result
 
+    #Funcao com a query da busca
     @staticmethod
     def _buscarMenorCaminhoFluxo(tx, idMunicipioOrigem, tipoDestino):
         query = (
