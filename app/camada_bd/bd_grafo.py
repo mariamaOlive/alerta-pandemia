@@ -117,7 +117,7 @@ class BDGrafo(metaclass=SingletonMeta):
             WITH collect(c_spreader) AS nodes \
             UNWIND nodes AS ct \
             MATCH (source:Cidade {cod_mun:"+ idMunicipioOrigem +"}), (target:Cidade {cod_mun: ct.cod_mun}) \
-            CALL gds.shortestPath.dijkstra.stream('myGraph', { \
+            CALL gds.shortestPath.dijkstra.stream('grafoFluxo', { \
                 sourceNode: source, \
                 targetNode: target, \
                 relationshipWeightProperty: 'fluxo_invertido'}) \
