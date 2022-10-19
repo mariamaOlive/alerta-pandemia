@@ -10,6 +10,6 @@ def carregaBarChart(df):
      labels={'fluxo':'Fluxos', 'nome_dest':'Destino'},
         ).update_layout(margin={"r":0,"t":46,"l":0,"b":6}).update_xaxes(visible=True).update_xaxes(title_text='Fluxos').update_traces(texttemplate='%{x:.d}')
 
-    fig.update_layout(title_text='Os 5 Maiores Fluxos', title_x=0.5)
+    fig.update_layout(title_text='Os Maiores Fluxos', title_x=0.5)
  
     return fig
