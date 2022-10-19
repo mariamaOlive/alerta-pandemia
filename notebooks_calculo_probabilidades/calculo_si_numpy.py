@@ -3,6 +3,14 @@ from functools import partial
 import pandas as pd
 import numpy as np
 
+
+########## Função inicializa matrix de fluxo entre cidades ##########
+#retorno: Matriz de Fluxo (numpyArray(nxn)) e dicionario (dict) que mapeia o codigo do municipio com index da matriz
+#
+#Descrição da Matriz de Fluxo:
+#linha: cidade_origem
+#coluna: cidade_destino
+#valor: qtdViagemDiaria/Populacao --> Probabilidade de uma pessoa da populacao viajar para outra cidade
 def criarMatrizFluxo(dfMunicipios, dfFluxo):
     #Inicializar matriz de fluxo
     numMunicipios = dfMunicipios.shape[0]
@@ -11,17 +19,42 @@ def criarMatrizFluxo(dfMunicipios, dfFluxo):
     #Criando dicionario para indentificar index do municipio na matrixFluxo
     hashIdxMunicipios = {} 
     for idxMunicipio, row in dfMunicipios.iterrows():
-        hashIdxMunicipios[row["cod_mun"]] = idxMunicipio
+        hashIdxMunicipios[row["cod_mun"]] = (idxMunicipio, row["populacao_2021"])
     
     #Adicionando fluxo na matrizFluxo
-    for codMunicipio, index in hashIdxMunicipios.items(): 
+    for codMunicipio, infoMunicipio in hashIdxMunicipios.items():
+        index = infoMunicipio[0]
+        populacaoOrigem = infoMunicipio[1]
         
         dfFiltroFluxo = dfFluxo[dfFluxo["cod_origem"]==codMunicipio]
         for idxFluxo, row in dfFiltroFluxo.iterrows():
-            idxMunDestino = hashIdxMunicipios[row["cod_destino"]]
-            matrizFluxo[index][idxMunDestino] = row["total_pessoas"]
+            idxMunDestino = hashIdxMunicipios[row["cod_destino"]][0]
+            matrizFluxo[index][idxMunDestino] = (row["total_pessoas"]/365) / populacaoOrigem
 
     return matrizFluxo, hashIdxMunicipios
+
+
+########## Função que calcula a diferenca de Infectado em relacao ao tempo ##########
+#retorno: Taxa de variacao de infectados (float)
+def taxaVariacao(dia, matrizPopulacao, matrizInfectados, matrizFluxo):
+
+    r = 0.2 #Taxa de contagio
+    s = 1 #Ajusta super/subestimativa do fluxo 
+    N = matrizPopulacao #Populacao do municipio
+    I = matrizInfectados[dia-1] #Numero de Infectado no dia anterior
+
+    #Taxa de variacao infectados interna
+    print(np.sum(I))
+    dInterno = r*I*((N-I)/N)
+
+    # #Taxa de variacao de infectados devido ao fluxo
+    dEntrada =  np.dot(matrizFluxo[:, idxMunicipio].T, matrizInfectados[dia-1]) 
+    # dSaida = np.sum(matrizFluxo[idxMunicipio, :]*I)
+    # dExterno = dEntrada - dSaida
+
+    # dI = dInterno - s*(dExterno)
+
+    return dInterno
 
 
 
@@ -41,10 +74,28 @@ if __name__ == '__main__':
 
     #Criar matriz de fluxo entre cidades
     matrizFluxo, hashMunicipios = criarMatrizFluxo(dfMunicipios, dfFluxo)
-    print(hashMunicipios)
+
+    #Criar matriz de populacao
+    matrizPopulacao = dfMunicipios["populacao_2021"].to_numpy()
 
     #Setar condicoes iniciais
+    NUMERO_INFECTADOS = 1
+    DIAS = 30
 
+    cidadeInicial = 3550308
+    idxCidade = hashMunicipios[cidadeInicial][0]
+
+    #Matriz de Infectados 
+    numMunicipios = dfMunicipios.shape[0]
+    matrixInfectados =  np.zeros((DIAS, numMunicipios))
+
+    #Adicionar infectados na cidade inicial
+    matrixInfectados[0][idxCidade] = NUMERO_INFECTADOS
+
+    #Executar o modelo pelo numero de dias determinados
+    # for dia in range(1, DIAS):
+    retorno = taxaVariacao(1, matrizPopulacao, matrixInfectados, matrizFluxo)
+    print(np.sum(retorno))
 
 
 
