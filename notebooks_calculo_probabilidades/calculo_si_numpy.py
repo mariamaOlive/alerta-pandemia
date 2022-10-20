@@ -4,6 +4,20 @@ import pandas as pd
 import numpy as np
 
 
+
+########## Método de cálculo de ODE - Runge-Kutta ##########
+#retorno: Variacao calulada
+def calcularODE(funcao, *args):
+
+    dt = 1
+    dt2 = dt/2.0
+    k1 = funcao(args[0], args[1], args[2])
+    k2 = funcao(args[0], args[1] + dt2*k1, args[2])
+    k3 = funcao(args[0], args[1] + dt2*k2, args[2])
+    k4 = funcao(args[0], args[1] + dt2*k3, args[2])
+    novoI = args[1] + (dt/6.0)*(k1 + 2*k2 + 2*k3 + k4)
+    return novoI
+
 ########## Função inicializa matrix de fluxo entre cidades ##########
 #retorno: Matriz de Fluxo (numpyArray(nxn)) e dicionario (dict) que mapeia o codigo do municipio com index da matriz
 #
@@ -35,26 +49,30 @@ def criarMatrizFluxo(dfMunicipios, dfFluxo):
 
 
 ########## Função que calcula a diferenca de Infectado em relacao ao tempo ##########
-#retorno: Taxa de variacao de infectados (float)
-def taxaVariacao(dia, matrizPopulacao, matrizInfectados, matrizFluxo):
+#retorno: Taxa de variacao de infectados em todas cidades (npArray de float)
+def calcularTaxaVariacao(matrizPopulacao, infectadosDiaAnterior, matrizFluxo):
 
     r = 0.2 #Taxa de contagio
     s = 1 #Ajusta super/subestimativa do fluxo 
     N = matrizPopulacao #Populacao do municipio
-    I = matrizInfectados[dia-1] #Numero de Infectado no dia anterior
+    I = infectadosDiaAnterior #Numero de Infectado no dia anterior
+    M = matrizFluxo
 
     #Taxa de variacao infectados interna
-    print(np.sum(I))
     dInterno = r*I*((N-I)/N)
 
-    # #Taxa de variacao de infectados devido ao fluxo
-    dEntrada =  np.dot(matrizFluxo[:, idxMunicipio].T, matrizInfectados[dia-1]) 
-    # dSaida = np.sum(matrizFluxo[idxMunicipio, :]*I)
-    # dExterno = dEntrada - dSaida
+    #Taxa de variacao de infectados devido ao fluxo
+    # print("Infectados ",I[3829])
+    # print("Probabilidade ", M[3829].sum())
+    dSaida = M.sum(axis=1)*I #Pessoas infectadas que saem da cidade
+    # print("Saida ",dSaida[3829])
+    dEntrada = np.matmul(I, M) #Pessoas infectadas que entram na cidade
+    # print("Entrada ",dEntrada[3829])
+    dExterno = dEntrada - dSaida
 
-    # dI = dInterno - s*(dExterno)
-
-    return dInterno
+    #Taxa de variacao total
+    dI = dInterno + s*(dExterno)
+    return dI.clip(min=0) #Torna positivo
 
 
 
@@ -80,74 +98,53 @@ if __name__ == '__main__':
 
     #Setar condicoes iniciais
     NUMERO_INFECTADOS = 1
-    DIAS = 30
+    DIAS = 60
 
-    cidadeInicial = 3550308
-    idxCidade = hashMunicipios[cidadeInicial][0]
+    ##TODO:Teste remover
+    saida = np.count_nonzero(matrizFluxo, axis=0)
+    entrada = np.count_nonzero(matrizFluxo, axis=1)
 
-    #Matriz de Infectados 
-    numMunicipios = dfMunicipios.shape[0]
-    matrixInfectados =  np.zeros((DIAS, numMunicipios))
-
-    #Adicionar infectados na cidade inicial
-    matrixInfectados[0][idxCidade] = NUMERO_INFECTADOS
-
-    #Executar o modelo pelo numero de dias determinados
-    # for dia in range(1, DIAS):
-    retorno = taxaVariacao(1, matrizPopulacao, matrixInfectados, matrizFluxo)
-    print(np.sum(retorno))
+    #TODO: Remover print
+    # print("Sai: ", saida[hashMunicipios[3550308][0]])
+    # print("Entra: ", entrada[hashMunicipios[3550308][0]])
+    print(hashMunicipios[3550308][0])
 
 
+    listaAnalise = []
+    df_regic = pd.read_csv("../data/integrado/cidades_regic.csv")
+    listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
+    # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") ]["cod_mun"].tolist()
+    # listaSpreader = df_regic["cod_mun"].tolist()
+    for cidadeInicial in listaSpreader: 
+        # cidadeInicial = 3550308
+        print("Municipio: ", cidadeInicial)
+        idxCidade = hashMunicipios[cidadeInicial][0]
+
+        #Matriz de Infectados 
+        numMunicipios = dfMunicipios.shape[0]
+        matrixInfectados =  np.zeros((DIAS, numMunicipios))
+
+        #Adicionar infectados na cidade inicial
+        matrixInfectados[0][idxCidade] = NUMERO_INFECTADOS
+
+        #Executar o modelo pelo numero de dias determinados
+        for dia in range(1, DIAS):
+            matrixInfectados[dia] = matrixInfectados[dia -1] + calcularTaxaVariacao(matrizPopulacao, matrixInfectados[dia-1], matrizFluxo)
+            # matrixInfectados[dia] = calcularODE(calcularTaxaVariacao, matrizPopulacao, matrixInfectados[dia-1], matrizFluxo)
 
 
+        #Criar dataframe com os dados de infectados
+        dfSI = pd.DataFrame(matrixInfectados.T, columns=["dia_" + str(dia) for dia in range(DIAS)])
+        dfSI = pd.concat([dfMunicipios[["cod_mun","nome_mun"]], dfSI], axis=1, join='inner')
+        # dfSI.to_csv(f"../data/calculado/calc_SI_{cidadeInicial}.csv", index=False)
 
-    # df_regic = pd.read_csv("../data/integrado/cidades_regic.csv")
-    # lista_spreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
-    # # lista_spreader = [4209003,3550308, 2611606, 2910800, 2604106,2507507]
-    # #Joa, sao paulo, recife, feira de sa, caruaru, joao
-    # # lista_spreader = [3550308]
-    # #Municipio Incial
-    # for municipio_zero in lista_spreader:
-
-    #     #Criando dataframe com resultados
-    #     df_si = pd.DataFrame(df_municipios[["cod_mun", "populacao_2021"]])
-    #     df_si = df_si.set_index('cod_mun')
-
-    #     #Inicializa todos os municipios com 0 infectados
-    #     df_si["dia_0"] = 0.0
-    #     df_si.loc[municipio_zero,"dia_0"] = 1 #Somente a cidade zero possui infeccao
-
-    #     #Numero de dias a executar o modelo
-    #     nDias =  30
-            
-    #     #Encontrar as conexoes de todas as cidade
-    #     lista_mun = df_municipios["cod_mun"].tolist()
-    #     lista_conexoes = []
-    #     for cod_mun in lista_mun:
-    #         lista_conexoes.append(conexoesCidade(df_fluxo, cod_mun))
-
-    #     #Carrega conexoes possiveis no df
-    #     df_si['conexoes'] = lista_conexoes
-
-    #     #Lista de todos os municpios do brasil
-    #     lista_mun = df_municipios["cod_mun"].tolist()
-
-    
-    #     for dia in range(1, nDias):
-    #         infeccoesDia = []
-    #         print(dia)
-    #         # for cidadeAtual in lista_mun:
-    #         pool = multiprocessing.Pool(processes=6)    
-    #         infeccoesDia = pool.map(partial(calculoSI, dia=dia, df_si=df_si, df_fluxo=df_fluxo), lista_mun)
-
-    #         sortedInfeccoes = sorted(infeccoesDia, key=lambda tup: tup[0])
-    #         listaInfeccoes = [ numInfectados for cod_mun, numInfectados in sortedInfeccoes]
+        filtro_cidade = dfSI["cod_mun"]==cidadeInicial
+        num_cidade = dfSI[filtro_cidade][f"dia_{DIAS-1}"].sum()
+        num_espalhamento = dfSI[~filtro_cidade][f"dia_{DIAS-1}"].sum()
+        num_total = num_cidade + num_espalhamento
+        listaAnalise.append((cidadeInicial, num_cidade, num_espalhamento, num_total))
 
 
-    #         valorCidade = list(filter(lambda x:municipio_zero==x[0], sortedInfeccoes))
-    #         # print(sum(listaInfeccoes)-valorCidade[0][1])
-    #         df_si[f"dia_{dia}"] = listaInfeccoes
-
-    #     df_si.drop(columns=['conexoes'], inplace=True)
-    #     df_si.to_csv(f"../data/calculado/calc_SI_{municipio_zero}.csv", index=True)
+    df_analise = pd.DataFrame(listaAnalise, columns=["cod_mun","cidade", "espalhamento", "total"])
+    df_analise.to_csv(f"../data/calculado/spreaders.csv", index=False)
 
