@@ -76,17 +76,6 @@ dropdownAtributos = html.Div([
 
 #Componente do drop de Estados
 dropDownsFluxo= html.Div([
-        # Dropdown-Estado
-        html.Div([
-            html.P("Estado", className="dropdown-ctn-text"),
-            dcc.Dropdown(
-                options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
-                        for i in dicEstados],
-                value=dicEstados[0]['cod_uf'],
-                id='dropdown-estado'    
-            )
-        ], className="menu__dropdown"),
-
          # Dropdown-Analise
         html.Div([
             html.P("Nível de Análise", className="dropdown-ctn-text"),
@@ -97,6 +86,17 @@ dropDownsFluxo= html.Div([
                 ],
                 value="cidade",
                 id='dropdown-analise'
+            )
+        ], className="menu__dropdown"),
+
+        # Dropdown-Estado
+        html.Div([
+            html.P("Estado", className="dropdown-ctn-text"),
+            dcc.Dropdown(
+                options=[{'label': i['nome_uf'], 'value': i['cod_uf']}
+                        for i in dicEstados],
+                value=dicEstados[0]['cod_uf'],
+                id='dropdown-estado'    
             )
         ], className="menu__dropdown"),
 
