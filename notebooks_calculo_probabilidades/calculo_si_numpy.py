@@ -43,7 +43,7 @@ def criarMatrizFluxo(dfMunicipios, dfFluxo):
         dfFiltroFluxo = dfFluxo[dfFluxo["cod_origem"]==codMunicipio]
         for idxFluxo, row in dfFiltroFluxo.iterrows():
             idxMunDestino = hashIdxMunicipios[row["cod_destino"]][0]
-            matrizFluxo[index][idxMunDestino] = (row["total_pessoas"]/365) / populacaoOrigem
+            matrizFluxo[index][idxMunDestino] = (row["passageiros_total"]/365) / populacaoOrigem
 
     return matrizFluxo, hashIdxMunicipios
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     dfMunicipios = dfMunicipios.reset_index(drop=True)
 
     #Carregando dados de fluxo
-    dfFluxo = pd.read_csv("../data/calculado/fluxo_prob_qtd.csv")
+    dfFluxo = pd.read_csv("../data/calculado/calculo_qtd_fluxo.csv")
     dfFluxo = dfFluxo.drop_duplicates()
     dfFluxo = dfFluxo[dfFluxo["cod_origem"].isin(dfMunicipios["cod_mun"])]
     dfFluxo = dfFluxo[dfFluxo["cod_destino"].isin(dfMunicipios["cod_mun"])]
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     #TODO: Remover print
     # print("Sai: ", saida[hashMunicipios[3550308][0]])
     # print("Entra: ", entrada[hashMunicipios[3550308][0]])
-    print(hashMunicipios[3550308][0])
+    # print(hashMunicipios[3550308][0])
 
 
     listaAnalise = []
