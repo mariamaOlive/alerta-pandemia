@@ -388,6 +388,20 @@ r.saude_alta AS saude_alta, r.saude_baixa_media AS saude_baixa_media,
 c2.latitude AS latitude, c2.longitude AS longitude
 
 
+//Fluxo de regiao de saude
+MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade)
+WHERE rs.cod_reg_saude = 26006
+WITH collect(c) AS cs, sum(c.populacao) AS rs_pop
+MATCH (c_ori:Cidade)-[fs:FLUXO_SAUDE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude)
+WHERE c_ori IN cs AND NOT c_dest IN cs 
+WITH rs_dest.nome AS nome, collect([c_ori.populacao,fs.saude_baixa_media,fs.saude_alta]) AS cl, rs_pop AS rs_pop
+WITH nome AS nome, reduce(res = [0,0] , array IN cl | [res[0] + (array[0]*array[1]), res[1] + (array[0]*array[2])]) AS res, rs_pop AS rs_pop
+RETURN nome, res[0]/rs_pop, res[1]/rs_pop
+
+//RETORNAR SOBRE REGIAO DE SAUDE NOME, CODIGO, LATITUDE LONGITUDE
+ 
+
+
 //Exportar nodes
 MATCH (c:Cidade)
 WITH collect(c) AS cidades
@@ -396,22 +410,6 @@ YIELD file, source, format, nodes, relationships, properties, time, rows, batchS
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 
 
-
-
-
-
-//TODO: Remover consultas SQL
-
-sql = """
-    UPDATE final_table AS f
-    SET PIB= t.PIB, hierarquia= t.hierarquia, 
-    nome_hierarquia= t.nome_hierarquia, indice_atracao= t.indice_atracao,
-    ia_saude_bm= t.ia_saude_bm, ia_saude_a= t.ia_saude_a,
-    ia_aeroporto= t.ia_aeroporto, ia_transporte= t.ia_transporte,
-    num_leitos= t.num_leitos
-    FROM temp_table AS t
-    WHERE f.id = t.id
-"""
 
 //Algoritmos de caminho
 
