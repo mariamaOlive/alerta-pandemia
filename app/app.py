@@ -124,8 +124,6 @@ def generateDropdown(numMaxCidades=20):
 
     opcoesDropdown = [i for i in range(0, numMaxCidades+1)]
     numeroDefault = numMaxCidades if numMaxCidades<20 else 20
-    print("opcoes ", opcoesDropdown)
-    print("numeroMaxCidades ", numMaxCidades)
 
     return [html.Label("Número de conexões", className="dropdown-ctn-text"),
             dcc.Dropdown(options=opcoesDropdown,value=numeroDefault,id='dropdown-numero')]
@@ -269,7 +267,6 @@ def carregarDropdownRegiao(idEstado):
     Input('dropdown-numero', 'value')]
     )
 def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
-    print("Entrei aqui danado")
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
@@ -291,7 +288,7 @@ def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao
 def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
-    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(2611606, tipoFluxo)
+    infoRegiao, dfFluxo = ctrlFluxo.percentualFluxoRegiaoSaude(idRegiao, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao

@@ -388,18 +388,30 @@ r.saude_alta AS saude_alta, r.saude_baixa_media AS saude_baixa_media,
 c2.latitude AS latitude, c2.longitude AS longitude
 
 
-//Fluxo de regiao de saude
+//Fluxo de regiao de saude (Saude)
 MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade)
 WHERE rs.cod_reg_saude = 26006
 WITH collect(c) AS cs, sum(c.populacao) AS rs_pop
-MATCH (c_ori:Cidade)-[fs:FLUXO_SAUDE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude)
+MATCH (c_ori:Cidade)-[f:FLUXO_SAUDE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude)
 WHERE c_ori IN cs AND NOT c_dest IN cs 
-WITH rs_dest.nome AS nome, collect([c_ori.populacao,fs.saude_baixa_media,fs.saude_alta]) AS cl, rs_pop AS rs_pop
-WITH nome AS nome, reduce(res = [0,0] , array IN cl | [res[0] + (array[0]*array[1]), res[1] + (array[0]*array[2])]) AS res, rs_pop AS rs_pop
-RETURN nome, res[0]/rs_pop, res[1]/rs_pop
+WITH rs_dest.cod_reg_saude AS cod_regiao, rs_dest.nome AS nome, rs_dest.latitude AS latitude, rs_dest.longitude AS longitude
+, collect([c_ori.populacao,f.saude_baixa_media,f.saude_alta]) AS cl, rs_pop AS rs_pop
+WITH cod_regiao AS cod_regiao, nome AS nome,latitude AS latitude, longitude AS longitude, 
+reduce(res = [0,0] , array IN cl | [res[0] + (array[0]*array[1]), res[1] + (array[0]*array[2])]) AS res, rs_pop AS rs_pop
+RETURN cod_regiao, nome, latitude, longitude, res[0]/rs_pop AS saude_baixa_media, res[1]/rs_pop AS saude_alta
 
-//RETORNAR SOBRE REGIAO DE SAUDE NOME, CODIGO, LATITUDE LONGITUDE
- 
+//Fluxo de regiao de saude (Transporte)
+MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade)
+WHERE rs.cod_reg_saude = 26006
+WITH collect(c) AS cs, sum(c.populacao) AS rs_pop
+MATCH (c_ori:Cidade)-[f:FLUXO_TRANSPORTE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude)
+WHERE c_ori IN cs AND NOT c_dest IN cs 
+WITH rs_dest.cod_reg_saude AS cod_regiao, rs_dest.nome AS nome, rs_dest.latitude AS latitude, rs_dest.longitude AS longitude
+, collect([c_ori.populacao,f.fluxo_geral,f.fluxo_aereo, f.fluxo_rodo]) AS cl, rs_pop AS rs_pop
+WITH cod_regiao AS cod_regiao, nome AS nome,latitude AS latitude, longitude AS longitude, 
+reduce(res = [0,0,0] , array IN cl | [res[0] + (array[0]*array[1]), res[1] + (array[0]*array[2]), res[2] + (array[0]*array[3])]) AS res, rs_pop AS rs_pop
+RETURN cod_regiao, nome, latitude, longitude, res[0]/rs_pop AS fluxo_geral, res[1]/rs_pop AS fluxo_aereo, res[2]/rs_pop AS fluxo_rodo
+
 
 
 //Exportar nodes

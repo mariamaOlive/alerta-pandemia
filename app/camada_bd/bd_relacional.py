@@ -57,6 +57,15 @@ class BDRelacional(metaclass=SingletonMeta):
         resultado = self.queryTabela(query)[0]
         return resultado 
 
+
+    #Buscar coordenadas de uma regiao saude     
+    def buscarRegiaoCoordenadas(self, regiaoId):
+        query = f"SELECT cod_reg_saude, nome_reg_saude, latitude, longitude FROM regiao_saude\
+                WHERE cod_reg_saude = {regiaoId};"
+
+        resultado = self.queryTabela(query)[0]
+        return resultado 
+
     
     #Buscar todas as cidades 
     def buscarTodasCidades(self):

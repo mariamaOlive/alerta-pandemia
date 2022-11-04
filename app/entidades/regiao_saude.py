@@ -1,5 +1,5 @@
 # Objeto da entidade Cidade 
-class Cidade:
+class RegiaoSaude:
 
     dfFluxo = None
     listaRedeSentinela = None
@@ -13,16 +13,10 @@ class Cidade:
 
 
     #Retorna as informaçoes principais da cidade
-    def getInfoCidade(self):
+    def getInfoRegiao(self):
         return (self.id, self.nome, self.longitude, self.latitude)
 
 
     #Seta uma lista dos fluxos da cidade
     def setFluxo(self, dfFluxo):
         self.dfFluxo = dfFluxo
-
-    
-    #Seta a lista da rede sentinela da cidade
-    # def setRedeSentinela(self, listaRedeSentinela):
-    #     self.listaRedeSentinela = listaRedeSentinela
-    

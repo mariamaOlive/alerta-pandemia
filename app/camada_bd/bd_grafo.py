@@ -98,6 +98,65 @@ class BDGrafo(metaclass=SingletonMeta):
                             "saude_alta", "saude_baixa_media")
 
 
+   #Funcao busca no BD fluxos que a regiao de saude de origem possui com outras regioes
+    def buscarFluxoSaudeRegiao(self, idRegiao):
+        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
+
+        with self.driver.session(database="neo4j") as session:
+            result = session.read_transaction(
+                self._buscarFluxoSaudeRegiao, idRegiao)
+
+            return result
+
+    #Funcao com a query de busca
+    @staticmethod
+    def _buscarFluxoSaudeRegiao(tx, idRegiao):
+        query = (
+            "MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade) "
+            "WHERE rs.cod_reg_saude = $idRegiao "
+            "WITH collect(c) AS cs, sum(c.populacao) AS rs_pop "
+            "MATCH (c_ori:Cidade)-[f:FLUXO_SAUDE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude) "
+            "WHERE c_ori IN cs AND NOT c_dest IN cs " 
+            "WITH rs_dest.cod_reg_saude AS cod_regiao, rs_dest.nome AS nome, rs_dest.latitude AS latitude, rs_dest.longitude AS longitude, "
+            "collect([c_ori.populacao,f.saude_baixa_media,f.saude_alta]) AS cl, rs_pop AS rs_pop "
+            "WITH cod_regiao AS cod_regiao, nome AS nome,latitude AS latitude, longitude AS longitude, " 
+            "reduce(res = [0,0] , array IN cl | [res[0] + (array[0]*array[1]), res[1] + (array[0]*array[2])]) AS res, rs_pop AS rs_pop "
+            "RETURN cod_regiao, nome, latitude, longitude, res[0]/rs_pop AS saude_baixa_media, res[1]/rs_pop AS saude_alta"
+        )
+        
+        result = tx.run(query, idRegiao=idRegiao)
+        return result.values("cod_regiao","nome","latitude","longitude", "saude_alta", "saude_baixa_media")
+
+
+   #Funcao busca no BD fluxos que a regiao de saude de origem possui com outras regioes
+    def buscarFluxoTransporteRegiao(self, idRegiao):
+        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
+
+        with self.driver.session(database="neo4j") as session:
+            result = session.read_transaction(
+                self._buscarFluxoTransporteRegiao, idRegiao)
+
+            return result
+
+    #Funcao com a query de busca
+    @staticmethod
+    def _buscarFluxoTransporteRegiao(tx, idRegiao):
+        query = (
+            "MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade) "
+            "WHERE rs.cod_reg_saude = $idRegiao "
+            "WITH collect(c) AS cs, sum(c.populacao) AS rs_pop "
+            "MATCH (c_ori:Cidade)-[f:FLUXO_TRANSPORTE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude) "
+            "WHERE c_ori IN cs AND NOT c_dest IN cs " 
+            "WITH rs_dest.cod_reg_saude AS cod_regiao, rs_dest.nome AS nome, rs_dest.latitude AS latitude, rs_dest.longitude AS longitude, "
+            "collect([c_ori.populacao,f.fluxo_geral,f.fluxo_aereo, f.fluxo_rodo]) AS cl, rs_pop AS rs_pop "
+            "WITH cod_regiao AS cod_regiao, nome AS nome,latitude AS latitude, longitude AS longitude, " 
+            "reduce(res = [0,0,0] , array IN cl | [res[0] + (array[0]*array[1]), res[1] + (array[0]*array[2]), res[2] + (array[0]*array[3])]) AS res, rs_pop AS rs_pop "
+            "RETURN cod_regiao, nome, latitude, longitude, res[0]/rs_pop AS fluxo_geral, res[1]/rs_pop AS fluxo_aereo, res[2]/rs_pop AS fluxo_rodo"
+        )
+        
+        result = tx.run(query, idRegiao=idRegiao)
+        return result.values("cod_regiao","nome","latitude","longitude", "fluxo_geral", "fluxo_aereo", "fluxo_rodo")
+
 
     #Funcao busca os menores caminho da cidade de origem e o conjunto de cidades especificada
     def buscarMenorCaminho(self, idMunicipioOrigem, tipoDestino):
