@@ -1,4 +1,4 @@
-cod_mun_origem,cod_mun_destino,passageiros_rodov,passageiros_aereo,passageiros_total,prob_rodov,prob_aereo,prob_total
+cod_origem,cod_destino,passageiros_rodov,passageiros_aereo,passageiros_total,prob_rodov,prob_aereo,prob_total
 1100023,1100304,7.0,0.0,7.0,0.0013202565069784986,0.0,0.0013202565069784986
 1100023,1200401,31.0,0.0,31.0,0.0058468502451904944,0.0,0.0058468502451904944
 1100023,3119401,3.0,0.0,3.0,0.0005658242172764995,0.0,0.0005658242172764995

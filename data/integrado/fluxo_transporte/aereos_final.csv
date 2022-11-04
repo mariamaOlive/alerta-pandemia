@@ -1,4 +1,4 @@
-Origem,Destino,Mes,passageiros,cod_mun_origem,cod_mun_destino,Ano
+Origem,Destino,Mes,passageiros,cod_origem,cod_destino,Ano
 AGUA BOA/MT,CONFRESA/MT,12,2.0,5100201.0,5103353.0,2019
 AGUA BOA/MT,SAO FELIX DO ARAGUAIA/MT,3,6.0,5100201.0,5107859.0,2019
 AGUA BOA/MT,SAO FELIX DO ARAGUAIA/MT,4,0.0,5100201.0,5107859.0,2019
