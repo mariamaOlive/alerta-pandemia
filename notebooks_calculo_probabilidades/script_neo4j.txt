@@ -22,7 +22,7 @@ populacao: toInteger(row.populacao_2021),
 densidade_pop: toFloat(row.densidade_2021)})
 
 LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row  with row where row.densidade_2021 is not null
-MERGE (:Cidade {
+MERGE (:Municipio {
 cod_mun: toInteger(row.cod_mun), 
 nome: row.nome_mun, 
 latitude: toFloat(row.latitude), 
@@ -31,6 +31,13 @@ populacao: toInteger(row.populacao_2021),
 densidade_pop: toFloat(row.densidade_2021),
 cod_uf:toInteger(row.cod_uf),
 cod_reg_saude:toInteger(row.cod_reg_saude)})
+
+//Criando nó des arranjo
+LOAD CSV WITH HEADERS FROM "file:///arranjo.csv" AS row  
+MERGE (:Arranjo_Populacional {
+cod_mun: toInteger(row.cod_arranjo), 
+nome: row.nome_arranjo})
+
 
 //Criando nó de Regiao de Saúde
 LOAD CSV WITH HEADERS FROM "file:///regiao_saude.csv" AS row  
@@ -65,6 +72,22 @@ LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row
 MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
 ON MATCH SET c.hierarquia= row.hierarquia
 
+LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row  
+MATCH (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+SET c.hierarquia= row.hierarquia
+
+LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row  
+MATCH (c:Cidade {cod_arranjo: toInteger(row.cod_mun)})
+SET c.hierarquia= row.hierarquia
+
+//Adicionando propriedades no arranjo populacional
+LOAD CSV WITH HEADERS FROM "file:///arr_mun.csv" AS row  
+MATCH (a:Arranjo_Populacional {cod_mun: toInteger(row.cod_cidade)})
+SET a.populacao= toInteger(row.populacao_2021),
+a.latitude = toFloat(row.latitude),
+a.longitude = toFloat(row.longitude),
+a.densidade = toFloat(row.densidade_2021)
+
 
 //And this query imports relationships:
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/calculado/" AS base
@@ -83,11 +106,28 @@ MERGE (origem)-[r:FLUXO_TRANSPORTE{
   fluxo_rodo: toFloat(row.prob_rodo),
   total_pessoas:toInteger(row.total_pessoas) }]->(destino)
 
-
-//Updating relationship
-LOAD CSV WITH HEADERS FROM "file:///fluxo_saude.csv" AS row 
+//Adicionar fluxo com Arranjo
+LOAD CSV WITH HEADERS FROM "file:///arr_calculo_qtd_fluxo.csv" AS row 
 MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
 MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+MERGE (origem)-[r:FLUXO_TRANSPORTE{ 
+  fluxo_geral: toFloat(row.prob_total), 
+  fluxo_aereo: toFloat(row.prob_aereo), 
+  fluxo_rodo: toFloat(row.prob_rodov),
+  total_pessoas:toInteger(row.passageiros_total) }]->(destino)
+
+
+//Criando relacionamento arranjo e municipio
+LOAD CSV WITH HEADERS FROM "file:///arranjo_com_mun.csv" AS row 
+MATCH (municipio:Municipio {cod_mun: toInteger(row.cod_mun)})
+MATCH (arr:Arranjo_Populacional {cod_arranjo: toInteger(row.cod_arranjo)})
+MERGE (municipio)-[r:PERTENCE_ARR]->(arr) 
+
+
+//Criando o relacionamento de fluxo de saude
+LOAD CSV WITH HEADERS FROM "file:///fluxo_saude.csv" AS row 
+MATCH (origem:Municipio {cod_mun: toInteger(row.cod_origem)})
+MATCH (destino:Municipio {cod_mun: toInteger(row.cod_destino)})
 MERGE (origem)-[r:FLUXO_SAUDE]->(destino) 
 ON CREATE SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
 ON MATCH SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
@@ -108,45 +148,41 @@ c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_trans
 c.num_leitos= toFloat(row.num_leitos)
 
 
-MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
-ON MATCH SET c.PIB= toInteger(row.PIB), c.hierarquia= row.hierarquia, 
-c.nome_hierarquia= row.nome_hierarquia, c.indice_atracao= toFloat(row.indice_atracao),
-c.ia_saude_bm= toFloat(row.ia_saude_bm), c.ia_saude_a= toFloat(row.ia_saude_a),
-c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_transporte),
-c.num_leitos= toFloat(row.num_leitos)
-
 //Criando relationship de estado com cidade
-MATCH (c:Cidade), (e:Estado) 
+MATCH (c:Municipio), (e:Estado) 
 WHERE c.cod_uf = e.cod_uf 
-CREATE (c)-[r: PERTENCE]->(e) 
+CREATE (c)-[r:PERTENCE_ESTADO]->(e) 
 RETURN c,e 
 
-//Criando relationship de cidade com regiao de saude
-MATCH (c:Cidade), (rs:Regiao_Saude) 
+//Criando relationship de municipio com regiao de saude
+MATCH (c:Municipio), (rs:Regiao_Saude) 
 WHERE c.cod_reg_saude = rs.cod_reg_saude 
-CREATE (c)-[r: PERTENCE]->(rs) 
+CREATE (c)-[r:PERTENCE_REGIAO]->(rs) 
 RETURN c,rs 
 
-MATCH (c:Cidade)
-WITH c
-MATCH (s:Regiao_Saude) 
-WHERE c.cod_reg_saude = s.cod_reg_saude
-CREATE (c)-[r:FAZ_PARTE]->(s)
-RETURN c,s 
-
-MATCH (c:Cidade)
+//Criando relationship de municipio com rede sentinela
+MATCH (c:Municipio)
 WITH c
 MATCH (rs:Rede_Sentinela) 
 WHERE c.cod_mun = rs.cod_mun
 CREATE (rs)-[r:ESTA_LOCALIZADA]->(c)
 RETURN c,rs 
 
-MATCH (c:Cidade)
+//A hierarquia é dada por cidade = arranjo + municipio
+MATCH (c:Cidade) 
 WITH c
 MATCH (h:Hierarquia) 
 WHERE c.hierarquia = h.hierarquia
 CREATE (c)-[r:CLASSIFICADA]->(h)
 RETURN c,h
+
+//Adicionando o label de Cidade para arranjos e municipios
+LOAD CSV WITH HEADERS FROM "file:///arr_mun_sem_arr.csv" AS row 
+MATCH (mun:Municipio {cod_mun: toInteger(row.cod_cidade)})
+SET mun:Cidade
+
+MATCH (arr: Arranjo_Populacional)
+SET arr:Cidade
 
 //Removendo propriedades
 MATCH (c:Cidade)
@@ -154,6 +190,17 @@ REMOVE c.cod_reg_saude, c.cod_uf, c.hierarquia
 
 MATCH (r:Rede_Sentinela)
 REMOVE r.cod_mun
+
+MATCH (c)
+WHERE c:Cidade AND c:Arranjo_Populacional
+RETURN count(c)
+
+MATCH (c:Cidade)
+REMOVE c:Cidade
+
+MATCH ()-[r:FLUXO_TRANSPORTE]-() 
+DELETE r
+
 
 ////////////////////Algoritmos de Centralidade////////////////////////
 
