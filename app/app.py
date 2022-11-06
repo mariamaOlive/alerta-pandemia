@@ -144,7 +144,6 @@ def criarComponentesTabFluxo(tipoFluxo):
         containerVisLateral,
         # containerDf
     ])
-
     return tabFluxo
 
 
