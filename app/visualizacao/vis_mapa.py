@@ -20,11 +20,11 @@ def carregarMapa(dfRecomendacao):
                             lat = [slat,dlat],
                             lon = [slon, dlon],
                             mode = 'lines',
-                            line = dict(width = score*teste)
+                            line = dict(width = score*teste, color = '#FF971D')
                             ))
 
     ## Logic to create labels of source and destination cities of flights
-    cities = dfRecomendacao["nome_ori"].values.tolist()+dfRecomendacao["cod_dest"].values.tolist()
+    cities = dfRecomendacao["nome_ori"].values.tolist()+dfRecomendacao["nome_dest"].values.tolist()
     #countries = df_sample["Pais.Origem"].values.tolist()+df_sample["Pais.Destino"].values.tolist()
     scatter_hover_data = [city for city in zip(cities)]
 
@@ -36,7 +36,7 @@ def carregarMapa(dfRecomendacao):
                     hoverinfo = 'text',
                     text = scatter_hover_data,
                     mode = 'markers',
-                    marker = dict(size = 10, color = 'orangered', opacity=0.2,)),
+                    marker = dict(size = 10, color = '#FF971D', opacity=0.2,)),
     )
 
     ## Update graph layout to improve graph styling.

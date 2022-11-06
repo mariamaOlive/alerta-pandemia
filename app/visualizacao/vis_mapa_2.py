@@ -52,16 +52,38 @@ def carregarMapa(listaPath):
         nome_municipio = []
         print(caminho.probabilidade)
         for pontos_caminho in caminho.path:
-            print(type(pontos_caminho))
             caminho_lat.append(pontos_caminho.latitude)
             caminho_lon.append(pontos_caminho.longitude)
             nome_municipio.append(pontos_caminho.nome)
+
+        # fig.add_trace(go.Scattermapbox(
+        # mode="markers+lines",
+        # lon=caminho_lon,
+        # lat=caminho_lat,
+        # text=nome_municipio,
+        # marker=dict(size = 10, opacity=0.2,)))    
+
+            
         fig.add_trace(go.Scattermapbox(
-        mode="markers+lines",
-        lon=caminho_lon,
-        lat=caminho_lat,
-        text=nome_municipio,
-        marker={'size': 10}))
+            lat = caminho_lat,
+            lon = caminho_lon,
+            mode = 'lines',
+            line= dict(color = '#FF971D')))
+
+        fig.add_trace(go.Scattermapbox(
+            lon = caminho_lon,
+            lat = caminho_lat,
+            hoverinfo = 'text',
+            text = nome_municipio,
+            mode = 'markers',
+            marker = dict(size = caminho.probabilidade * 5000, color = '#FF971D', opacity=0.2)),
+    )
+
+        
+    
+                           
+
+        
 
     ## Update graph layout to improve graph styling.
     fig.update_layout(
