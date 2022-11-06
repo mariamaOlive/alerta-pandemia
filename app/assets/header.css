@@ -208,7 +208,7 @@ body{
 
 
 /* VISUALIZACAO LATERAL */
-#vis_lat-container{
+.vis_lat-container{
   width: 33%;
   margin: 0 5px;
   /* border: 2px solid #E1E1E1;
@@ -235,4 +235,48 @@ body{
 #visualizacao-barchart{
   height: 100%;
 }
+
+#path-scroll-container{
+  height: 100%;
+  overflow: auto;
+  margin-bottom: 10px;
+}
+
+.container_path{
+  padding: 10px 10px;
+  color: #4B4E4E
+}
+
+.path_title{
+  display: flex;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.path_title_left{
+  width: 80%;
+}
+
+.path_title_right{
+  padding-left: 10px;
+  width: 20%;
+  text-align: center;
+}
+
+.path_description{
+  font-size: 12px;
+}
+
+.ponto_path{
+  display: inline-block;
+  margin: 0 5px 7px;
+  padding: 2px 5px;
+  background-color: #FFE8D6;
+  /* font-weight: lighter; */
+  border-radius: 9px;
+}
+
+
 

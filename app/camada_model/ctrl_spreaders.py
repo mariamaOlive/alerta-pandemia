@@ -44,7 +44,7 @@ class CtrlSpreader:
         for idx, prob in enumerate(listaProbabilidades[:-1]):
             probCorrigida *= (1 - (prob-listaProbabilidades[idx+1]))
         
-        return probCorrigida
+        return  round(probCorrigida * 100, 2)
 
 
     #Funcao gera o caminho com o objeto cidade

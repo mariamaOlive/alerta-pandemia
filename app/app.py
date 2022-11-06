@@ -115,7 +115,13 @@ containerVisLateral = html.Div([
     html.Div(dcc.Graph(id='visualizacao-barchart'), id="vis_lateral", className="small_container-vis"),
     html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
     ]
-    , id="vis_lat-container")
+    , className="vis_lat-container")
+
+containerLateralPropagacao = html.Div([
+    html.Div(id="vis_lateral_propagacao", className="small_container-vis"),
+    html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
+    ]
+    , className="vis_lat-container")
 
 #TODO: Remover após testes
 containerDf = html.Div(id='my-output')
@@ -155,7 +161,7 @@ tabPropagacao = html.Div([
                 html.Div([dropdownAtributos], id="mapa-selecao-container")
                 ], id="vis-container"),   
                         
-            containerVisLateral,
+            containerLateralPropagacao,
             # containerDf
 ], id="tab-propagacao")
 
@@ -176,7 +182,7 @@ app.layout = html.Div(children=[
     ]),
     
     #Tabs da aplicação 
-    dcc.Tabs(id="tabs-vis", value='tab-fluxo-transporte', children=[
+    dcc.Tabs(id="tabs-vis", value='tab-propagacao', children=[
         dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte', className="tab-parte"),
         dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude', className="tab-parte"),
         dcc.Tab(label='Análise de propagação', value='tab-propagacao', className="tab-parte")
@@ -186,6 +192,32 @@ app.layout = html.Div(children=[
     html.Div(id='tabs-content')
 ]
 )
+
+#Funcao responsavel por renderizar caminho percorrido
+def criarPathContainer(listaPaths):
+    paths = []
+    for path in listaPaths:
+
+        paths.append( 
+            html.Div([
+                html.Div([html.Div(path.path[-1].nome, className="path_title_left"), 
+                html.Div(str(path.probabilidade)+" %"  , className="path_title_right")], 
+            className="path_title"),
+            html.Div(criarDescricaoCaminho(path), className="path_description")
+        ], className="container_path")
+        )
+
+    return html.Div(paths, id="path-scroll-container")
+
+def criarDescricaoCaminho(path):
+    pontosCaminho = []
+    for ponto in path.path:
+        nome = ponto.nome.split()[-1]
+        pontosCaminho.append(html.Span(ponto.nome, className="ponto_path"))
+        pontosCaminho.append(html.Span("\u2192"))
+    pontosCaminho.pop()
+    
+    return pontosCaminho
 
 
 #TODO: Remover essa funcao depois, isso eh so para TESTES
@@ -304,17 +336,17 @@ def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     return dfFluxo.shape[0],visualizacao
  
 
-############     Callbacks: Tab Atributos     ##############
+############     Callbacks: Tab Análise de propagação     ##############
 
-# Callback - Renderiza diversos atributos da cidade
+# Callback - Renderiza o caminho mais provável para superspreaders
 @app.callback(
     Output('visualizacao_2', 'figure'),
+    Output('vis_lateral_propagacao', 'children'),
     Input('tab-propagacao', 'children'),
     Input('dropdown-cid_reg', 'value'))
 def updateAtributosCidades(tabvalue, id):
     listaPath = ctrlSpreader.buscarSpreaders(id)
-    return vis_2.carregarMapa(listaPath)
-
+    return vis_2.carregarMapa(listaPath), criarPathContainer(listaPath)
 
 
 if __name__ == '__main__':
