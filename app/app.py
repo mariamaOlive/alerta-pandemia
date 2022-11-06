@@ -201,7 +201,7 @@ def criarPathContainer(listaPaths):
         paths.append( 
             html.Div([
                 html.Div([html.Div(path.path[-1].nome, className="path_title_left"), 
-                html.Div(str(path.probabilidade)+" %"  , className="path_title_right")], 
+                html.Div(str(round(path.probabilidade* 100, 2))+" %"  , className="path_title_right")], 
             className="path_title"),
             html.Div(criarDescricaoCaminho(path), className="path_description")
         ], className="container_path")
