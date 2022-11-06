@@ -8,7 +8,6 @@ import pandas as pd
 # Model imports
 from camada_model.ctrl_fluxo import CtrlFluxo
 from camada_model.ctrl_info_loader import CtrlInfoLoader
-from camada_model.ctrl_atributos_cidade import CtrlAtributosCidade
 from camada_model.ctrl_spreaders import CtrlSpreader
 
 
@@ -19,7 +18,6 @@ import visualizacao.vis_mapa_2 as vis_2
 # Carregando Model classes
 ctrlFluxo = CtrlFluxo()
 ctrlInfoLoader = CtrlInfoLoader()
-ctrlAtrCidade = CtrlAtributosCidade()
 ctrlSpreader = CtrlSpreader()
 
 # Carregando dados iniciais
@@ -27,7 +25,10 @@ dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
 dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(dicEstados[0]['cod_uf']).to_dict('records')
 
 #Variáveis de estado
-tabSelecionada = "fluxo_geral"
+#TODO: remover variavel se nao utilizada no futuro
+tabSelecionada = "tab-fluxo-transporte"
+
+
 
 # Inicializando aplicacao
 app = Dash(__name__)
@@ -148,7 +149,7 @@ def criarComponentesTabFluxo(tipoFluxo):
 
 
 #Componente da tab de Atributos 
-tabAtributos = html.Div([
+tabPropagacao = html.Div([
             html.Div([
                 containerMapa_2,
                 html.Div([dropdownAtributos], id="mapa-selecao-container")
@@ -156,7 +157,7 @@ tabAtributos = html.Div([
                         
             containerVisLateral,
             # containerDf
-], id="tab-atributos")
+], id="tab-propagacao")
 
 ##############################################
 #######     Application Layout      ##########
@@ -178,7 +179,7 @@ app.layout = html.Div(children=[
     dcc.Tabs(id="tabs-vis", value='tab-fluxo-transporte', children=[
         dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte', className="tab-parte"),
         dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude', className="tab-parte"),
-        dcc.Tab(label='Análise de propagação', value='tab-atributos', className="tab-parte")
+        dcc.Tab(label='Análise de propagação', value='tab-propagacao', className="tab-parte")
     ]),
 
     #Container das tabs da aplicação
@@ -218,8 +219,8 @@ def render_content(tab):
         return criarComponentesTabFluxo("transporte")
     elif(tab == "tab-fluxo-saude"):
         return criarComponentesTabFluxo("saude")   
-    elif(tab == "tab-atributos"):
-        return tabAtributos  
+    elif(tab == "tab-propagacao"):
+        return tabPropagacao  
 
 ############     Callbacks: Tab Fluxo de Transporte + Tab Saúde     ##############
 
@@ -227,16 +228,21 @@ def render_content(tab):
 @app.callback(
     Output('div-dropdown-dinamico', 'children'),
     Input('dropdown-estado', 'value'), 
-    Input('dropdown-analise', 'value'))
-def updateDropdownCidade(idEstado, tipoDropdown):
+    Input('dropdown-analise', 'value'), 
+    Input('tabs-vis', 'value'))
+def updateDropdownCidade(idEstado, tipoDropdown, tabSelecionada):
     if tipoDropdown == "cidade":
-        return carregarDropdownCidades(idEstado)
+        return carregarDropdownCidades(idEstado, tabSelecionada)
     elif tipoDropdown == "regiao":
         return carregarDropdownRegiao(idEstado)
 
 #Funcao de apoio de carregamento de dropdown
-def carregarDropdownCidades(idEstado):
-    dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(idEstado).to_dict('records')
+def carregarDropdownCidades(idEstado, tabSelecionada):
+    dicCidades = None
+    if(tabSelecionada == "tab-fluxo-transporte" or tabSelecionada == "tab-propagacao"):
+        dicCidades = ctrlInfoLoader.carregarCidadesPorEstado(idEstado).to_dict('records')
+    else:
+        dicCidades = ctrlInfoLoader.buscarMunicipiosPorEstado(idEstado).to_dict('records')
     return [
             html.P("Cidade", className="dropdown-ctn-text"),
             dcc.Dropdown(
@@ -299,7 +305,7 @@ def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
 # Callback - Renderiza diversos atributos da cidade
 @app.callback(
     Output('visualizacao_2', 'figure'),
-    Input('tab-atributos', 'children'),
+    Input('tab-propagacao', 'children'),
     Input('dropdown-cid_reg', 'value'))
 def updateAtributosCidades(tabvalue, id):
     listaPath = ctrlSpreader.buscarSpreaders(id)
