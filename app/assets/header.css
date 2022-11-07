@@ -233,13 +233,21 @@ body{
 }
 
 #visualizacao-barchart{
-  height: 100%;
+  min-height: 100%;
 }
 
 #path-scroll-container{
   height: 100%;
   overflow: auto;
   margin-bottom: 10px;
+  /* max-height:500px; */
+}
+
+#barchart-scroll-container{
+  height: 100%;
+  overflow: auto;
+  margin-bottom: 10px;
+  /* max-height:500px; */
 }
 
 .container_path{

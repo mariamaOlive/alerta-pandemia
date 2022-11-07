@@ -72,7 +72,7 @@ class CtrlFluxo:
 
     #Funcao constroi dfFluxoCidade
     def construirDfFluxoCidade(self, fluxo):
-        nomesColunas = ["nome_dest", "cod_dest", "latitude_dest", "longitude_dest", 
+        nomesColunas = ["cod_dest", "nome_dest",  "latitude_dest", "longitude_dest", 
                         "fluxo_geral", "fluxo_aereo", "fluxo_rodo",
                         "saude_alta", "saude_baixa_media"]
         dfFluxo = pd.DataFrame(fluxo, columns=nomesColunas)
@@ -80,7 +80,7 @@ class CtrlFluxo:
 
     #Funcao constroi dfFluxoRegiao
     def construirDfFluxoRegiao(self, fluxoSaude, fluxoTransporte):
-        colunasFluxoSaude = ["nome_dest", "cod_dest", "latitude_dest", "longitude_dest", 
+        colunasFluxoSaude = ["cod_dest", "nome_dest", "latitude_dest", "longitude_dest", 
                             "saude_alta", "saude_baixa_media"]
         dfFluxoSaude = pd.DataFrame(fluxoSaude, columns=colunasFluxoSaude)
 

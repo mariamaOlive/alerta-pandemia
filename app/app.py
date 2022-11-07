@@ -112,7 +112,9 @@ containerMapa_2 = dcc.Graph(id='visualizacao_2', className='visualizacao-mapa')
 
 #Componente visualizacao lateral
 containerVisLateral = html.Div([
-    html.Div(dcc.Graph(id='visualizacao-barchart'), id="vis_lateral", className="small_container-vis"),
+    html.Div(
+        html.Div(dcc.Graph(id='visualizacao-barchart'), id="barchart-scroll-container"),
+        id="vis_lateral", className="small_container-vis"),
     html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
     ]
     , className="vis_lat-container")
@@ -299,7 +301,8 @@ def carregarDropdownRegiao(idEstado):
 @app.callback(
     [Output('visualizacao', 'figure'),
     Output('container-dropdown-numero', 'children'),
-    Output('visualizacao-barchart', 'figure')],
+    Output('visualizacao-barchart', 'figure'),
+    Output('visualizacao-barchart', 'style')],
     [State('dropdown-analise', 'value')],
     [Input('dropdown-cid_reg', 'value'),
     Input('radio-fluxo', 'value'),
@@ -309,11 +312,11 @@ def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
-        numeroMaxCidades, visualizacao, visBarChart = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
-        return visualizacao, dash.no_update, visBarChart
+        numeroMaxCidades, visualizacao, visBarChart, styleBarChart = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
+        return visualizacao, dash.no_update, visBarChart, styleBarChart
     else:
-        numeroMaxCidades, visualizacao, visBarChart  = updateFluxoTipo(tipoAnalise, id, tipoFluxo)
-        return visualizacao, generateDropdown(numeroMaxCidades), visBarChart
+        numeroMaxCidades, visualizacao, visBarChart, styleBarChart  = updateFluxoTipo(tipoAnalise, id, tipoFluxo)
+        return visualizacao, generateDropdown(numeroMaxCidades), visBarChart, styleBarChart
 
 def updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades=20):
     if tipoAnalise == 'cidade':
@@ -325,9 +328,9 @@ def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
 
-    visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo)
+    visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
-    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart
+    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
      
 def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     infoRegiao, dfFluxo = ctrlFluxo.percentualFluxoRegiaoSaude(idRegiao, tipoFluxo)
