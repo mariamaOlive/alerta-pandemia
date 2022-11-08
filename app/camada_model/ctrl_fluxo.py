@@ -42,6 +42,7 @@ class CtrlFluxo:
 
         if(self.cacheRegiaoSaude is None) or (idRegiaoSaude != self.cacheRegiaoSaude.id):
             fluxoSaude = self.bdGrafo.buscarFluxoSaudeRegiao(idRegiaoSaude)
+            print(fluxoSaude)
             self.bdGrafo.close() 
             fluxoTransporte = self.bdGrafo.buscarFluxoTransporteRegiao(idRegiaoSaude)
             self.bdGrafo.close() 
@@ -84,7 +85,7 @@ class CtrlFluxo:
                             "saude_alta", "saude_baixa_media"]
         dfFluxoSaude = pd.DataFrame(fluxoSaude, columns=colunasFluxoSaude)
 
-        colunasFluxoTransporte = ["nome_dest", "cod_dest", "latitude_dest", "longitude_dest", 
+        colunasFluxoTransporte = ["cod_dest","nome_dest","latitude_dest", "longitude_dest", 
                             "fluxo_geral", "fluxo_aereo", "fluxo_rodo"]
         dfFluxoTransporte = pd.DataFrame(fluxoTransporte, columns=colunasFluxoTransporte)
 

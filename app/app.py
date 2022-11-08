@@ -327,7 +327,6 @@ def updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades=20):
 def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
-
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
@@ -335,8 +334,9 @@ def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
 def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     infoRegiao, dfFluxo = ctrlFluxo.percentualFluxoRegiaoSaude(idRegiao, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+    visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
-    return dfFluxo.shape[0],visualizacao
+    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart,{'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
  
 
 ############     Callbacks: Tab Análise de propagação     ##############

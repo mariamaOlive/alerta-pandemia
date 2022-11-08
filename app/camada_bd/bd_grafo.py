@@ -112,10 +112,10 @@ class BDGrafo(metaclass=SingletonMeta):
     @staticmethod
     def _buscarFluxoSaudeRegiao(tx, idRegiao):
         query = (
-            "MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade) "
+            "MATCH (rs:Regiao_Saude)<-[r:PERTENCE_REGIAO]-(c:Cidade) "
             "WHERE rs.cod_reg_saude = $idRegiao "
             "WITH collect(c) AS cs, sum(c.populacao) AS rs_pop "
-            "MATCH (c_ori:Cidade)-[f:FLUXO_SAUDE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude) "
+            "MATCH (c_ori:Cidade)-[f:FLUXO_SAUDE]->(c_dest:Cidade)-[p:PERTENCE_REGIAO]->(rs_dest:Regiao_Saude) "
             "WHERE c_ori IN cs AND NOT c_dest IN cs " 
             "WITH rs_dest.cod_reg_saude AS cod_regiao, rs_dest.nome AS nome, rs_dest.latitude AS latitude, rs_dest.longitude AS longitude, "
             "collect([c_ori.populacao,f.saude_baixa_media,f.saude_alta]) AS cl, rs_pop AS rs_pop "
@@ -142,10 +142,10 @@ class BDGrafo(metaclass=SingletonMeta):
     @staticmethod
     def _buscarFluxoTransporteRegiao(tx, idRegiao):
         query = (
-            "MATCH (rs:Regiao_Saude)<-[r:PERTENCE]-(c:Cidade) "
+            "MATCH (rs:Regiao_Saude)<-[r:PERTENCE_REGIAO]-(c:Cidade) "
             "WHERE rs.cod_reg_saude = $idRegiao "
             "WITH collect(c) AS cs, sum(c.populacao) AS rs_pop "
-            "MATCH (c_ori:Cidade)-[f:FLUXO_TRANSPORTE]->(c_dest:Cidade)-[p:PERTENCE]->(rs_dest:Regiao_Saude) "
+            "MATCH (c_ori:Cidade)-[f:FLUXO_TRANSPORTE]->(c_dest:Cidade)-[p:PERTENCE_REGIAO]->(rs_dest:Regiao_Saude) "
             "WHERE c_ori IN cs AND NOT c_dest IN cs " 
             "WITH rs_dest.cod_reg_saude AS cod_regiao, rs_dest.nome AS nome, rs_dest.latitude AS latitude, rs_dest.longitude AS longitude, "
             "collect([c_ori.populacao,f.fluxo_geral,f.fluxo_aereo, f.fluxo_rodo]) AS cl, rs_pop AS rs_pop "
