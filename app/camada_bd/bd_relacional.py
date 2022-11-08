@@ -54,7 +54,14 @@ class BDRelacional(metaclass=SingletonMeta):
     def buscarCidadeCoordenadas(self, cidadeId):
         query = f"SELECT cod_cidade, nome_cidade, latitude, longitude FROM arr_mun\
                 WHERE cod_cidade = {cidadeId};"
+        resultado = self.queryTabela(query)[0]
+        return resultado 
 
+
+    #Buscar coordenadas de um municipio        
+    def buscarMunicipioCoordenadas(self, cidadeId):
+        query = f"SELECT cod_mun, nome_mun, latitude, longitude FROM municipio\
+                WHERE cod_mun = {cidadeId};"
         resultado = self.queryTabela(query)[0]
         return resultado 
 

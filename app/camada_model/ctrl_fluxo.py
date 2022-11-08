@@ -28,7 +28,12 @@ class CtrlFluxo:
 
             # Busca informacoes da cidade de origem
             # Pega as 4 seguintes informacoes -> "cod_ori", "nome_ori", "latitude_ori", "longitude_ori"
-            infoCidade = self.bdRel.buscarCidadeCoordenadas(idCidade)
+            infoCidade = None
+            if(tipoFluxo=="saude_alta" or tipoFluxo=="saude_baixa_media"):
+                infoCidade = self.bdRel.buscarMunicipioCoordenadas(idCidade)
+            else: 
+                infoCidade = self.bdRel.buscarCidadeCoordenadas(idCidade)
+            
             self.cacheCidade = Cidade(*infoCidade)
             self.cacheCidade.setFluxo(self.construirDfFluxoCidade(fluxo))
 
