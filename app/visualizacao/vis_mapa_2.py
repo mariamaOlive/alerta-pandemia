@@ -76,7 +76,8 @@ def carregarMapa(listaPath):
             hoverinfo = 'text',
             text = nome_municipio,
             mode = 'markers',
-            marker = dict(size = caminho.probabilidade * 5000, color = '#FF971D', opacity=0.2)),
+            # marker = dict(size = caminho.probabilidade * 5000, color = '#FF971D', opacity=0.2)),
+            marker = dict(color = '#FF971D', opacity=0.2)),
     )
 
         
