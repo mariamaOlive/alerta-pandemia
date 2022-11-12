@@ -33,7 +33,7 @@ def criarMatrizFluxo(dfMunicipios, dfFluxo):
     #Criando dicionario para indentificar index do municipio na matrixFluxo
     hashIdxMunicipios = {} 
     for idxMunicipio, row in dfMunicipios.iterrows():
-        hashIdxMunicipios[row["cod_mun"]] = (idxMunicipio, row["populacao_2021"])
+        hashIdxMunicipios[row["cod_cidade"]] = (idxMunicipio, row["populacao_2021"])
     
     #Adicionando fluxo na matrizFluxo
     for codMunicipio, infoMunicipio in hashIdxMunicipios.items():
@@ -53,7 +53,7 @@ def criarMatrizFluxo(dfMunicipios, dfFluxo):
 def calcularTaxaVariacao(matrizPopulacao, infectadosDiaAnterior, matrizFluxo):
 
     r = 0.2 #Taxa de contagio
-    s = 1 #Ajusta super/subestimativa do fluxo 
+    s = 1.5 #Ajusta super/subestimativa do fluxo 
     N = matrizPopulacao #Populacao do municipio
     I = infectadosDiaAnterior #Numero de Infectado no dia anterior
     M = matrizFluxo
@@ -79,16 +79,16 @@ def calcularTaxaVariacao(matrizPopulacao, infectadosDiaAnterior, matrizFluxo):
 if __name__ == '__main__':
 
     #Carregando dados de Município
-    dfMunicipios = pd.read_csv("../data/integrado/municipio.csv")
+    dfMunicipios = pd.read_csv("../data/integrado/arr_mun.csv")
     dfMunicipios = dfMunicipios[dfMunicipios['latitude'].notna()]
-    dfMunicipios = dfMunicipios.sort_values(by=["cod_mun"])
+    dfMunicipios = dfMunicipios.sort_values(by=["cod_cidade"])
     dfMunicipios = dfMunicipios.reset_index(drop=True)
 
     #Carregando dados de fluxo
-    dfFluxo = pd.read_csv("../data/calculado/calculo_qtd_fluxo.csv")
+    dfFluxo = pd.read_csv("../data/calculado/arr_calculo_qtd_fluxo.csv")
     dfFluxo = dfFluxo.drop_duplicates()
-    dfFluxo = dfFluxo[dfFluxo["cod_origem"].isin(dfMunicipios["cod_mun"])]
-    dfFluxo = dfFluxo[dfFluxo["cod_destino"].isin(dfMunicipios["cod_mun"])]
+    dfFluxo = dfFluxo[dfFluxo["cod_origem"].isin(dfMunicipios["cod_cidade"])]
+    dfFluxo = dfFluxo[dfFluxo["cod_destino"].isin(dfMunicipios["cod_cidade"])]
 
     #Criar matriz de fluxo entre cidades
     matrizFluxo, hashMunicipios = criarMatrizFluxo(dfMunicipios, dfFluxo)
@@ -112,9 +112,9 @@ if __name__ == '__main__':
 
     listaAnalise = []
     df_regic = pd.read_csv("../data/integrado/cidades_regic.csv")
-    listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
+    # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
     # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") ]["cod_mun"].tolist()
-    # listaSpreader = df_regic["cod_mun"].tolist()
+    listaSpreader = dfMunicipios["cod_cidade"].tolist()
     for cidadeInicial in listaSpreader: 
         # cidadeInicial = 3550308
         print("Municipio: ", cidadeInicial)
@@ -135,10 +135,10 @@ if __name__ == '__main__':
 
         #Criar dataframe com os dados de infectados
         dfSI = pd.DataFrame(matrixInfectados.T, columns=["dia_" + str(dia) for dia in range(DIAS)])
-        dfSI = pd.concat([dfMunicipios[["cod_mun","nome_mun"]], dfSI], axis=1, join='inner')
+        dfSI = pd.concat([dfMunicipios[["cod_cidade","nome_cidade"]], dfSI], axis=1, join='inner')
         # dfSI.to_csv(f"../data/calculado/calc_SI_{cidadeInicial}.csv", index=False)
 
-        filtro_cidade = dfSI["cod_mun"]==cidadeInicial
+        filtro_cidade = dfSI["cod_cidade"]==cidadeInicial
         num_cidade = dfSI[filtro_cidade][f"dia_{DIAS-1}"].sum()
         num_espalhamento = dfSI[~filtro_cidade][f"dia_{DIAS-1}"].sum()
         num_total = num_cidade + num_espalhamento
@@ -146,5 +146,5 @@ if __name__ == '__main__':
 
 
     df_analise = pd.DataFrame(listaAnalise, columns=["cod_mun","cidade", "espalhamento", "total"])
-    df_analise.to_csv(f"../data/calculado/spreaders.csv", index=False)
+    df_analise.to_csv(f"../data/calculado/spreaders_s15.csv", index=False)
 
