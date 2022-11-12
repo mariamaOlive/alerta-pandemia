@@ -36,3 +36,4 @@ class CtrlInfoLoader:
         listaRegioes = self.bdRel.buscarRegioesPorEstado(estadoId)
         dfRegioes = pd.DataFrame(listaRegioes, columns=["cod_reg_saude","nome_reg_saude"])
         return dfRegioes
+

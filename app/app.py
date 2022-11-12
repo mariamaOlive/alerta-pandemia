@@ -9,6 +9,8 @@ import pandas as pd
 from camada_model.ctrl_fluxo import CtrlFluxo
 from camada_model.ctrl_info_loader import CtrlInfoLoader
 from camada_model.ctrl_spreaders import CtrlSpreader
+from camada_model.ctrl_atributos_cidade import CtrlAtributosCidade
+
 
 
 # Visualizações imports
@@ -20,6 +22,7 @@ import visualizacao.vis_bar_chart as visBarchart
 ctrlFluxo = CtrlFluxo()
 ctrlInfoLoader = CtrlInfoLoader()
 ctrlSpreader = CtrlSpreader()
+ctrlAtributos = CtrlAtributosCidade()
 
 # Carregando dados iniciais
 dicEstados = ctrlInfoLoader.dfEstados.to_dict('records')
@@ -69,10 +72,9 @@ dropdownAtributos = html.Div([
                 {"label":"IA aeroportos", "value":"ia_aeroporto"},
                 {"label":"IA transportes", "value":"ia_transporte"},
                 {"label":"Leitos/mil hab.", "value":"num_leitos"},
-                {"label":"Rede Sentinela", "value":"sentinela"}
+                {"label":"Rede Sentinela", "value":"rede_sentinela"}
                 ],
-                id='dropdown-atributos',
-                multi=True)
+                id='dropdown-atributos')
     ], id = 'dropdown-atributos-container')
 
 
@@ -306,9 +308,10 @@ def carregarDropdownRegiao(idEstado):
     [State('dropdown-analise', 'value')],
     [Input('dropdown-cid_reg', 'value'),
     Input('radio-fluxo', 'value'),
-    Input('dropdown-numero', 'value')]
+    Input('dropdown-numero', 'value'),
+    Input('dropdown-atributos', 'value')]
     )
-def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades):
+def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades, atributo):
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
@@ -346,9 +349,15 @@ def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     Output('visualizacao_2', 'figure'),
     Output('vis_lateral_propagacao', 'children'),
     Input('tab-propagacao', 'children'),
-    Input('dropdown-cid_reg', 'value'))
-def updateAtributosCidades(tabvalue, id):
+    Input('dropdown-cid_reg', 'value'), 
+    Input('dropdown-atributos', 'value'))
+def updateCaminhos(tabvalue, id, atributo):
     listaPath = ctrlSpreader.buscarSpreaders(id)
+    df = ctrlAtributos.carregarTodasCidades()
+
+    if(atributo != None):
+       df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
+       print(df_atributo_selecionado)
     return vis_2.carregarMapa(listaPath), criarPathContainer(listaPath)
 
 
