@@ -106,19 +106,10 @@ class BDRelacional(metaclass=SingletonMeta):
         return resultado
 
 
-    # def buscarTodasCidadesComSentinela(self):
-    #     query = "SELECT mu.*, STRING_AGG(ss.nome_serv, ', ') rede_sentinela \
-    #             FROM municipio mu \
-    #             LEFT JOIN servico_sentinela ss ON mu.cod_mun = ss.cod_mun \
-    #             GROUP BY mu.cod_mun;"
-    #     resultado = self.queryTabela(query)
-    #     return resultado
-
-
-
-
-
-
+    def buscarTotalPropacao(self):
+        query = "SELECT  cod_cidade, total_pais, total_cidade, total_outras_cidades from arr_mun"
+        resultado = self.queryTabela(query)
+        return resultado
 
 
     #TODO: implementar funçao se necessario
