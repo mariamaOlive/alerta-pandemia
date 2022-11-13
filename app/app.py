@@ -63,6 +63,7 @@ dropdownAtributos = html.Div([
                 html.Label("Adicione camadas de visualização", className="dropdown-ctn-text"),
                 dcc.Dropdown(
                 options=[
+                {"label":"Potencial Propagação", "value":"total_pais"},
                 {"label":"PIB", "value":"pib"},
                 {"label":"Densidade populacional", "value":"densidade_2021"},
                 {"label":"Hierarquia", "value":"hierarquia"},
@@ -358,10 +359,10 @@ def updateCaminhos(tabvalue, id, atributo):
         df = ctrlAtributos.carregarTodasCidades()
         df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
         lista_cidades = [caminho.path[-1].id for caminho in listaPath]
+
         #Pegar aqui o atributo das cidades destino
         df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]
-        print(df_filtrado)
-
+   
     return vis_2.carregarMapa(listaPath), criarPathContainer(listaPath)
 
 

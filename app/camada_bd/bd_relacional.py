@@ -103,7 +103,6 @@ class BDRelacional(metaclass=SingletonMeta):
                 GROUP BY m.cod_arr) s_final \
                 ON arr.cod_cidade = s_final.c_arr"
         resultado = self.queryTabela(query)
-        print(len(resultado))
         return resultado
 
 
