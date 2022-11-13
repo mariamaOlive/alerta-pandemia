@@ -72,6 +72,17 @@ LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row
 MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
 ON MATCH SET c.hierarquia= row.hierarquia
 
+//Adicionando dados relativos a propagacao da doenca
+LOAD CSV WITH HEADERS FROM "file:///spreaders_s15.csv" AS row  
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.total_cidade= toFloat(row.cidade),
+c.total_pais= toFloat(row.total),
+c.total_outras_cidades = toFloat(row.espalhamento)
+
+MATCH (c:Cidade)
+REMOVE c.total_cidade,c.total_pais, c.total_outras_cidades
+RETURN c.total_cidade
+
 LOAD CSV WITH HEADERS FROM "file:///cidades_regic.csv" AS row  
 MATCH (c:Cidade {cod_mun: toInteger(row.cod_mun)})
 SET c.hierarquia= row.hierarquia
@@ -468,6 +479,17 @@ CALL apoc.export.csv.data(cidades, [], "cidades.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 
+//Get top %
+WITH 1 as per
+MATCH(:Cidade)
+WITH toInteger(floor(count(*) * per / 100)) AS lim
+call apoc.cypher.run(
+'MATCH (c:Cidade)
+RETURN c.cod_mun 
+order by c.total_pais DESC limit $limit'
+, {limit : lim}) yield value
+RETURN value AS cod_mun
+
 
 
 //Algoritmos de caminho
@@ -569,3 +591,61 @@ RETURN
     nodes(path) as path
 ORDER BY totalCost ASC
 
+WITH 1 as per
+MATCH(:Cidade)
+WITH toInteger(floor(count(*) * per / 100)) AS lim
+call apoc.cypher.run(
+'MATCH (c:Cidade)
+RETURN c
+order by c.total_pais DESC limit $limit'
+, {limit : lim}) yield value
+RETURN value 
+
+MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
+
+
+WITH 1 as per
+MATCH(:Cidade)
+WITH toInteger(floor(count(*) * per / 100)) AS lim
+call apoc.cypher.run(
+'MATCH (c:Cidade)
+RETURN c.cod_mun
+order by c.total_pais DESC limit $limit'
+, {limit : lim}) YIELD value
+WITH collect(value["c.cod_mun"]) AS codigos
+UNWIND codigos AS ct
+MATCH (source:Cidade {cod_mun: 1200203}), (target:Cidade {cod_mun: ct})
+CALL gds.shortestPath.dijkstra.stream('myGraph', {
+    sourceNode: source,
+    targetNode: target,
+    relationshipWeightProperty: 'fluxo_geral'})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).nome AS sourceNodeName,
+    gds.util.asNode(targetNode).nome AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).nome] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY totalCost ASC
+
+WITH 1 as per
+MATCH(:Cidade)
+WITH toInteger(floor(count(*) * per / 100)) AS lim
+call apoc.cypher.run(
+'MATCH (c:Cidade)
+RETURN c.cod_mun
+order by c.total_pais DESC limit $limit'
+, {limit : lim}) YIELD value
+return  collect(value["c.cod_mun"]) AS nodes
+
+
+WITH 1 as per
+MATCH(:Cidade)
+WITH toInteger(floor(count(*) * per / 100)) AS lim
+MATCH (c:Cidade)
+RETURN c limit toInteger(floor(count(c) * .1))
+, {limit : lim}) YIELD value
+WITH value.cod_mun AS cod
+return  collect(cod) AS nodes

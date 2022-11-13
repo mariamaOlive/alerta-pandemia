@@ -172,10 +172,17 @@ class BDGrafo(metaclass=SingletonMeta):
     @staticmethod
     def _buscarMenorCaminhoFluxo(tx, idMunicipioOrigem, tipoDestino):
         query = (
-            "MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = \"" + tipoDestino+ "\"\
-            WITH collect(c_spreader) AS nodes \
-            UNWIND nodes AS ct \
-            MATCH (source:Cidade {cod_mun:"+ idMunicipioOrigem +"}), (target:Cidade {cod_mun: ct.cod_mun}) \
+            "WITH 5 as per \
+            MATCH(:Cidade) \
+            WITH toInteger(floor(count(*) * per / 100)) AS lim \
+            call apoc.cypher.run( \
+            'MATCH (c:Cidade) \
+            RETURN c.cod_mun \
+            order by c.total_pais DESC limit $limit' \
+            , {limit : lim}) YIELD value \
+            WITH collect(value[\"c.cod_mun\"]) AS codigos \
+            UNWIND codigos AS ct \
+            MATCH (source:Cidade {cod_mun:"+ idMunicipioOrigem +"}), (target:Cidade {cod_mun: ct}) \
             CALL gds.shortestPath.dijkstra.stream('grafoFluxo', { \
                 sourceNode: source, \
                 targetNode: target, \
