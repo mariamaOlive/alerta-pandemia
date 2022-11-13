@@ -353,6 +353,7 @@ def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     Input('dropdown-atributos', 'value'))
 def updateCaminhos(tabvalue, id, atributo):
     listaPath = ctrlSpreader.buscarSpreaders(id)
+    #Filtrar para as cidades destino
     df = ctrlAtributos.carregarTodasCidades()
 
     if(atributo != None):

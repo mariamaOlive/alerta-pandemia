@@ -62,12 +62,8 @@ def calcularTaxaVariacao(matrizPopulacao, infectadosDiaAnterior, matrizFluxo):
     dInterno = r*I*((N-I)/N)
 
     #Taxa de variacao de infectados devido ao fluxo
-    # print("Infectados ",I[3829])
-    # print("Probabilidade ", M[3829].sum())
     dSaida = M.sum(axis=1)*I #Pessoas infectadas que saem da cidade
-    # print("Saida ",dSaida[3829])
     dEntrada = np.matmul(I, M) #Pessoas infectadas que entram na cidade
-    # print("Entrada ",dEntrada[3829])
     dExterno = dEntrada - dSaida
 
     #Taxa de variacao total

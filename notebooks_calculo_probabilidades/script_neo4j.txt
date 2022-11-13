@@ -523,6 +523,14 @@ CALL gds.graph.project(
         relationshipProperties: 'fluxo_invertido'
     }
 )
+CALL gds.graph.project(
+    'myGraph',
+    'Cidade',
+    'FLUXO_TRANSPORTE',
+    {
+        relationshipProperties: 'fluxo_geral'
+    }
+)
 
 //Delta - primeiro faz para todos os nós e depois filtra
 MATCH (source:Cidade {cod_mun: 2611309})
@@ -546,10 +554,10 @@ MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
 WITH collect(c_spreader) AS nodes
 UNWIND nodes AS ct
 MATCH (source:Cidade {cod_mun: 1200203}), (target:Cidade {cod_mun: ct.cod_mun})
-CALL gds.shortestPath.dijkstra.stream('grafoFluxo', {
+CALL gds.shortestPath.dijkstra.stream('myGraph', {
     sourceNode: source,
     targetNode: target,
-    relationshipWeightProperty: 'fluxo_invertido'})
+    relationshipWeightProperty: 'fluxo_geral'})
 YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
 RETURN
     index,
