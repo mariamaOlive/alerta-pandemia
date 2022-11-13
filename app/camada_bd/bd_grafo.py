@@ -44,7 +44,7 @@ class BDGrafo(metaclass=SingletonMeta):
                 "'Cidade', "
                 "'FLUXO_TRANSPORTE',"
                 "{"
-                    "relationshipProperties: 'fluxo_invertido'"
+                    "relationshipProperties: 'fluxo_geral'"
                 "})"
             )
         return tx.run(query) #TODO: Verificar se criou corretamente com o try/catch
@@ -179,7 +179,7 @@ class BDGrafo(metaclass=SingletonMeta):
             CALL gds.shortestPath.dijkstra.stream('grafoFluxo', { \
                 sourceNode: source, \
                 targetNode: target, \
-                relationshipWeightProperty: 'fluxo_invertido'}) \
+                relationshipWeightProperty: 'fluxo_geral'}) \
             YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path \
             RETURN \
                 index, \
@@ -193,4 +193,4 @@ class BDGrafo(metaclass=SingletonMeta):
         )
         
         result = tx.run(query, idMunicipioOrigem=idMunicipioOrigem, tipoDestino=tipoDestino)
-        return result.values("costs","path")
+        return result.values("totalCost", "costs","path")
