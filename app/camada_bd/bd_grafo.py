@@ -172,7 +172,7 @@ class BDGrafo(metaclass=SingletonMeta):
     @staticmethod
     def _buscarMenorCaminhoFluxo(tx, idMunicipioOrigem, tipoDestino):
         query = (
-            "WITH 5 as per \
+            "WITH 1 as per \
             MATCH(:Cidade) \
             WITH toInteger(floor(count(*) * per / 100)) AS lim \
             call apoc.cypher.run( \
