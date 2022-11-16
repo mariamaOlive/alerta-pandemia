@@ -369,13 +369,15 @@ def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
     Input('dropdown-atributos', 'value'))
 def updateCaminhos(tabvalue, id, atributo):
     listaPath = ctrlSpreader.buscarSpreaders(id)
+    #Natalia: Df abaixo com todas as propagacoes
+    # dfPropagacoes = ctrlSpreader.buscarTodasPropagacoes() 
 
     if(atributo != None):
         df = ctrlAtributos.carregarTodasCidades()
         df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
         lista_cidades = [caminho.path[-1].id for caminho in listaPath]
 
-        #Pegar aqui o atributo das cidades destino
+        #Natalia: Pegar aqui o atributo das cidades destino
         df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]
    
     return vis_2.carregarMapa(listaPath), criarPathContainer(listaPath)

@@ -26,6 +26,12 @@ class CtrlSpreader:
         return paths
 
 
+    def buscarTodasPropagacoes(self):
+        queryInfo = self.bdRel.buscarTotalPropacao()
+        dfPropagacao = pd.DataFrame(queryInfo, columns=['cod_mun', 'total_pais', 'total_cidade', 'total_outras_cidades'])
+        return dfPropagacao
+
+
     #Cria a lista de possíveis caminho de acordo com a resposta da query
     def tratarCaminho(self, query):
         listaCaminhos = []
@@ -36,16 +42,6 @@ class CtrlSpreader:
 
         return listaCaminhos
          
-
-    # #Calcula a probabilidade de ocorrer o caminho baseado na probabilidade invertida
-    # def calcularProbabilidade(self, listaProbabilidades):
-    #     probCorrigida = 1
-    #     listaProbabilidades.reverse()
-    #     for idx, prob in enumerate(listaProbabilidades[:-1]):
-    #         probCorrigida *= (1 - (prob-listaProbabilidades[idx+1]))
-        
-    #     return probCorrigida 
-
 
     #Funcao gera o caminho com o objeto cidade
     def gerarCaminho(self, path):
