@@ -331,26 +331,38 @@ def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades, atributo):
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
-        numeroMaxCidades, visualizacao, visBarChart, styleBarChart = updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades)  
+        numeroMaxCidades, visualizacao, visBarChart, styleBarChart = updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades)  
         return visualizacao, dash.no_update, visBarChart, styleBarChart
     else:
-        numeroMaxCidades, visualizacao, visBarChart, styleBarChart  = updateFluxoTipo(tipoAnalise, id, tipoFluxo)
+        numeroMaxCidades, visualizacao, visBarChart, styleBarChart  = updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo)
         return visualizacao, generateDropdown(numeroMaxCidades), visBarChart, styleBarChart
 
-def updateFluxoTipo(tipoAnalise, id, tipoFluxo, numeroCidades=20):
+def updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades=20):
     if tipoAnalise == 'cidade':
-            return updateFluxoCidade(id, tipoFluxo, numeroCidades)
+            return updateFluxoCidade(id, tipoFluxo, atributo, numeroCidades)
     elif tipoAnalise == 'regiao':
-            return updateFluxoRegiao(id, tipoFluxo, numeroCidades)  
+            return updateFluxoRegiao(id, tipoFluxo, atributo, numeroCidades)  
 
-def updateFluxoCidade(idCidade, tipoFluxo, numeroCidades=20):
+def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
     infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
+
+    #
+    if(atributo != None):
+        df = ctrlAtributos.carregarTodasCidades()
+        df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
+        lista_cidades = dfFluxo[:numeroCidades]["cod_dest"].tolist()
+
+        #Natalia: Pegar aqui o atributo das cidades destino
+        df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]
+        print(df_filtrado)
+
+
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
      
-def updateFluxoRegiao(idRegiao, tipoFluxo, numeroCidades=20):
+def updateFluxoRegiao(idRegiao, tipoFluxo, atributo, numeroCidades=20):
     infoRegiao, dfFluxo = ctrlFluxo.percentualFluxoRegiaoSaude(idRegiao, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
