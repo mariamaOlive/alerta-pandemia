@@ -3,12 +3,13 @@ import plotly.express as px
 def carregaBarChart(df):
 
     dfBarChart = df
-
+    valor = round(dfBarChart['fluxo'],3)
+    
     fig = px.bar(dfBarChart, 
-     x="fluxo", y="nome_dest", orientation='h', text_auto=True,
+     x= valor, y="nome_dest", orientation='h', text_auto=True,
      color_discrete_sequence=px.colors.qualitative.Pastel[1:], template="plotly_dark",
      labels={'fluxo':'Fluxos', 'nome_dest':'Destino'},
-        ).update_layout(margin={"r":0,"t":46,"l":0,"b":6}).update_xaxes(visible=True).update_xaxes(title_text='Fluxos').update_traces(texttemplate='%{x:.d}')
+        ).update_layout(margin={"r":0,"t":46,"l":0,"b":6}).update_xaxes(visible=True).update_xaxes(title_text='Probabilidade').update_traces(texttemplate='%{x:.d}')
 
     fig.update_layout(title_text='Os Maiores Fluxos', 
                     title_x=0.5,
@@ -22,6 +23,8 @@ def carregaBarChart(df):
     fig.update_traces(marker_color='rgb(255, 151, 29)', marker_line_color='rgb(255, 255, 255)',
                   marker_line_width=1.5)
 
+    fig.update_layout(yaxis=dict(autorange="reversed"))
+    
     return fig
 
 #Funçao que formata os nomes das Cidades

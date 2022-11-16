@@ -1,7 +1,7 @@
 from turtle import width
 import plotly.graph_objects as go
 import visualizacao.entrada as entrada
-
+import numpy as np
 entrada = entrada.initialize_data()
 
 # Chave de acesso MapBox 
@@ -44,17 +44,22 @@ def carregarMapa(listaPath):
     # #                                 colorscale="Viridis", zmin=0, zmax=12,
     # #                                 marker_opacity=0.5, marker_line_width=0))
        
-    
+    opacidade = 0.1
     
     for caminho in listaPath:
         caminho_lat =[]
         caminho_lon = []
         nome_municipio = []
+        
         print(caminho.probabilidade)
         for pontos_caminho in caminho.path:
             caminho_lat.append(pontos_caminho.latitude)
             caminho_lon.append(pontos_caminho.longitude)
             nome_municipio.append(pontos_caminho.nome)
+
+            my_color = ('rgba('+str(np.random.randint(245, high = 255))+','+
+                str(np.random.randint(141, high = 151))+','+
+                str(np.random.randint(19, high = 29)))
 
         # fig.add_trace(go.Scattermapbox(
         # mode="markers+lines",
@@ -62,13 +67,14 @@ def carregarMapa(listaPath):
         # lat=caminho_lat,
         # text=nome_municipio,
         # marker=dict(size = 10, opacity=0.2,)))    
-
             
         fig.add_trace(go.Scattermapbox(
             lat = caminho_lat,
             lon = caminho_lon,
             mode = 'lines',
-            line= dict(color = '#FF971D')))
+            line={
+                "color":my_color+',0.1)'
+            }))
 
         fig.add_trace(go.Scattermapbox(
             lon = caminho_lon,
@@ -80,11 +86,7 @@ def carregarMapa(listaPath):
             marker = dict(color = '#FF971D', opacity=0.2)),
     )
 
-        
-    
-                           
-
-        
+            
 
     ## Update graph layout to improve graph styling.
     fig.update_layout(
@@ -105,7 +107,7 @@ def carregarMapa(listaPath):
 
     fig.update_layout(modebar_remove='zoomInMapbox')
 
-    fig.update_layout(legend_title_text='Rotas - Nós')
+    fig.update_layout(showlegend=False)
 
 #     fig.update_layout(legend=dict(
 #     orientation="h",

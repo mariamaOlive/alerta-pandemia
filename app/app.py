@@ -179,7 +179,22 @@ app.layout = html.Div(children=[
     html.Div(id="top-container", children=[
         #Título da aplicacao
         html.Div(id = "title-container",
-            children = [html.H1(children='Alerta Epidemia', id = "app-title")]
+            children = [html.H1(children='EpiFlow', id = "app-title")]
+
+            
+        ),
+
+        html.Div([
+            html.Img(src=app.get_asset_url('virus-icon.png'),
+                     id='virus-image',
+                     style={
+                         "height": "50px",
+                         "width": "auto",
+                         "margin-bottom": "10px",
+                     },
+                     )
+        ],
+            className="one-third column",
         ),
 
         #Dropdown Estado/Nivel analise/Cidade ou Regiao 
