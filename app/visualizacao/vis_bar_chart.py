@@ -3,13 +3,13 @@ import plotly.express as px
 def carregaBarChart(df):
 
     dfBarChart = df
-    valor = round(dfBarChart['fluxo'],3)
+    valor = round(dfBarChart['fluxo'] * 100, 2)
     
     fig = px.bar(dfBarChart, 
      x= valor, y="nome_dest", orientation='h', text_auto=True,
      color_discrete_sequence=px.colors.qualitative.Pastel[1:], template="plotly_dark",
-     labels={'fluxo':'Fluxos', 'nome_dest':'Destino'},
-        ).update_layout(margin={"r":0,"t":46,"l":0,"b":6}).update_xaxes(visible=True).update_xaxes(title_text='Probabilidade').update_traces(texttemplate='%{x:.d}')
+     labels={'fluxo':'Probabilidade', 'nome_dest':'Destino'},
+        ).update_layout(margin={"r":0,"t":46,"l":0,"b":6}).update_xaxes(visible=True).update_xaxes(title_text='Probabilidade').update_traces(texttemplate='%{x}')
 
     fig.update_layout(title_text='Os Maiores Fluxos', 
                     title_x=0.5,
@@ -24,6 +24,8 @@ def carregaBarChart(df):
                   marker_line_width=1.5)
 
     fig.update_layout(yaxis=dict(autorange="reversed"))
+
+    fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + '%'))
     
     return fig
 

@@ -44,7 +44,6 @@ def carregarMapa(listaPath):
     # #                                 colorscale="Viridis", zmin=0, zmax=12,
     # #                                 marker_opacity=0.5, marker_line_width=0))
        
-    opacidade = 0.1
     
     for caminho in listaPath:
         caminho_lat =[]
