@@ -348,11 +348,11 @@ def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
 
-    #
     if(atributo != None):
         df = ctrlAtributos.carregarTodasCidades()
         df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
         lista_cidades = dfFluxo[:numeroCidades]["cod_dest"].tolist()
+        lista_cidades.append(idCidade)
 
         #Natalia: Pegar aqui o atributo das cidades destino
         df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]

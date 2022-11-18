@@ -25,6 +25,20 @@ class CtrlAtributosCidade:
 
         return dfCidades
 
+    
+    # def carregarTodasCidades(self, lista):
+        
+    #     # Busca informacoes da cidade 
+    #     cidades = self.bdRel.buscarTodasCidadesComSentinela()
+
+    #     #Transforma em um df
+    #     dfCidades = pd.DataFrame(cidades, columns=self.nomeColunasMunicipio)
+
+    #     #Trata coluna de rede sentinela, transforma na classe list
+    #     dfCidades['rede_sentinela'] = dfCidades['rede_sentinela'].str.split(',')
+
+    #     return dfCidades
+
 
     #Busca toda as informações relativas a uma cidade
     def carregarCidade(self, idCidade)->Cidade:

@@ -8,10 +8,11 @@ class BDGrafo(metaclass=SingletonMeta):
 
     # uri = "neo4j+s://af76534a.databases.neo4j.io"
     # password = "Ez5RDE71XQXpRO9kzufUTrVGGNtw9mo5KAa83226V6M"
-    uri = "bolt://localhost:7687" #local BD
-    password = "alerta_epidemia" #local BD
+    uri = "bolt://localhost:11003" #local BD
+    password = "alerta_epidemia2" #local BD
     user = "neo4j"
     driver = None
+
 
     def __init__(self):
         #Cria projecao do fluxo para rodar algoritmos
