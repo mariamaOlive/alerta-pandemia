@@ -110,7 +110,8 @@ if __name__ == '__main__':
     df_regic = pd.read_csv("../data/integrado/cidades_regic.csv")
     # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
     # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") ]["cod_mun"].tolist()
-    listaSpreader = dfMunicipios["cod_cidade"].tolist()
+    # listaSpreader = dfMunicipios["cod_cidade"].tolist()
+    listaSpreader = [3550308]
     for cidadeInicial in listaSpreader: 
         # cidadeInicial = 3550308
         print("Municipio: ", cidadeInicial)
@@ -132,15 +133,15 @@ if __name__ == '__main__':
         #Criar dataframe com os dados de infectados
         dfSI = pd.DataFrame(matrixInfectados.T, columns=["dia_" + str(dia) for dia in range(DIAS)])
         dfSI = pd.concat([dfMunicipios[["cod_cidade","nome_cidade"]], dfSI], axis=1, join='inner')
-        # dfSI.to_csv(f"../data/calculado/calc_SI_{cidadeInicial}.csv", index=False)
+        dfSI.to_csv(f"../data/calculado/calc_SI_{cidadeInicial}.csv", index=False)
 
-        filtro_cidade = dfSI["cod_cidade"]==cidadeInicial
-        num_cidade = dfSI[filtro_cidade][f"dia_{DIAS-1}"].sum()
-        num_espalhamento = dfSI[~filtro_cidade][f"dia_{DIAS-1}"].sum()
-        num_total = num_cidade + num_espalhamento
-        listaAnalise.append((cidadeInicial, num_cidade, num_espalhamento, num_total))
+    #     filtro_cidade = dfSI["cod_cidade"]==cidadeInicial
+    #     num_cidade = dfSI[filtro_cidade][f"dia_{DIAS-1}"].sum()
+    #     num_espalhamento = dfSI[~filtro_cidade][f"dia_{DIAS-1}"].sum()
+    #     num_total = num_cidade + num_espalhamento
+    #     listaAnalise.append((cidadeInicial, num_cidade, num_espalhamento, num_total))
 
 
-    df_analise = pd.DataFrame(listaAnalise, columns=["cod_mun","cidade", "espalhamento", "total"])
-    df_analise.to_csv(f"../data/calculado/spreaders_s15.csv", index=False)
+    # df_analise = pd.DataFrame(listaAnalise, columns=["cod_mun","cidade", "espalhamento", "total"])
+    # df_analise.to_csv(f"../data/calculado/spreaders_s15.csv", index=False)
 
