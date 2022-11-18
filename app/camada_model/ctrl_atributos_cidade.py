@@ -7,7 +7,8 @@ class CtrlAtributosCidade:
     nomeColunasMunicipio = ["cod_mun", "nome_mun","latitude","longitude", "populacao_2021",
                             "densidade_2021","area", "uf","nome_uf","cod_uf","pais","pib","hierarquia",
                             "nome_hierarquia","indice_atracao","ia_saude_bm","ia_saude_a","ia_aeroporto",
-                            "ia_transporte","num_leitos", "total_pais", "total_cidade", "total_outras_cidades","rede_sentinela"]
+                            "ia_transporte","num_leitos", "total_pais", "total_cidade", "total_outras_cidades",
+                            "regiao_saude", "rede_sentinela"]
 
 
     def __init__(self):
