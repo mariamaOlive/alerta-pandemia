@@ -8,17 +8,6 @@ entrada = entrada.initialize_data()
 mapbox_access_token = 'pk.eyJ1IjoibmF0YWxpYW9saXZlaXJhIiwiYSI6ImNrd25sd3Q0NTBxcnoyb3ByYXNodTl0dGkifQ.MeGjMDVrvJXxj1zS6MfeHQ'
 
 
-# url = urllib.request.urlopen('https://raw.githubusercontent.com/fititnt/gis-dataset-brasil/master/municipio/geojson/municipio.json')
-# url.info().get_charset() is None
-# url.read().decode('latin1')
-
-
-# with urlopen('https://raw.githubusercontent.com/fititnt/gis-dataset-brasil/master/municipio/geojson/municipio.json') as response:
-#         municipios = json.load(response).decode(errors='replace')
-
-
-# Read all municipalities in the country at a given year
-# mun = read_municipality(code_muni="all", year=2020)
 
 def carregarMapa(listaPath):
 

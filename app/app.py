@@ -202,7 +202,7 @@ app.layout = html.Div(children=[
     ]),
     
     #Tabs da aplicação 
-    dcc.Tabs(id="tabs-vis", value='tab-propagacao', children=[
+    dcc.Tabs(id="tabs-vis", value='tab-fluxo-transporte', children=[
         dcc.Tab(label='Fluxo de transporte', value='tab-fluxo-transporte', className="tab-parte"),
         dcc.Tab(label='Fluxo serviços de saúde', value='tab-fluxo-saude', className="tab-parte"),
         dcc.Tab(label='Análise de propagação', value='tab-propagacao', className="tab-parte")
@@ -344,10 +344,9 @@ def updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades=20):
             return updateFluxoRegiao(id, tipoFluxo, atributo, numeroCidades)  
 
 def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
-    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
-    visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)  
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
-
+    df_filtrado = None
     #
     if(atributo != None):
         df = ctrlAtributos.carregarTodasCidades()
@@ -358,6 +357,7 @@ def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
         df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]
         print(df_filtrado)
 
+    visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades], df_filtrado, atributo)
 
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
