@@ -576,7 +576,7 @@ RETURN
 WITH "MATCH (c_spreader:Cidade)
 WITH collect(c_spreader) AS nodes
 UNWIND nodes AS ct
-MATCH (source:Cidade {cod_mun: 3550308}), (target:Cidade {cod_mun: ct.cod_mun})
+MATCH (source:Cidade {cod_mun: 2910800}), (target:Cidade {cod_mun: ct.cod_mun})
 CALL gds.shortestPath.dijkstra.stream('grafoFluxo', {
     sourceNode: source,
     targetNode: target,
@@ -589,7 +589,7 @@ RETURN
     totalCost as totalCost,
     [nodeId IN nodeIds | gds.util.asNode(nodeId).cod_mun] AS cod_nos,
     costs as costs" AS query
-CALL apoc.export.csv.query(query, "movies-directed.csv", {})
+CALL apoc.export.csv.query(query, "caminho_feira_santana.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
 
@@ -606,7 +606,7 @@ RETURN value
 MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
 
 
-WITH 1 as per
+WITH 100 as per
 MATCH(:Cidade)
 WITH toInteger(floor(count(*) * per / 100)) AS lim
 call apoc.cypher.run(
@@ -616,7 +616,7 @@ order by c.total_pais DESC limit $limit'
 , {limit : lim}) YIELD value
 WITH collect(value["c.cod_mun"]) AS codigos
 UNWIND codigos AS ct
-MATCH (source:Cidade {cod_mun: 1200203}), (target:Cidade {cod_mun: ct})
+MATCH (source:Cidade {cod_mun: 1600501}), (target:Cidade {cod_mun: ct})
 CALL gds.shortestPath.dijkstra.stream('myGraph', {
     sourceNode: source,
     targetNode: target,
