@@ -65,6 +65,10 @@ body{
   font-size: 13px;
 }
 
+.Select{
+  width:100%
+}
+
 .Select-control{
   background-color: #FFFFFF;
   /* box-shadow: 0 1px 2px rgb(0 0 0 / 30%); */
@@ -134,7 +138,7 @@ body{
   display: flex;
   justify-content:start;
   position: absolute;
-  /* width: 50%; */
+  width: 60%;
   top: 0;
   left: 0;
   margin: 10px;
@@ -142,7 +146,7 @@ body{
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
-#tab-atributos #mapa-selecao-container{
+#tab-propagacao #mapa-selecao-container{
   width: 30%;
 }
 
@@ -177,11 +181,11 @@ body{
   width: 200px;
 }
 
-#tab-atributos #mapa-selecao-container #dropdown-atributos-container{
+#tab-propagacao #mapa-selecao-container #dropdown-atributos-container{
   margin-right: 0px;
 }
 
-#tab-atributos #dropdown-atributos-container{
+#tab-propagacao #dropdown-atributos-container{
   width: 100%;
 }
 
