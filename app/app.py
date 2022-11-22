@@ -118,13 +118,17 @@ containerVisLateral = html.Div([
     html.Div(
         html.Div(dcc.Graph(id='visualizacao-barchart'), id="barchart-scroll-container"),
         id="vis_lateral", className="small_container-vis"),
-    html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
+    html.Div(html.Img(src=app.get_asset_url('tab1_2.png'),
+                     id='formula-image',
+                     ), id="vis_explicacao", className="small_container-vis")
     ]
     , className="vis_lat-container")
 
 containerLateralPropagacao = html.Div([
     html.Div(id="vis_lateral_propagacao", className="small_container-vis"),
-    html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
+    html.Div(html.Img(src=app.get_asset_url('tab3.png'),
+                     id='caminho-image',
+                     ), id="vis_explicacao", className="small_container-vis")
     ]
     , className="vis_lat-container")
 

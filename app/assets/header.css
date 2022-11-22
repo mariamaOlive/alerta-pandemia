@@ -306,5 +306,21 @@ body{
   border-radius: 9px;
 }
 
+#vis_explicacao{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#formula-image{
+  height: 50px;
+  width: auto;
+}
+
+#caminho-image{
+  height: 90%;
+  width: auto;
+  padding-right: 30px;
+}
 
 
