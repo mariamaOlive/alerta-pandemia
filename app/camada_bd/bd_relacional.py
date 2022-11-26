@@ -106,6 +106,26 @@ class BDRelacional(metaclass=SingletonMeta):
         return resultado
 
 
+#     def buscarCidadesSelecionadasComSentinela(self, lista):
+#         t = tuple(lista)
+#         query = "select name from studens where id IN {}".format(t)
+
+#         query = "SELECT  arr.*, s_final.sentinela FROM arr_mun arr \
+#                 LEFT JOIN \
+#                 (SELECT m.cod_arr c_arr, STRING_AGG(s.nome_sent, ', ') sentinela FROM \
+#                 (SELECT mu.cod_arranjo cod_arr, mu.cod_mun FROM municipio mu) m \
+#                 INNER JOIN \
+#                 (SELECT  ss.cod_mun, STRING_AGG(ss.nome_serv, ', ') nome_sent FROM servico_sentinela ss  GROUP BY ss.cod_mun) s \
+#                 ON m.cod_mun=s.cod_mun \
+#                 GROUP BY m.cod_arr) s_final \
+#                 ON arr.cod_cidade = s_final.c_arr \
+#                 WHERE cod_reg_saude IN (17005, 11001)"
+#         resultado = self.queryTabela(query)
+#         return resultado
+
+# SELECT  arr.*, s_final.sentinela FROM arr_mun arr LEFT JOIN (SELECT m.cod_arr c_arr, STRING_AGG(s.nome_sent, ', ') sentinela FROM (SELECT mu.cod_arranjo cod_arr, mu.cod_mun FROM municipio mu) m INNER JOIN (SELECT  ss.cod_mun, STRING_AGG(ss.nome_serv, ', ') nome_sent FROM servico_sentinela ss  GROUP BY ss.cod_mun) s ON m.cod_mun=s.cod_mun GROUP BY m.cod_arr) s_final ON arr.cod_cidade = s_final.c_arr WHERE cod_reg_saude IN (17005, 11001)
+
+
     def buscarTotalPropacao(self):
         query = "SELECT  cod_cidade, total_pais, total_cidade, total_outras_cidades from arr_mun"
         resultado = self.queryTabela(query)

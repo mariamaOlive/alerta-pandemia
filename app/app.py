@@ -118,13 +118,17 @@ containerVisLateral = html.Div([
     html.Div(
         html.Div(dcc.Graph(id='visualizacao-barchart'), id="barchart-scroll-container"),
         id="vis_lateral", className="small_container-vis"),
-    html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
+    html.Div(html.Img(src=app.get_asset_url('tab1_2.png'),
+                     id='formula-image',
+                     ), id="vis_explicacao", className="small_container-vis")
     ]
     , className="vis_lat-container")
 
 containerLateralPropagacao = html.Div([
     html.Div(id="vis_lateral_propagacao", className="small_container-vis"),
-    html.Div("TODO: EXPLICAÇÃO DOS FLUXOS, ATRIBUTOS, CÁLCULOS ETC", id="vis_explicacao", className="small_container-vis")
+    html.Div(html.Img(src=app.get_asset_url('tab3.png'),
+                     id='caminho-image',
+                     ), id="vis_explicacao", className="small_container-vis")
     ]
     , className="vis_lat-container")
 
@@ -352,6 +356,7 @@ def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
         df = ctrlAtributos.carregarTodasCidades()
         df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
         lista_cidades = dfFluxo[:numeroCidades]["cod_dest"].tolist()
+        lista_cidades.append(idCidade)
 
         #Natalia: Pegar aqui o atributo das cidades destino
         df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]
