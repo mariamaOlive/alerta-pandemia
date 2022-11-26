@@ -23,52 +23,53 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
 
     #dfCamadas['text'] = camada_hover_data
     #print(dfCamadas)
+    if atributo == None:
+        teste = len(dfRecomendacao["fluxo"])*2
+        ## Loop thorugh each flight entry to add line between source and destination
+        for slat, dlat, slon, dlon, score in source_to_dest:
+            fig.add_trace(go.Scattermapbox(
+                                lat = [slat,dlat],
+                                lon = [slon, dlon],
+                                mode = 'lines',
+                                line = dict(width = score*teste, color = '#FF971D')
+                                ))
 
-    teste = len(dfRecomendacao["fluxo"])*2
-    ## Loop thorugh each flight entry to add line between source and destination
-    for slat, dlat, slon, dlon, score in source_to_dest:
-        fig.add_trace(go.Scattermapbox(
-                            lat = [slat,dlat],
-                            lon = [slon, dlon],
-                            mode = 'lines',
-                            line = dict(width = score*teste, color = '#FF971D')
-                            ))
-
-    ## Logic to create labels of source and destination cities of flights
-    cities = dfRecomendacao["nome_ori"].values.tolist()+dfRecomendacao["nome_dest"].values.tolist()
-    scatter_hover_data = ['  ' + 'Municipio Origem: ' + str(city) for city in zip(cities)]
-    
-    fig.add_trace(
-            go.Scattermapbox(
-                        lon = dfRecomendacao["longitude_ori"].values.tolist()+dfRecomendacao["longitude_dest"].values.tolist(),
-                        lat = dfRecomendacao["latitude_ori"].values.tolist()+dfRecomendacao["latitude_dest"].values.tolist(),
-                        hoverinfo = 'text',
-                        text =  scatter_hover_data,
-                        mode = 'markers',
-                        marker = dict(size = 10, color = '#FFFFFF')),
-        )
-
-
-    listaPib = dfCamadas[atributo].values.tolist()
-    listaNome = dfCamadas['nome_mun'].values.tolist()
-    camada_hover_data = ['  ' + 'Municipio Destino: ' + nome + '<br>' +  '<br>' + '  ' + atributo + ':' + str(atr) for nome, atr in zip(listaNome, listaPib)]
-    dfCamadas['text'] = camada_hover_data
-    print(camada_hover_data)
-    ## Loop thorugh each flight entry to plot source and destination as points.
-    
-
-    for key, value in dfCamadas["text"].items():
-
-        value = dfCamadas["text"]
-        print(value)
+        ## Logic to create labels of source and destination cities of flights
+        cities = dfRecomendacao["nome_ori"].values.tolist()+dfRecomendacao["nome_dest"].values.tolist()
+        scatter_hover_data = ['  ' + 'Municipio Origem: ' + str(city) for city in zip(cities)]
+        
         fig.add_trace(
-            go.Scattermapbox(
-                        lon = dfCamadas["longitude"].values.tolist(),
-                        lat = dfCamadas["latitude"].values.tolist(),
-                        hoverinfo = 'text',
-                        text =  value,
-                        mode = 'markers',
-                        marker = dict(size = 10, color = '#FF971D', opacity=0.2,)))
+                go.Scattermapbox(
+                            lon = dfRecomendacao["longitude_ori"].values.tolist()+dfRecomendacao["longitude_dest"].values.tolist(),
+                            lat = dfRecomendacao["latitude_ori"].values.tolist()+dfRecomendacao["latitude_dest"].values.tolist(),
+                            hoverinfo = 'text',
+                            text =  scatter_hover_data,
+                            mode = 'markers',
+                            marker = dict(size = 10, color = '#FFFFFF')),
+            )
+
+    else:
+
+        listaPib = dfCamadas[atributo].values.tolist()
+        listaNome = dfCamadas['nome_mun'].values.tolist()
+        camada_hover_data = ['  ' + 'Municipio Destino: ' + nome + '<br>' +  '<br>' + '  ' + atributo + ':' + str(atr) for nome, atr in zip(listaNome, listaPib)]
+        dfCamadas['text'] = camada_hover_data
+        print(camada_hover_data)
+        ## Loop thorugh each flight entry to plot source and destination as points.
+        
+
+        for key, value in dfCamadas["text"].items():
+
+            value = dfCamadas["text"]
+            print(value)
+            fig.add_trace(
+                go.Scattermapbox(
+                            lon = dfCamadas["longitude"].values.tolist(),
+                            lat = dfCamadas["latitude"].values.tolist(),
+                            hoverinfo = 'text',
+                            text =  value,
+                            mode = 'markers',
+                            marker = dict(size = 10, color = '#FF971D', opacity=0.2,)))
   
       
     
