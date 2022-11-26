@@ -369,7 +369,7 @@ def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
      
 def updateFluxoRegiao(idRegiao, tipoFluxo, atributo, numeroCidades=20):
     infoRegiao, dfFluxo = ctrlFluxo.percentualFluxoRegiaoSaude(idRegiao, tipoFluxo)
-    visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+    visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades], None, None)
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
     return dfFluxo.shape[0],visualizacao,visualizacaoBarchart,{'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
