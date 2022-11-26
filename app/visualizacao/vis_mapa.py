@@ -36,7 +36,7 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
 
         ## Logic to create labels of source and destination cities of flights
         cities = dfRecomendacao["nome_ori"].values.tolist()+dfRecomendacao["nome_dest"].values.tolist()
-        scatter_hover_data = ['  ' + 'Municipio Origem: ' + str(city) for city in zip(cities)]
+        scatter_hover_data = ['  ' + 'Municipio: ' + str(city) for city in zip(cities)]
         
         fig.add_trace(
                 go.Scattermapbox(
@@ -50,9 +50,19 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
 
     else:
 
+        teste = len(dfRecomendacao["fluxo"])*2
+        ## Loop thorugh each flight entry to add line between source and destination
+        for slat, dlat, slon, dlon, score in source_to_dest:
+            fig.add_trace(go.Scattermapbox(
+                                lat = [slat,dlat],
+                                lon = [slon, dlon],
+                                mode = 'lines',
+                                line = dict(width = score*teste, color = '#FF971D')
+                                ))
+
         listaPib = dfCamadas[atributo].values.tolist()
         listaNome = dfCamadas['nome_mun'].values.tolist()
-        camada_hover_data = ['  ' + 'Municipio Destino: ' + nome + '<br>' +  '<br>' + '  ' + atributo + ':' + str(atr) for nome, atr in zip(listaNome, listaPib)]
+        camada_hover_data = ['  ' + 'Municipio: ' + nome + '<br>' +  '<br>' + '  ' + atributo + ':' + str(atr) for nome, atr in zip(listaNome, listaPib)]
         dfCamadas['text'] = camada_hover_data
         print(camada_hover_data)
         ## Loop thorugh each flight entry to plot source and destination as points.
