@@ -1,6 +1,6 @@
 from turtle import width
 import plotly.graph_objects as go
-
+import numpy as np
 
 
 # Chave de acesso MapBox 
@@ -36,7 +36,7 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
 
     ## Logic to create labels of source and destination cities of flights
     cities = dfRecomendacao["nome_ori"].values.tolist()+dfRecomendacao["nome_dest"].values.tolist()
-    scatter_hover_data = ['Municipio Origem: ' + str(city) for city in zip(cities)]
+    scatter_hover_data = ['  ' + 'Municipio Origem: ' + str(city) for city in zip(cities)]
     
     fig.add_trace(
             go.Scattermapbox(
@@ -51,18 +51,14 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
 
     listaPib = dfCamadas[atributo].values.tolist()
     listaNome = dfCamadas['nome_mun'].values.tolist()
-    camada_hover_data = ['Municipio: ' + nome + '<br>' +  '<br>' +atributo + ':' + str(atr) for nome, atr in zip(listaNome, listaPib)]
+    camada_hover_data = ['  ' + 'Municipio Destino: ' + nome + '<br>' +  '<br>' + '  ' + atributo + ':' + str(atr) for nome, atr in zip(listaNome, listaPib)]
     dfCamadas['text'] = camada_hover_data
     print(camada_hover_data)
     ## Loop thorugh each flight entry to plot source and destination as points.
     
 
-    source_to_camadas = zip(dfCamadas["cod_mun"], dfCamadas["nome_mun"],
-                        dfCamadas["latitude"], dfCamadas["longitude"])
-
-
     for key, value in dfCamadas["text"].items():
-        #print(value)
+
         value = dfCamadas["text"]
         print(value)
         fig.add_trace(
@@ -72,9 +68,8 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
                         hoverinfo = 'text',
                         text =  value,
                         mode = 'markers',
-                        marker = dict(size = 10, color = '#FF971D', opacity=0.2,)),
-        )
-        
+                        marker = dict(size = 10, color = '#FF971D', opacity=0.2,)))
+  
       
     
     ## Update graph layout to improve graph styling.
@@ -93,7 +88,7 @@ def carregarMapa(dfRecomendacao, dfCamadas, atributo):
             },
         margin = dict(l = 0, r = 0, t = 0, b = 0)
     )
-
+    
     fig.layout.update(showlegend=False)
     fig.update_layout(modebar_remove='zoomInMapbox')
 
