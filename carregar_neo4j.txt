@@ -1,0 +1,130 @@
+//Carregando dados no BD 
+//Comandos em sequência
+
+//Criando nó de município
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/municipio.csv" AS row  with row where row.densidade_2021 is not null
+MERGE (:Municipio {
+cod_mun: toInteger(row.cod_mun), 
+nome: row.nome_mun, 
+latitude: toFloat(row.latitude), 
+longitude: toFloat(row.longitude), 
+populacao: toInteger(row.populacao_2021),
+densidade_pop: toFloat(row.densidade_2021),
+cod_uf:toInteger(row.cod_uf),
+cod_reg_saude:toInteger(row.cod_reg_saude)})
+
+//Criando nó de Arranjo
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arranjo.csv" AS row  
+MERGE (:Arranjo_Populacional {
+cod_mun: toInteger(row.cod_arranjo), 
+nome: row.nome_arranjo})
+
+//Criando nó de Regiao de Saúde
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/regiao_saude.csv" AS row  
+MERGE (:Regiao_Saude {
+cod_reg_saude: toInteger(row.cod_reg_saude), 
+nome: row.nome_reg_saude, 
+latitude: toFloat(row.latitude), 
+longitude: toFloat(row.longitude)})
+
+//Criando nó de Rede Sentinela
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/servico_sentinela.csv" AS row  
+MERGE (:Rede_Sentinela {
+cod_mun: toInteger(row.cod_mun), 
+nome_servico: row.nome_serv})
+
+//Criando nó das hierarquias da cidade
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/hierarquia.csv" AS row  
+MERGE (:Hierarquia {
+hierarquia: row.hierarquia, 
+nome_hierarquia: row.nome_hierarquia})
+
+
+//Adicionando dados nos nós já criados
+
+//Adicionando o label de Cidade para arranjos e municipios
+//Para municipio
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arr_mun_sem_arr.csv" AS row 
+MATCH (mun:Municipio {cod_mun: toInteger(row.cod_cidade)})
+SET mun:Cidade
+//Para arranjo
+MATCH (arr: Arranjo_Populacional)
+SET arr:Cidade
+
+//Adicionando dados relativos a propagacao da doenca
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/spreaders.csv" AS row  
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.total_cidade= toFloat(row.cidade),
+c.total_pais= toFloat(row.total),
+c.total_outras_cidades = toFloat(row.espalhamento)
+
+//Adicionando dados do regic as cidades
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/cidades_regic.csv" AS row  
+MERGE (c:Cidade {cod_mun: toInteger(row.cod_mun)})
+ON MATCH SET c.PIB= toInteger(row.PIB), c.hierarquia= row.hierarquia, 
+c.nome_hierarquia= row.nome_hierarquia, c.indice_atracao= toFloat(row.indice_atracao),
+c.ia_saude_bm= toFloat(row.ia_saude_bm), c.ia_saude_a= toFloat(row.ia_saude_a),
+c.ia_aeroporto= toFloat(row.ia_aeroporto), c.ia_transporte= toFloat(row.ia_transporte),
+c.num_leitos= toFloat(row.num_leitos)
+
+//Adicionando propriedades no arranjo populacional
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arr_mun.csv" AS row  
+MATCH (a:Arranjo_Populacional {cod_mun: toInteger(row.cod_cidade)})
+SET a.populacao= toInteger(row.populacao_2021),
+a.latitude = toFloat(row.latitude),
+a.longitude = toFloat(row.longitude),
+a.densidade = toFloat(row.densidade_2021)
+
+
+//Adicionando relacionamentos
+
+//Adicionar fluxo com Arranjo - Na nuvem esse passo é separado em 3 partes pois o arquivo é muito grande
+
+:auto LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arr_calculo_qtd_fluxo_1.csv" AS row 
+CALL {
+  WITH row
+  MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
+  MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+  MERGE (origem)-[r:FLUXO_TRANSPORTE{ 
+  fluxo_geral: toFloat(row.prob_total), 
+  fluxo_aereo: toFloat(row.prob_aereo), 
+  fluxo_rodo: toFloat(row.prob_rodov),
+  total_pessoas:toInteger(row.passageiros_total) }]->(destino)  
+} IN TRANSACTIONS
+
+:auto LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arr_calculo_qtd_fluxo_2.csv" AS row 
+CALL {
+  WITH row
+  MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
+  MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+  MERGE (origem)-[r:FLUXO_TRANSPORTE{ 
+  fluxo_geral: toFloat(row.prob_total), 
+  fluxo_aereo: toFloat(row.prob_aereo), 
+  fluxo_rodo: toFloat(row.prob_rodov),
+  total_pessoas:toInteger(row.passageiros_total) }]->(destino)  
+} IN TRANSACTIONS
+
+:auto LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arr_calculo_qtd_fluxo_3.csv" AS row 
+CALL {
+  WITH row
+  MATCH (origem:Cidade {cod_mun: toInteger(row.cod_origem)})
+  MATCH (destino:Cidade {cod_mun: toInteger(row.cod_destino)})
+  MERGE (origem)-[r:FLUXO_TRANSPORTE{ 
+  fluxo_geral: toFloat(row.prob_total), 
+  fluxo_aereo: toFloat(row.prob_aereo), 
+  fluxo_rodo: toFloat(row.prob_rodov),
+  total_pessoas:toInteger(row.passageiros_total) }]->(destino)  
+} IN TRANSACTIONS
+
+//Criando relacionamento arranjo e municipio
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arranjo_com_mun.csv" AS row 
+MATCH (municipio:Municipio {cod_mun: toInteger(row.cod_mun)})
+MATCH (arr:Arranjo_Populacional {cod_mun: toInteger(row.cod_arranjo)})
+MERGE (municipio)-[r:PERTENCE_ARR]->(arr) 
+
+
+//Comandos que podem ajudar
+
+//Remover relacionamento
+MATCH (n)-[r:FLUXO_TRANSPORTE]->()
+DELETE r
