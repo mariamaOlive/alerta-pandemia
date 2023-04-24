@@ -8,8 +8,9 @@ class BDGrafo(metaclass=SingletonMeta):
 
     # uri = "neo4j+s://af76534a.databases.neo4j.io"
     # password = "Ez5RDE71XQXpRO9kzufUTrVGGNtw9mo5KAa83226V6M"
-    uri = "bolt://localhost:11003" #local BD
-    password = "alerta_epidemia2" #local BD
+    # uri = "bolt://localhost:11003" #local BD
+    uri = "neo4j:// 4.156.180.46:7687" #container BD
+    password = "password" #local BD
     user = "neo4j"
     driver = None
 
