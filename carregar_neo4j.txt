@@ -1,6 +1,15 @@
 //Carregando dados no BD 
 //Comandos em sequência
 
+//Criando nó de estado
+LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/estado.csv" AS row
+MERGE (:Estado {
+cod_uf: toInteger(row.cod_uf), 
+nome: row.nome_uf, 
+uf: row.uf,
+populacao: toInteger(row.populacao_2021),
+densidade_pop: toFloat(row.densidade_2021)})
+
 //Criando nó de município
 LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/municipio.csv" AS row  with row where row.densidade_2021 is not null
 MERGE (:Municipio {
@@ -78,8 +87,8 @@ a.densidade = toFloat(row.densidade_2021)
 
 //Adicionando relacionamentos
 
+//Carregando Fluxos de Transporte e Saúde
 //Adicionar fluxo com Arranjo - Na nuvem esse passo é separado em 3 partes pois o arquivo é muito grande
-
 :auto LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/arr_calculo_qtd_fluxo_1.csv" AS row 
 CALL {
   WITH row
@@ -123,8 +132,49 @@ MATCH (arr:Arranjo_Populacional {cod_mun: toInteger(row.cod_arranjo)})
 MERGE (municipio)-[r:PERTENCE_ARR]->(arr) 
 
 
-//Comandos que podem ajudar
+//Criando o relacionamento de fluxo de saude
+:auto LOAD CSV WITH HEADERS FROM "https://meuteste.blob.core.windows.net/neo4j/fluxo_saude.csv" AS row 
+CALL {
+    WITH row
+    MATCH (origem:Municipio {cod_mun: toInteger(row.cod_origem)})
+    MATCH (destino:Municipio {cod_mun: toInteger(row.cod_destino)})
+    MERGE (origem)-[r:FLUXO_SAUDE]->(destino) 
+    ON CREATE SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
+    ON MATCH SET r.saude_baixa_media = toFloat(row.saude_baixa_media), r.saude_alta = toFloat(row.saude_alta)
+} IN TRANSACTIONS
 
+
+//Criando relationship de estado com cidade
+MATCH (c:Municipio), (e:Estado) 
+WHERE c.cod_uf = e.cod_uf 
+CREATE (c)-[r:PERTENCE_ESTADO]->(e) 
+RETURN c,e 
+
+//Criando relationship de municipio com regiao de saude
+MATCH (c:Municipio), (rs:Regiao_Saude) 
+WHERE c.cod_reg_saude = rs.cod_reg_saude 
+CREATE (c)-[r:PERTENCE_REGIAO]->(rs) 
+RETURN c,rs 
+
+//Comandos que podem ajudar --> Não precisa executar
 //Remover relacionamento
-MATCH (n)-[r:FLUXO_TRANSPORTE]->()
+MATCH ()-[r:FLUXO_TRANSPORTE]-() 
 DELETE r
+
+//Removendo propriedades
+MATCH (c:Cidade)
+REMOVE c.cod_reg_saude, c.cod_uf, c.hierarquia
+
+MATCH (r:Rede_Sentinela)
+REMOVE r.cod_mun
+
+MATCH (c)
+WHERE c:Cidade AND c:Arranjo_Populacional
+RETURN count(c)
+
+MATCH (c:Cidade)
+REMOVE c:Cidade
+
+
+
+
