@@ -14,7 +14,8 @@ densidade_pop: toFloat(row.densidade_2021)})
 // WITH "https://github.com/mariamaOlive/alerta-epidemia/tree/main/data/integrado/" AS base
 // WITH base + "municipio.csv" AS uri
 LOAD CSV WITH HEADERS FROM "file:///municipio.csv" AS row  with row where row.longitude is not null
-MERGE (:Cidade {cod_mun: toInteger(row.cod_mun), 
+MERGE (:Cidade {
+cod_mun: toInteger(row.cod_mun), 
 nome: row.nome_mun, 
 latitude: toFloat(row.latitude), 
 longitude: toFloat(row.longitude), 
@@ -131,7 +132,7 @@ MERGE (origem)-[r:FLUXO_TRANSPORTE{
 //Criando relacionamento arranjo e municipio
 LOAD CSV WITH HEADERS FROM "file:///arranjo_com_mun.csv" AS row 
 MATCH (municipio:Municipio {cod_mun: toInteger(row.cod_mun)})
-MATCH (arr:Arranjo_Populacional {cod_arranjo: toInteger(row.cod_arranjo)})
+MATCH (arr:Arranjo_Populacional {cod_mun: toInteger(row.cod_arranjo)})
 MERGE (municipio)-[r:PERTENCE_ARR]->(arr) 
 
 
