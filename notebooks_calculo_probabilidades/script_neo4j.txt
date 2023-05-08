@@ -575,7 +575,6 @@ RETURN
 //Dijkstra
 
 WITH "MATCH (cities:Cidade)
-WHERE cities.hierarquia = "1C"
 WITH collect(cities) AS nodes
 UNWIND nodes AS ct
 MATCH (source:Cidade {cod_mun: 1302603}), (target:Cidade {cod_mun: ct.cod_mun})
@@ -702,3 +701,23 @@ RETURN c limit toInteger(floor(count(c) * .1))
 , {limit : lim}) YIELD value
 WITH value.cod_mun AS cod
 return  collect(cod) AS nodes
+
+
+//Pegar todos os menores caminhos para todos os pontos do grafo
+
+
+WITH "MATCH (source:Cidade {cod_mun: 1302603})
+CALL gds.allShortestPaths.dijkstra.stream('grafoFluxo', {
+    sourceNode: source,
+    relationshipWeightProperty: 'fluxo_geral'})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).cod_mun AS cod_mun_origem,
+    gds.util.asNode(targetNode).cod_mun AS cod_mun_destino,
+    totalCost as totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).cod_mun] AS cod_nos,
+    costs as costs" AS query
+CALL apoc.export.csv.query(query, "teste_3.csv", {})
+YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
