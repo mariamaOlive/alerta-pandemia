@@ -610,9 +610,35 @@ RETURN
     totalCost as totalCost,
     [nodeId IN nodeIds | gds.util.asNode(nodeId).cod_mun] AS cod_nos,
     costs as costs" AS query
-CALL apoc.export.csv.query(query, "caminho_sao_paulo_capitais.csv", {})
+CALL apoc.export.csv.query(query, "teste.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
+
+//Gerar um arquivo por cidade
+WITH "MATCH (cities:Cidade)
+WITH collect(cities) AS nodes
+UNWIND nodes AS ct
+MATCH (source:Cidade), (target:Cidade {cod_mun: ct.cod_mun})
+CALL gds.shortestPath.dijkstra.stream('grafoFluxo', {
+    sourceNode: source,
+    targetNode: target,
+    relationshipWeightProperty: 'fluxo_geral'})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index as index,
+    gds.util.asNode(sourceNode).cod_mun AS cod_mun_origem,
+    gds.util.asNode(targetNode).cod_mun AS cod_mun_destino,
+    totalCost as totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).cod_mun] AS cod_nos,
+    costs as costs" AS query
+CALL apoc.export.csv.query(query, "caminho_manaus_2.csv", {})
+YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
+
+
+
+
+
 
 
 
