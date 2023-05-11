@@ -52,7 +52,7 @@ def criarMatrizFluxo(dfMunicipios, dfFluxo):
 #retorno: Taxa de variacao de infectados em todas cidades (npArray de float)
 def calcularTaxaVariacao(matrizPopulacao, infectadosDiaAnterior, matrizFluxo):
 
-    r = 0.2 #Taxa de contagio
+    r = 0.181 #Taxa de contagio
     s = 1 #Ajusta super/subestimativa do fluxo 
     N = matrizPopulacao #Populacao do municipio
     I = infectadosDiaAnterior #Numero de Infectado no dia anterior
@@ -75,13 +75,13 @@ def calcularTaxaVariacao(matrizPopulacao, infectadosDiaAnterior, matrizFluxo):
 if __name__ == '__main__':
 
     #Carregando dados de Município
-    dfMunicipios = pd.read_csv("../data/integrado/arr_mun.csv")
+    dfMunicipios = pd.read_csv("C:/Users/lucas/Desktop/ufrpe/arq/alerta-pandemia/data/integrado/arr_mun.csv")
     dfMunicipios = dfMunicipios[dfMunicipios['latitude'].notna()]
     dfMunicipios = dfMunicipios.sort_values(by=["cod_cidade"])
     dfMunicipios = dfMunicipios.reset_index(drop=True)
 
     #Carregando dados de fluxo
-    dfFluxo = pd.read_csv("../data/calculado/arr_calculo_qtd_fluxo.csv")
+    dfFluxo = pd.read_csv("C:/Users/lucas/Desktop/ufrpe/arq/alerta-pandemia/data/calculado/arr_calculo_qtd_fluxo.csv")
     dfFluxo = dfFluxo.drop_duplicates()
     dfFluxo = dfFluxo[dfFluxo["cod_origem"].isin(dfMunicipios["cod_cidade"])]
     dfFluxo = dfFluxo[dfFluxo["cod_destino"].isin(dfMunicipios["cod_cidade"])]
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     #Setar condicoes iniciais
     NUMERO_INFECTADOS = 1
-    DIAS = 61
+    DIAS = 75
 
     ##TODO:Teste remover
     saida = np.count_nonzero(matrizFluxo, axis=0)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
 
     listaAnalise = []
-    df_regic = pd.read_csv("../data/integrado/cidades_regic.csv")
+    df_regic = pd.read_csv("C:/Users/lucas/Desktop/ufrpe/arq/alerta-pandemia/data/integrado/cidades_regic.csv")
     # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") | (df_regic["hierarquia"]=="2A") | (df_regic["hierarquia"]=="2B") | (df_regic["hierarquia"]=="2C")]["cod_mun"].tolist()
     # listaSpreader = df_regic[(df_regic["hierarquia"]=="1A") | (df_regic["hierarquia"]=="1B") | (df_regic["hierarquia"]=="1C") ]["cod_mun"].tolist()
     # listaSpreader = dfMunicipios["cod_cidade"].tolist()
@@ -133,7 +133,7 @@ if __name__ == '__main__':
         # #Criar dataframe com os dados de infectados
         dfSI = pd.DataFrame(matrixInfectados.T, columns=["dia_" + str(dia) for dia in range(DIAS)])
         dfSI = pd.concat([dfMunicipios[["cod_cidade","nome_cidade"]], dfSI], axis=1, join='inner')
-        dfSI.to_csv(f"../data/calculado/calc_SI_{cidadeInicial}_s1.csv", index=False)
+        dfSI.to_excel(f"C:/Users/lucas/Desktop/ufrpe/arq/alerta-pandemia/data/calculado/calc_SI_{cidadeInicial}_s1.xlsx", index=False)
 
         # filtro_cidade = dfSI["cod_cidade"]==cidadeInicial
         # num_cidade = dfSI[filtro_cidade][f"dia_{DIAS-1}"].sum()
@@ -145,3 +145,4 @@ if __name__ == '__main__':
     # df_analise = pd.DataFrame(listaAnalise, columns=["cod_mun","cidade", "espalhamento", "total"])
     # df_analise.to_csv(f"../data/calculado/spreaders_s15_30dias.csv", index=False)
 
+        
