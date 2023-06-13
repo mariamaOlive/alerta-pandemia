@@ -8,8 +8,9 @@ class BDGrafo(metaclass=SingletonMeta):
 
     # uri = "neo4j+s://af76534a.databases.neo4j.io"
     # password = "Ez5RDE71XQXpRO9kzufUTrVGGNtw9mo5KAa83226V6M"
-    # uri = "bolt://localhost:11003" #local BD
-    uri = "neo4j:// 4.156.180.46:7687" #container BD
+    uri = "bolt://localhost:11003" #local BD
+    # uri = "bolt://0.tcp.sa.ngrok.io:19456" #local BD
+    # uri = "neo4j:824b-2804-5f80-71b8-f000-d8a-4ddb-4930-85ff.ngrok-free.app" #container BD
     password = "password" #local BD
     user = "neo4j"
     driver = None

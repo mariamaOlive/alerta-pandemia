@@ -363,7 +363,7 @@ RETURN n
 ///2611606 --> Recife
 
 MATCH (c1)-[r]-(c2)
-WHERE c1.cod_mun = 1302603 AND  c2.cod_mun = 1200203
+WHERE c1.cod_mun = 1302603 AND  c2.cod_mun = 1302900
 RETURN c1, c2
 
 MATCH (c)-[r]->(c) WHERE c.cod_mun = 2304400 RETURN COUNT(r)
@@ -721,3 +721,6 @@ RETURN
 CALL apoc.export.csv.query(query, "teste_3.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
+
+
+
