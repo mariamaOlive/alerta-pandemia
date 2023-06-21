@@ -2,5 +2,6 @@ __pycache__/
 
 calculo_spreader/
 paths/
+transporte/data/
 
 .DS_Store
