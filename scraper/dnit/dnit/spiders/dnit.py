@@ -13,7 +13,7 @@ class DnitSpider(scrapy.Spider):
 
     def start_requests(self):
 
-        json_file = "/Users/mariama/Documents/dnit/dnit/json_dnit/postos_2017_2.json"
+        json_file = "dnit/json_dnit/postos_2017_2.json"
         list_points = ReadJson().get_points(json_file)
         survey = "8"
         
