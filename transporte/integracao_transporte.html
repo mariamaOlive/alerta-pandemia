@@ -15248,6 +15248,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 </pre></div>
 
      </div>
@@ -15864,7 +15865,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">normalizar_semana_dnit</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">tipoFreq</span><span class="p">,</span> <span class="n">classe</span><span class="p">):</span>
 
-    <span class="n">classe_normalizada</span> <span class="o">=</span> <span class="mf">.25</span> <span class="k">if</span> <span class="n">classe</span> <span class="o">==</span> <span class="s2">&quot;P2&quot;</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">classe_normalizada</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="p">(</span><span class="n">classe</span> <span class="o">==</span> <span class="s2">&quot;O1&quot;</span> <span class="ow">or</span> <span class="n">classe</span> <span class="o">==</span> <span class="s2">&quot;O2&quot;</span> <span class="ow">or</span> <span class="n">classe</span> <span class="o">==</span> <span class="s2">&quot;O3&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mf">.25</span>
     <span class="n">freq</span> <span class="o">=</span> <span class="mi">11</span> <span class="k">if</span> <span class="n">freq</span> <span class="o">==</span> <span class="s2">&quot;&gt;10&quot;</span> <span class="k">else</span> <span class="n">freq</span>
 
     <span class="c1"># Transforma todas frequencias para semana</span>
@@ -15903,22 +15904,36 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="n">df_dnit</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;GeocodOrigem&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;GeocodDestino&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span>
     <span class="n">df_dnit</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
 
-    <span class="c1"># Filtrando observações por tipo de automóvel</span>
-    <span class="n">df_dnit</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="p">[(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;P2&quot;</span><span class="p">)</span> 
-             <span class="o">|</span> <span class="p">(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span> 
-             <span class="o">|</span> <span class="p">(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;O2&quot;</span><span class="p">)</span> 
-             <span class="o">|</span> <span class="p">(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;O3&quot;</span><span class="p">)]</span> 
-    
+    <span class="c1"># Verificando valores nulos ou &quot;Infomação não registrada&quot; em QtdPessoasVeic</span>
+    <span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;QtdPessoasVeic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;QtdPessoasVeic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;QtdPessoasVeic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;QtdPessoasVeic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Informação não registrada&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
     <span class="c1"># Tranformando as frequências para semana</span>
     <span class="n">df_dnit</span><span class="p">[</span><span class="s2">&quot;freq_normalizada&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">normalizar_semana_dnit</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;FreqQnt&quot;</span><span class="p">],</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;FreqPeriodo&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Classe&quot;</span><span class="p">]),</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 
+    <span class="c1"># # Filtrando observações por tipo de automóvel</span>
+    <span class="n">df_dnit_filtrado</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="p">[(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;P2&quot;</span><span class="p">)</span> 
+             <span class="o">|</span> <span class="p">(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span> 
+             <span class="o">|</span> <span class="p">(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;O2&quot;</span><span class="p">)</span> 
+             <span class="o">|</span> <span class="p">(</span><span class="n">df_dnit</span><span class="p">[</span><span class="s1">&#39;Classe&#39;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;O3&quot;</span><span class="p">)]</span> 
+
     <span class="c1"># Fazendo a soma das frequências por ligação</span>
-    <span class="n">df_dnit</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;freq_semanal&#39;</span> <span class="p">:</span> <span class="n">df_dnit</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span> <span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">]</span> <span class="p">)[</span><span class="s2">&quot;freq_normalizada&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">df_dnit_sum</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;freq_semanal&#39;</span> <span class="p">:</span> <span class="n">df_dnit</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span> <span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">]</span> <span class="p">)[</span><span class="s2">&quot;freq_normalizada&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+                                <span class="s1">&#39;dnit_total_pessoas&#39;</span> <span class="p">:</span> <span class="n">df_dnit</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span> <span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">]</span> <span class="p">)[</span><span class="s2">&quot;QtdPessoasVeic&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                                <span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">df_dnit_filtrado_sum</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;freq_semanal_selecao&#39;</span> <span class="p">:</span> <span class="n">df_dnit_filtrado</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span> <span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">]</span> <span class="p">)[</span><span class="s2">&quot;freq_normalizada&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+                                         <span class="s1">&#39;dnit_total_pessoas_selecao&#39;</span> <span class="p">:</span> <span class="n">df_dnit_filtrado</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span> <span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">]</span> <span class="p">)[</span><span class="s2">&quot;QtdPessoasVeic&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                                         <span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
     
     <span class="c1">#Removendo ligações que possuem mesma origem e destino</span>
-    <span class="n">df_dnit</span> <span class="o">=</span> <span class="n">df_dnit</span><span class="p">[</span><span class="n">df_dnit</span><span class="p">[</span><span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">]</span><span class="o">!=</span><span class="n">df_dnit</span><span class="p">[</span><span class="s2">&quot;GeocodDestino&quot;</span><span class="p">]]</span>
+    <span class="n">df_dnit_sum</span> <span class="o">=</span> <span class="n">df_dnit_sum</span><span class="p">[</span><span class="n">df_dnit_sum</span><span class="p">[</span><span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">]</span><span class="o">!=</span><span class="n">df_dnit_sum</span><span class="p">[</span><span class="s2">&quot;GeocodDestino&quot;</span><span class="p">]]</span>
+    <span class="n">df_dnit_filtrado_sum</span> <span class="o">=</span> <span class="n">df_dnit_filtrado_sum</span><span class="p">[</span><span class="n">df_dnit_filtrado_sum</span><span class="p">[</span><span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">]</span><span class="o">!=</span><span class="n">df_dnit_filtrado_sum</span><span class="p">[</span><span class="s2">&quot;GeocodDestino&quot;</span><span class="p">]]</span>
     
-    <span class="k">return</span> <span class="n">df_dnit</span> 
+    <span class="c1">#Merge original com filtrado</span>
+    <span class="n">df_dnit_final</span> <span class="o">=</span> <span class="n">df_dnit_sum</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_dnit_filtrado_sum</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">],</span> <span class="n">right_on</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span> <span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">df_dnit_final</span> 
 </pre></div>
 
      </div>
@@ -15939,9 +15954,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">lista_df_dnit</span><span class="p">:</span>
     <span class="n">lista_df_dnit_proc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">processar_dnit</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 
+<span class="c1"># Nome das tabelas </span>
+<span class="n">lista_nome_tabela</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2016_1&quot;</span><span class="p">,</span><span class="s2">&quot;2016_2&quot;</span><span class="p">,</span><span class="s2">&quot;2017_1&quot;</span><span class="p">,</span><span class="s2">&quot;2017_2&quot;</span><span class="p">,]</span>
+
 <span class="c1">#DNIT</span>
-<span class="k">for</span> <span class="n">df_dnit</span> <span class="ow">in</span> <span class="n">lista_df_dnit_proc</span><span class="p">:</span>
-    <span class="n">df_dnit</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;freq_semanal&quot;</span><span class="p">:</span> <span class="s2">&quot;dnit&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">:</span> <span class="s2">&quot;origem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span><span class="p">:</span> <span class="s2">&quot;destino&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">df_dnit</span><span class="p">,</span> <span class="n">nome_tabela</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lista_df_dnit_proc</span><span class="p">,</span> <span class="n">lista_nome_tabela</span><span class="p">):</span>
+    <span class="n">df_dnit</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;freq_semanal&quot;</span><span class="p">:</span> <span class="s2">&quot;dnit_&quot;</span> <span class="o">+</span> <span class="n">nome_tabela</span><span class="p">,</span> <span class="s2">&quot;freq_semanal_selecao&quot;</span><span class="p">:</span> <span class="s2">&quot;dnit_sel_&quot;</span> <span class="o">+</span> <span class="n">nome_tabela</span><span class="p">,</span> 
+                            <span class="s2">&quot;dnit_total_pessoas&quot;</span><span class="p">:</span> <span class="s2">&quot;dnit_pessoas_&quot;</span> <span class="o">+</span> <span class="n">nome_tabela</span><span class="p">,</span> <span class="s2">&quot;dnit_total_pessoas_selecao&quot;</span><span class="p">:</span> <span class="s2">&quot;dnit_pessoas_sel_&quot;</span> <span class="o">+</span> <span class="n">nome_tabela</span><span class="p">,</span>
+                            <span class="s2">&quot;GeocodOrigem&quot;</span><span class="p">:</span> <span class="s2">&quot;origem&quot;</span><span class="p">,</span> <span class="s2">&quot;GeocodDestino&quot;</span><span class="p">:</span> <span class="s2">&quot;destino&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15957,7 +15977,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lista_df_dnit_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lista_df_dnit_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
      </div>
@@ -15974,6 +15994,46 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>(42442, 6)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># lista_df_dnit_proc[3]</span>
+<span class="n">lista_df_dnit_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">][(</span><span class="n">lista_df_dnit_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;dnit_sel_2016_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
 
 
 
@@ -15998,39 +16058,57 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
       <th></th>
       <th>origem</th>
       <th>destino</th>
-      <th>dnit</th>
+      <th>dnit_2016_1</th>
+      <th>dnit_pessoas_2016_1</th>
+      <th>dnit_sel_2016_1</th>
+      <th>dnit_pessoas_sel_2016_1</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>1</th>
+      <th>75</th>
       <td>1100049</td>
       <td>4212502</td>
       <td>0.004791</td>
+      <td>6</td>
+      <td>0.004791</td>
+      <td>6.0</td>
     </tr>
     <tr>
-      <th>2</th>
+      <th>80</th>
       <td>1100049</td>
       <td>5005400</td>
       <td>0.019165</td>
+      <td>42</td>
+      <td>0.019165</td>
+      <td>42.0</td>
     </tr>
     <tr>
-      <th>3</th>
+      <th>91</th>
       <td>1100049</td>
       <td>5106752</td>
+      <td>4.527391</td>
+      <td>91</td>
       <td>4.460274</td>
+      <td>86.0</td>
     </tr>
     <tr>
-      <th>4</th>
+      <th>95</th>
       <td>1100049</td>
       <td>5205000</td>
       <td>0.460274</td>
+      <td>47</td>
+      <td>0.460274</td>
+      <td>47.0</td>
     </tr>
     <tr>
-      <th>5</th>
+      <th>142</th>
       <td>1100098</td>
       <td>3541505</td>
       <td>0.019165</td>
+      <td>46</td>
+      <td>0.019165</td>
+      <td>46.0</td>
     </tr>
   </tbody>
 </table>
@@ -16050,32 +16128,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Realizando-merge-das-bases">Realizando merge das bases<a class="anchor-link" href="#Realizando-merge-das-bases">&#182;</a></h2>
+<h3 id="Merge-diferentes-pesquisas-DNIT">Merge diferentes pesquisas DNIT<a class="anchor-link" href="#Merge-diferentes-pesquisas-DNIT">&#182;</a></h3>
 </div>
 </div>
 </div>
-</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Realiza o merge entre os dataframes</span>
-<span class="k">def</span> <span class="nf">merge_dnit_ibge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">df_ibge</span><span class="p">):</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">df_ibge</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">right_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>
-
-    <span class="n">columns_titles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;origem&quot;</span><span class="p">,</span><span class="s2">&quot;destino&quot;</span><span class="p">,</span> <span class="s2">&quot;ibge&quot;</span><span class="p">,</span> <span class="s2">&quot;dnit&quot;</span><span class="p">]</span>
-    <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns_titles</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">df</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16084,9 +16140,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lista_df_merge</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">df_dnit</span> <span class="ow">in</span> <span class="n">lista_df_dnit_proc</span><span class="p">:</span>
-    <span class="n">lista_df_merge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merge_dnit_ibge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">df_ibge_final</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_dnit</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">df1</span><span class="p">,</span><span class="n">df2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="n">df2</span><span class="p">,</span><span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">),</span> <span class="n">lista_df_dnit_proc</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16102,8 +16156,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Verificando merge</span>
-<span class="n">lista_df_merge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_dnit</span><span class="p">[</span><span class="n">df_dnit</span><span class="p">[</span><span class="s2">&quot;dnit_sel_2016_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -16144,8 +16197,462 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
       <th></th>
       <th>origem</th>
       <th>destino</th>
+      <th>dnit_2016_1</th>
+      <th>dnit_pessoas_2016_1</th>
+      <th>dnit_sel_2016_1</th>
+      <th>dnit_pessoas_sel_2016_1</th>
+      <th>dnit_2016_2</th>
+      <th>dnit_pessoas_2016_2</th>
+      <th>dnit_sel_2016_2</th>
+      <th>dnit_pessoas_sel_2016_2</th>
+      <th>dnit_2017_1</th>
+      <th>dnit_pessoas_2017_1</th>
+      <th>dnit_sel_2017_1</th>
+      <th>dnit_pessoas_sel_2017_1</th>
+      <th>dnit_2017_2</th>
+      <th>dnit_pessoas_2017_2</th>
+      <th>dnit_sel_2017_2</th>
+      <th>dnit_pessoas_sel_2017_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>75</th>
+      <td>1100049</td>
+      <td>4212502</td>
+      <td>0.004791</td>
+      <td>6.0</td>
+      <td>0.004791</td>
+      <td>6.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>1100049</td>
+      <td>5005400</td>
+      <td>0.019165</td>
+      <td>42.0</td>
+      <td>0.019165</td>
+      <td>42.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>1100049</td>
+      <td>5106752</td>
+      <td>4.527391</td>
+      <td>91.0</td>
+      <td>4.460274</td>
+      <td>86.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.5</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>1100049</td>
+      <td>5205000</td>
+      <td>0.460274</td>
+      <td>47.0</td>
+      <td>0.460274</td>
+      <td>47.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>142</th>
+      <td>1100098</td>
+      <td>3541505</td>
+      <td>0.019165</td>
+      <td>46.0</td>
+      <td>0.019165</td>
+      <td>46.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_dnit</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>(239151, 18)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Realizando-merge-das-bases">Realizando merge das bases<a class="anchor-link" href="#Realizando-merge-das-bases">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Merge-por-tabela">Merge por tabela<a class="anchor-link" href="#Merge-por-tabela">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Realiza o merge entre os dataframes</span>
+<span class="k">def</span> <span class="nf">merge_dnit_ibge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">df_ibge</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df_ibge</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">right_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lista_df_dnit_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>origem</th>
+      <th>destino</th>
+      <th>dnit_2016_1</th>
+      <th>dnit_pessoas_2016_1</th>
+      <th>dnit_sel_2016_1</th>
+      <th>dnit_pessoas_sel_2016_1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1100015</td>
+      <td>1100304</td>
+      <td>0.250000</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1100015</td>
+      <td>1101484</td>
+      <td>0.004791</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1100015</td>
+      <td>3102803</td>
+      <td>0.004791</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1100015</td>
+      <td>3303807</td>
+      <td>0.004791</td>
+      <td>2</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1100015</td>
+      <td>3550308</td>
+      <td>0.115069</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>42437</th>
+      <td>5300108</td>
+      <td>5107008</td>
+      <td>0.057534</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>42438</th>
+      <td>5300108</td>
+      <td>5107040</td>
+      <td>0.028748</td>
+      <td>6</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>42439</th>
+      <td>5300108</td>
+      <td>5107602</td>
+      <td>0.115069</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>42440</th>
+      <td>5300108</td>
+      <td>5107909</td>
+      <td>0.124651</td>
+      <td>4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>42441</th>
+      <td>5300108</td>
+      <td>5208400</td>
+      <td>0.004791</td>
+      <td>2</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>42442 rows × 6 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lista_df_merge</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">df_dnit</span> <span class="ow">in</span> <span class="n">lista_df_dnit_proc</span><span class="p">:</span>
+    <span class="n">lista_df_merge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merge_dnit_ibge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">df_ibge_final</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Verificando merge</span>
+<span class="c1"># lista_df_merge[2][lista_df_merge[2].dnit.isna()]</span>
+<span class="n">lista_df_merge</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[31]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>origem</th>
+      <th>destino</th>
       <th>ibge</th>
-      <th>dnit</th>
+      <th>dnit_2017_1</th>
+      <th>dnit_pessoas_2017_1</th>
+      <th>dnit_sel_2017_1</th>
+      <th>dnit_pessoas_sel_2017_1</th>
     </tr>
   </thead>
   <tbody>
@@ -16155,12 +16662,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
       <td>5108402</td>
       <td>42.0</td>
       <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>1</th>
       <td>1501204</td>
       <td>1504604</td>
       <td>68.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
@@ -16169,12 +16682,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
       <td>1504604</td>
       <td>6.0</td>
       <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>3</th>
       <td>2300150</td>
       <td>2304400</td>
       <td>716.0</td>
+      <td>0.004791</td>
+      <td>5.0</td>
+      <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
@@ -16182,6 +16701,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
       <td>2304400</td>
       <td>2311603</td>
       <td>645.0</td>
+      <td>0.004791</td>
+      <td>1.0</td>
+      <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
@@ -16190,45 +16712,413 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
       <td>...</td>
       <td>...</td>
       <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
     </tr>
     <tr>
-      <th>131392</th>
-      <td>5211305</td>
-      <td>4216602</td>
-      <td>NaN</td>
-      <td>0.459960</td>
-    </tr>
-    <tr>
-      <th>131393</th>
-      <td>5213103</td>
-      <td>4115606</td>
-      <td>NaN</td>
-      <td>0.250000</td>
-    </tr>
-    <tr>
-      <th>131394</th>
-      <td>5221403</td>
-      <td>5002704</td>
-      <td>NaN</td>
-      <td>0.095825</td>
-    </tr>
-    <tr>
-      <th>131395</th>
+      <th>210633</th>
       <td>5300108</td>
-      <td>2301000</td>
+      <td>5219100</td>
       <td>NaN</td>
-      <td>0.004791</td>
+      <td>0.009583</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>131396</th>
+      <th>210634</th>
       <td>5300108</td>
-      <td>4313201</td>
+      <td>5219712</td>
       <td>NaN</td>
-      <td>0.004791</td>
+      <td>0.119860</td>
+      <td>3.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>210635</th>
+      <td>5300108</td>
+      <td>5220058</td>
+      <td>NaN</td>
+      <td>0.009583</td>
+      <td>10.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>210636</th>
+      <td>5300108</td>
+      <td>5220405</td>
+      <td>NaN</td>
+      <td>0.057534</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>210637</th>
+      <td>5300108</td>
+      <td>5221304</td>
+      <td>NaN</td>
+      <td>0.115069</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
   </tbody>
 </table>
-<p>131397 rows × 4 columns</p>
+<p>210638 rows × 7 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Merge-todas-as-tabelas">Merge todas as tabelas<a class="anchor-link" href="#Merge-todas-as-tabelas">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_merge</span> <span class="o">=</span> <span class="n">df_ibge_final</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_dnit</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">right_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;origem&#39;</span><span class="p">,</span><span class="s1">&#39;destino&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_merge</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>origem</th>
+      <th>destino</th>
+      <th>ibge</th>
+      <th>dnit_2016_1</th>
+      <th>dnit_pessoas_2016_1</th>
+      <th>dnit_sel_2016_1</th>
+      <th>dnit_pessoas_sel_2016_1</th>
+      <th>dnit_2016_2</th>
+      <th>dnit_pessoas_2016_2</th>
+      <th>dnit_sel_2016_2</th>
+      <th>dnit_pessoas_sel_2016_2</th>
+      <th>dnit_2017_1</th>
+      <th>dnit_pessoas_2017_1</th>
+      <th>dnit_sel_2017_1</th>
+      <th>dnit_pessoas_sel_2017_1</th>
+      <th>dnit_2017_2</th>
+      <th>dnit_pessoas_2017_2</th>
+      <th>dnit_sel_2017_2</th>
+      <th>dnit_pessoas_sel_2017_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>5103809</td>
+      <td>5108402</td>
+      <td>42.0</td>
+      <td>0.874651</td>
+      <td>9.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1501204</td>
+      <td>1504604</td>
+      <td>68.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1502103</td>
+      <td>1504604</td>
+      <td>6.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2300150</td>
+      <td>2304400</td>
+      <td>716.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.004791</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.004791</td>
+      <td>5.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2304400</td>
+      <td>2311603</td>
+      <td>645.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.004791</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>330386</th>
+      <td>5300108</td>
+      <td>5219258</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.177394</td>
+      <td>12.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>330387</th>
+      <td>5300108</td>
+      <td>5219506</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.115069</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>330388</th>
+      <td>5300108</td>
+      <td>5219902</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.557534</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>330389</th>
+      <td>5300108</td>
+      <td>5220504</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.264374</td>
+      <td>7.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>330390</th>
+      <td>5300108</td>
+      <td>5222203</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>10.167097</td>
+      <td>54.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>330391 rows × 19 columns</p>
 </div>
 </div>
 
@@ -16249,20 +17139,43 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Tabelas-separadas">Tabelas separadas<a class="anchor-link" href="#Tabelas-separadas">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Todos os automóveis</p>
+
+</div>
+</div>
+</div>
 </div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">nome</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nomes_planilhas</span><span class="p">,</span> <span class="n">lista_df_merge</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">nome</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">nome_df</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nomes_planilhas</span><span class="p">,</span> <span class="n">lista_df_merge</span><span class="p">,</span> <span class="n">lista_nome_tabela</span><span class="p">):</span>
 
     <span class="n">total</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">ibge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dnit</span><span class="o">.</span><span class="n">isna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> 
-    <span class="n">dnit_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dnit</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">merge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dnit</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ibge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dnit_&quot;</span> <span class="o">+</span> <span class="n">nome_df</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> 
+    <span class="n">dnit_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dnit_&quot;</span> <span class="o">+</span> <span class="n">nome_df</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">merge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dnit_&quot;</span> <span class="o">+</span> <span class="n">nome_df</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">nome</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Somente IBGE: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ibge_values</span><span class="p">))</span>
@@ -16289,24 +17202,24 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>BD_1PNT2016
-Somente IBGE: 98.42
-Somente DNIT: 0.66
-IBGE + DNIT: 0.92
+Somente IBGE: 74.15
+Somente DNIT: 20.5
+IBGE + DNIT: 5.36
 
 BD_2PNT2016
-Somente IBGE: 97.24
-Somente DNIT: 1.26
-IBGE + DNIT: 1.49
+Somente IBGE: 66.19
+Somente DNIT: 27.37
+IBGE + DNIT: 6.44
 
 BD_1PNT2017
-Somente IBGE: 95.7
-Somente DNIT: 1.87
-IBGE + DNIT: 2.43
+Somente IBGE: 52.78
+Somente DNIT: 38.03
+IBGE + DNIT: 9.18
 
 BD_2PNT2017
-Somente IBGE: 96.8
-Somente DNIT: 1.51
-IBGE + DNIT: 1.7
+Somente IBGE: 60.89
+Somente DNIT: 31.54
+IBGE + DNIT: 7.57
 
 </pre>
 </div>
@@ -16314,6 +17227,372 @@ IBGE + DNIT: 1.7
 
 </div>
 
+</div>
+
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Somente automóveis das classe P2, O1, O2, O3</p>
+
+</div>
+</div>
+</div>
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[37]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">nome</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">nome_df</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nomes_planilhas</span><span class="p">,</span> <span class="n">lista_df_merge</span><span class="p">,</span> <span class="n">lista_nome_tabela</span><span class="p">):</span>
+
+    <span class="n">total</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ibge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dnit_sel_&quot;</span> <span class="o">+</span> <span class="n">nome_df</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> 
+    <span class="n">dnit_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dnit_sel_&quot;</span> <span class="o">+</span> <span class="n">nome_df</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">merge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dnit_sel_&quot;</span> <span class="o">+</span> <span class="n">nome_df</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">nome</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Somente IBGE: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ibge_values</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Somente DNIT: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dnit_values</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IBGE + DNIT: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">merge_values</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>BD_1PNT2016
+Somente IBGE: 78.77
+Somente DNIT: 0.53
+IBGE + DNIT: 0.74
+
+BD_2PNT2016
+Somente IBGE: 71.53
+Somente DNIT: 0.93
+IBGE + DNIT: 1.1
+
+BD_1PNT2017
+Somente IBGE: 60.44
+Somente DNIT: 1.18
+IBGE + DNIT: 1.53
+
+BD_2PNT2017
+Somente IBGE: 67.28
+Somente DNIT: 1.05
+IBGE + DNIT: 1.18
+
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Tabela-%C3%BAnica">Tabela &#250;nica<a class="anchor-link" href="#Tabela-%C3%BAnica">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_merge</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[39]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>origem</th>
+      <th>destino</th>
+      <th>ibge</th>
+      <th>dnit_2016_1</th>
+      <th>dnit_pessoas_2016_1</th>
+      <th>dnit_sel_2016_1</th>
+      <th>dnit_pessoas_sel_2016_1</th>
+      <th>dnit_2016_2</th>
+      <th>dnit_pessoas_2016_2</th>
+      <th>dnit_sel_2016_2</th>
+      <th>dnit_pessoas_sel_2016_2</th>
+      <th>dnit_2017_1</th>
+      <th>dnit_pessoas_2017_1</th>
+      <th>dnit_sel_2017_1</th>
+      <th>dnit_pessoas_sel_2017_1</th>
+      <th>dnit_2017_2</th>
+      <th>dnit_pessoas_2017_2</th>
+      <th>dnit_sel_2017_2</th>
+      <th>dnit_pessoas_sel_2017_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>5103809</td>
+      <td>5108402</td>
+      <td>42.0</td>
+      <td>0.874651</td>
+      <td>9.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1501204</td>
+      <td>1504604</td>
+      <td>68.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1502103</td>
+      <td>1504604</td>
+      <td>6.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2300150</td>
+      <td>2304400</td>
+      <td>716.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.004791</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.004791</td>
+      <td>5.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2304400</td>
+      <td>2311603</td>
+      <td>645.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.004791</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[58]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">total</span> <span class="o">=</span> <span class="n">df_merge</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">dnit_notna</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2016_1</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">|</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2016_2</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">|</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2017_1</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">|</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2017_2</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span>
+<span class="n">dnit_isna</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2016_1</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2016_2</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2017_1</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2017_2</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+<span class="n">dnit_notna_todos</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2016_1</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2016_2</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2017_1</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">dnit_2017_2</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span>
+
+
+<span class="n">ibge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df_merge</span><span class="p">[(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dnit_isna</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> 
+<span class="n">dnit_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df_merge</span><span class="p">[(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dnit_notna</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#Ao menos uma pesquisa do dnit</span>
+<span class="n">merge_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df_merge</span><span class="p">[(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dnit_notna</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#Ao menos uma pesquisa do dnit</span>
+<span class="n">merge_values_2</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df_merge</span><span class="p">[(</span><span class="n">df_merge</span><span class="o">.</span><span class="n">ibge</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dnit_notna_todos</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#Todos as pesquisas do dnit</span>
+<span class="n">dnit_values</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df_merge</span><span class="p">[</span><span class="n">dnit_notna_todos</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span> <span class="mi">100</span><span class="o">/</span><span class="n">total</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Somente IBGE: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ibge_values</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Somente DNIT (ao menos 1 pesquisa): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dnit_values</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IBGE + DNIT (ao menos 1 pesquisa): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">merge_values</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IBGE + todos DNIT: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">merge_values_2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Todos DNIT (sem o IBGE): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dnit_values</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Somente IBGE: 27.62
+Somente DNIT (ao menos 1 pesquisa): 0.09
+IBGE + DNIT (ao menos 1 pesquisa): 11.89
+IBGE + todos DNIT: 0.06
+Todos DNIT (sem o IBGE): 0.09
+
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Salvando-CSV">Salvando CSV<a class="anchor-link" href="#Salvando-CSV">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[59]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_merge</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;ibge_dnit.csv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
 </div>
 
 </div>
