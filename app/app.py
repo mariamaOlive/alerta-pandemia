@@ -1,8 +1,7 @@
 # Libraries imports
 from dash import Dash, html, dcc, Input, Output, State, ctx
 import dash
-import plotly.express as px
-import pandas as pd
+
 
 
 # Model imports
@@ -113,14 +112,50 @@ dropDownsFluxo= html.Div([
 containerMapa = dcc.Graph(id='visualizacao', className='visualizacao-mapa')
 containerMapa_2 = dcc.Graph(id='visualizacao_2', className='visualizacao-mapa')
 
+df = ctrlAtributos.carregarTodasCidades()
+
+
+def generate_table(dataframe):
+    rows = []
+    columns = []
+    for i in range(len(dataframe)):
+        row = []
+        colunas=['Municipio','UF','PIB','Indice Atração','Ind. Atração-Saúde']
+        #dataframe.rename(columns={'nome_mun':'Municipio','nome_uf':'UF','pib':'PIB','indice_atracao':'Indice Atração','ia_saude_bm':'Ind. Atração-Saúde'}, inplace = True)
+        for col in dataframe.loc[:,['nome_mun','nome_uf','pib','indice_atracao','ia_saude_bm']]:
+            value = dataframe.iloc[i][col]
+            # update this depending on which
+            # columns you want to show links for
+            # and what you want those links to be
+            if col == 'id':
+                cell = html.Td(html.A(href=value, children=value))
+            else:
+                cell = html.Td(children=value)
+            row.append(cell)
+        rows.append(html.Tr(row))
+
+    for colu in colunas:
+            
+            columns.append(html.Th(colu))    
+
+    return html.Table(
+        # Header
+        #[html.Tr([html.Th(col) for col in dataframe.loc[:,['nome_mun','nome_uf','pib','indice_atracao','ia_saude_bm']]])] +
+        columns + rows
+        
+    )
+
+
 #Componente visualizacao lateral
 containerVisLateral = html.Div([
+    # Visulização Lateral Direita Superior
     html.Div(
         html.Div(dcc.Graph(id='visualizacao-barchart'), id="barchart-scroll-container"),
         id="vis_lateral", className="small_container-vis"),
-    html.Div(html.Img(src=app.get_asset_url('tab1_2.png'),
-                     id='formula-image',
-                     ), id="vis_explicacao", className="small_container-vis")
+    
+    # Visulização Lateral Direita Inferior
+    html.Div(html.Div(id='visualizacao-table',className="small_container-vis-table"), 
+        id="table-scroll-container")
     ]
     , className="vis_lat-container")
 
@@ -245,7 +280,7 @@ def criarDescricaoCaminho(path):
 
 
 #TODO: Remover essa funcao depois, isso eh so para TESTES
-def generate_table(dataframe, max_rows=10):
+#def generate_table(dataframe, max_rows=10):
     return html.Table([
         html.Thead(
             html.Tr([html.Th(col) for col in dataframe.columns])
@@ -324,22 +359,24 @@ def carregarDropdownRegiao(idEstado):
     [Output('visualizacao', 'figure'),
     Output('container-dropdown-numero', 'children'),
     Output('visualizacao-barchart', 'figure'),
-    Output('visualizacao-barchart', 'style')],
+    Output('visualizacao-barchart', 'style'),
+    Output('visualizacao-table', 'children')],
     [State('dropdown-analise', 'value')],
     [Input('dropdown-cid_reg', 'value'),
     Input('radio-fluxo', 'value'),
     Input('dropdown-numero', 'value'),
-    Input('dropdown-atributos', 'value')]
+    Input('dropdown-atributos', 'value'),]
     )
+
 def updateFluxo(tipoAnalise,id, tipoFluxo, numeroCidades, atributo):
     triggered_id = ctx.triggered_id
 
     if triggered_id == "dropdown-numero":
-        numeroMaxCidades, visualizacao, visBarChart, styleBarChart = updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades)  
-        return visualizacao, dash.no_update, visBarChart, styleBarChart
+        numeroMaxCidades, visualizacao, visBarChart, styleBarChart, visualizacaoTable = updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades)  
+        return visualizacao, dash.no_update, visBarChart, styleBarChart, visualizacaoTable
     else:
-        numeroMaxCidades, visualizacao, visBarChart, styleBarChart  = updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo)
-        return visualizacao, generateDropdown(numeroMaxCidades), visBarChart, styleBarChart
+        numeroMaxCidades, visualizacao, visBarChart, styleBarChart, visualizacaoTable = updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo)
+        return visualizacao, generateDropdown(numeroMaxCidades), visBarChart, styleBarChart, visualizacaoTable
 
 def updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades=20):
     if tipoAnalise == 'cidade':
@@ -348,30 +385,30 @@ def updateFluxoTipo(tipoAnalise, id, tipoFluxo, atributo, numeroCidades=20):
             return updateFluxoRegiao(id, tipoFluxo, atributo, numeroCidades)  
 
 def updateFluxoCidade(idCidade, tipoFluxo, atributo, numeroCidades=20):
-    infoCidade, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+    info, dfFluxo = ctrlFluxo.percentualFluxo(idCidade, tipoFluxo)
+
+    # Carregando mapa
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
+
+    # Criando barchart
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
-
-    if(atributo != None):
-        df = ctrlAtributos.carregarTodasCidades()
-        df_atributo_selecionado = df[["cod_mun", "nome_mun", "latitude", "longitude", atributo]]
-        lista_cidades = dfFluxo[:numeroCidades]["cod_dest"].tolist()
-        lista_cidades.append(idCidade)
-
-        #Natalia: Pegar aqui o atributo das cidades destino
-        df_filtrado = df_atributo_selecionado[df_atributo_selecionado["cod_mun"].isin(lista_cidades)]
-        print(df_filtrado)
-
-
+   
+    # Pegando informacoes para carregar na tabela
+    lista_cidades = dfFluxo[:numeroCidades]["cod_dest"].tolist()
+    lista_cidades.append(idCidade)
+    df_info_cidades = ctrlAtributos.carregarListaCidades(lista_cidades)
+    visualizacaoTable = generate_table(df_info_cidades)
+        
     #Retorna a numero de ligacoes e visualizacao 
-    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
+    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'} , visualizacaoTable
      
 def updateFluxoRegiao(idRegiao, tipoFluxo, atributo, numeroCidades=20):
     infoRegiao, dfFluxo = ctrlFluxo.percentualFluxoRegiaoSaude(idRegiao, tipoFluxo)
     visualizacao = vis.carregarMapa(dfFluxo[:numeroCidades])
     visualizacaoBarchart = visBarchart.carregaBarChart(dfFluxo[:numeroCidades])
+    visualizacaoTable = generate_table(dfFluxo[:numeroCidades])
     #Retorna a numero de ligacoes e visualizacao 
-    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart,{'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}
+    return dfFluxo.shape[0],visualizacao,visualizacaoBarchart, {'height': str(100+ 40*dfFluxo[:numeroCidades].shape[0])+'px'}, visualizacaoTable
  
 
 ############     Callbacks: Tab Análise de propagação     ##############
@@ -402,3 +439,7 @@ def updateCaminhos(tabvalue, id, atributo):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+#Correções: Calback(No caso do Figure), CSS Tabela, Definir o que trazer na tabela na definição de Região
+#Alterações principais partindo da linha 382

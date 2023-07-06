@@ -245,6 +245,18 @@ body{
   border-radius: 5px;
 }
 
+.small_container-vis-table{
+  font-family: 'cursive';
+  font-size: '26px';
+  text-align: 'center';
+  width: auto;
+  margin: auto;
+  height: auto;
+  float: left;
+  border: 2px solid #E1E1E1;
+  border-radius: 5px;
+}
+
 .small_container-vis:first-child{
   margin-top: 0;
 }
@@ -256,6 +268,32 @@ body{
   min-height: 100%;
 }
 
+#visualizacao-table {
+  min-height: auto;
+
+}
+
+.auto {
+  table-layout: auto;
+}
+
+table,
+
+th {
+  border-collapse: collapse;
+  background-color: #050505;
+  color: white;
+}
+
+td {
+  padding: 10px;
+  border: solid 1px;
+  text-align: center;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+}
+
+
 #path-scroll-container{
   height: 100%;
   overflow: auto;
@@ -264,6 +302,13 @@ body{
 }
 
 #barchart-scroll-container{
+  height: 100%;
+  overflow: auto;
+  margin-bottom: 10px;
+  /* max-height:500px; */
+}
+
+#table-scroll-container{
   height: 100%;
   overflow: auto;
   margin-bottom: 10px;
