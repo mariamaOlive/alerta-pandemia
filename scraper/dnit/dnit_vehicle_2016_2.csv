@@ -1,0 +1,465 @@
+classe,percentage,point,survey,total
+Veículo Leve,43.0,289,6,14172.0
+Moto,9.6,289,6,3164.0
+Ônibus,2.9,289,6,960.0
+Caminhão Leve,9.7,289,6,3189.0
+Truck,0.6,289,6,188.0
+Semirreboques,20.9,289,6,6905.0
+Semirreboques Especiais,13.1,289,6,4334.0
+Reboques,0.2,289,6,81.0
+Veículo Leve,65.2,120,6,64325.0
+Moto,4.1,120,6,4082.0
+Ônibus,3.4,120,6,3356.0
+Caminhão Leve,10.6,120,6,10489.0
+Truck,0.1,120,6,132.0
+Semirreboques,13.3,120,6,13153.0
+Semirreboques Especiais,3.1,120,6,3063.0
+Reboques,0.1,120,6,73.0
+Veículo Leve,47.3,147,6,10038.0
+Moto,1.6,147,6,338.0
+Ônibus,6.1,147,6,1298.0
+Caminhão Leve,12.5,147,6,2647.0
+Truck,0.5,147,6,98.0
+Semirreboques,18.3,147,6,3894.0
+Semirreboques Especiais,13.1,147,6,2779.0
+Reboques,0.7,147,6,143.0
+Veículo Leve,53.2,138,6,13704.0
+Moto,29.3,138,6,7548.0
+Ônibus,3.7,138,6,942.0
+Caminhão Leve,9.2,138,6,2382.0
+Truck,0.2,138,6,50.0
+Semirreboques,2.7,138,6,699.0
+Semirreboques Especiais,1.5,138,6,397.0
+Reboques,0.1,138,6,34.0
+Veículo Leve,54.7,20,6,14070.0
+Moto,1.6,20,6,420.0
+Ônibus,3.8,20,6,965.0
+Caminhão Leve,13.5,20,6,3459.0
+Truck,0.9,20,6,231.0
+Semirreboques,18.0,20,6,4635.0
+Semirreboques Especiais,7.4,20,6,1893.0
+Reboques,0.1,20,6,33.0
+Veículo Leve,58.3,34,6,50211.0
+Moto,2.1,34,6,1806.0
+Ônibus,2.9,34,6,2517.0
+Caminhão Leve,13.3,34,6,11498.0
+Truck,0.2,34,6,211.0
+Semirreboques,16.9,34,6,14530.0
+Semirreboques Especiais,5.5,34,6,4776.0
+Reboques,0.7,34,6,623.0
+Veículo Leve,51.7,30,6,9836.0
+Moto,2.7,30,6,523.0
+Ônibus,3.4,30,6,640.0
+Caminhão Leve,12.7,30,6,2409.0
+Truck,0.2,30,6,37.0
+Semirreboques,20.4,30,6,3879.0
+Semirreboques Especiais,8.6,30,6,1643.0
+Reboques,0.3,30,6,52.0
+Veículo Leve,78.6,21,6,109241.0
+Moto,2.2,21,6,3057.0
+Ônibus,1.9,21,6,2648.0
+Caminhão Leve,8.4,21,6,11617.0
+Truck,0.2,21,6,235.0
+Semirreboques,5.9,21,6,8264.0
+Semirreboques Especiais,2.8,21,6,3906.0
+Reboques,0.1,21,6,90.0
+Veículo Leve,57.4,292,6,23284.0
+Moto,7.3,292,6,2953.0
+Ônibus,4.2,292,6,1698.0
+Caminhão Leve,8.9,292,6,3629.0
+Truck,0.5,292,6,214.0
+Semirreboques,10.3,292,6,4175.0
+Semirreboques Especiais,11.1,292,6,4518.0
+Reboques,0.2,292,6,83.0
+Veículo Leve,65.9,166,6,48150.0
+Moto,3.1,166,6,2232.0
+Ônibus,2.5,166,6,1830.0
+Caminhão Leve,13.1,166,6,9581.0
+Truck,0.1,166,6,97.0
+Semirreboques,13.6,166,6,9939.0
+Semirreboques Especiais,1.6,166,6,1162.0
+Reboques,0.1,166,6,54.0
+Veículo Leve,41.5,24,6,10389.0
+Moto,1.0,24,6,260.0
+Ônibus,1.7,24,6,416.0
+Caminhão Leve,8.9,24,6,2231.0
+Truck,0.7,24,6,164.0
+Semirreboques,18.9,24,6,4745.0
+Semirreboques Especiais,27.1,24,6,6789.0
+Reboques,0.2,24,6,62.0
+Veículo Leve,55.6,6,6,37641.0
+Moto,4.7,6,6,3199.0
+Ônibus,4.0,6,6,2711.0
+Caminhão Leve,14.8,6,6,9995.0
+Truck,0.2,6,6,161.0
+Semirreboques,13.1,6,6,8843.0
+Semirreboques Especiais,7.2,6,6,4879.0
+Reboques,0.3,6,6,222.0
+Veículo Leve,69.1,218,6,18815.0
+Moto,9.6,218,6,2618.0
+Ônibus,2.1,218,6,573.0
+Caminhão Leve,12.7,218,6,3448.0
+Truck,0.1,218,6,33.0
+Semirreboques,5.1,218,6,1376.0
+Semirreboques Especiais,1.2,218,6,334.0
+Reboques,0.1,218,6,22.0
+Veículo Leve,65.2,15,6,53235.0
+Moto,7.1,15,6,5761.0
+Ônibus,4.3,15,6,3489.0
+Caminhão Leve,11.4,15,6,9321.0
+Truck,0.2,15,6,129.0
+Semirreboques,6.4,15,6,5223.0
+Semirreboques Especiais,5.3,15,6,4340.0
+Reboques,0.1,15,6,111.0
+Veículo Leve,65.7,242,6,49917.0
+Moto,1.5,242,6,1114.0
+Ônibus,3.8,242,6,2920.0
+Caminhão Leve,17.2,242,6,13065.0
+Truck,0.8,242,6,589.0
+Semirreboques,9.5,242,6,7228.0
+Semirreboques Especiais,1.4,242,6,1053.0
+Reboques,0.1,242,6,57.0
+Veículo Leve,63.5,36,6,45393.0
+Moto,12.1,36,6,8652.0
+Ônibus,3.9,36,6,2766.0
+Caminhão Leve,9.2,36,6,6600.0
+Truck,0.3,36,6,245.0
+Semirreboques,9.4,36,6,6704.0
+Semirreboques Especiais,1.4,36,6,989.0
+Reboques,0.2,36,6,153.0
+Veículo Leve,29.5,133,6,4210.0
+Moto,2.0,133,6,283.0
+Ônibus,2.8,133,6,395.0
+Caminhão Leve,22.0,133,6,3135.0
+Truck,0.1,133,6,17.0
+Semirreboques,33.8,133,6,4815.0
+Semirreboques Especiais,9.5,133,6,1353.0
+Reboques,0.4,133,6,53.0
+Veículo Leve,47.8,277,6,9431.0
+Moto,5.5,277,6,1082.0
+Ônibus,2.2,277,6,430.0
+Caminhão Leve,18.8,277,6,3701.0
+Truck,0.5,277,6,102.0
+Semirreboques,21.1,277,6,4165.0
+Semirreboques Especiais,3.9,277,6,770.0
+Reboques,0.1,277,6,29.0
+Veículo Leve,30.7,127,6,14097.0
+Moto,1.1,127,6,499.0
+Ônibus,3.2,127,6,1459.0
+Caminhão Leve,18.3,127,6,8424.0
+Truck,0.4,127,6,196.0
+Semirreboques,38.0,127,6,17485.0
+Semirreboques Especiais,7.5,127,6,3453.0
+Reboques,0.8,127,6,377.0
+Veículo Leve,54.6,35,6,34530.0
+Moto,12.3,35,6,7788.0
+Ônibus,3.6,35,6,2264.0
+Caminhão Leve,12.3,35,6,7792.0
+Truck,0.2,35,6,114.0
+Semirreboques,13.9,35,6,8768.0
+Semirreboques Especiais,2.4,35,6,1548.0
+Reboques,0.8,35,6,484.0
+Veículo Leve,33.3,14,6,8229.0
+Moto,26.5,14,6,6546.0
+Ônibus,2.9,14,6,704.0
+Caminhão Leve,15.7,14,6,3878.0
+Truck,0.1,14,6,37.0
+Semirreboques,18.2,14,6,4483.0
+Semirreboques Especiais,3.1,14,6,756.0
+Reboques,0.2,14,6,49.0
+Veículo Leve,64.4,25,6,54975.0
+Moto,5.8,25,6,4947.0
+Ônibus,4.4,25,6,3772.0
+Caminhão Leve,11.4,25,6,9692.0
+Truck,0.3,25,6,287.0
+Semirreboques,8.5,25,6,7249.0
+Semirreboques Especiais,5.0,25,6,4240.0
+Reboques,0.2,25,6,194.0
+Veículo Leve,23.2,130,6,9242.0
+Moto,1.2,130,6,486.0
+Ônibus,3.2,130,6,1289.0
+Caminhão Leve,19.2,130,6,7638.0
+Truck,0.4,130,6,142.0
+Semirreboques,43.9,130,6,17466.0
+Semirreboques Especiais,8.4,130,6,3339.0
+Reboques,0.4,130,6,167.0
+Veículo Leve,50.3,153,6,29198.0
+Moto,1.3,153,6,778.0
+Ônibus,2.0,153,6,1166.0
+Caminhão Leve,14.9,153,6,8665.0
+Truck,0.3,153,6,187.0
+Semirreboques,25.2,153,6,14633.0
+Semirreboques Especiais,5.8,153,6,3388.0
+Reboques,0.1,153,6,57.0
+Veículo Leve,34.3,163,6,4418.0
+Moto,44.9,163,6,5795.0
+Ônibus,2.1,163,6,275.0
+Caminhão Leve,10.4,163,6,1335.0
+Truck,0.3,163,6,42.0
+Semirreboques,3.2,163,6,416.0
+Semirreboques Especiais,4.7,163,6,603.0
+Reboques,0.1,163,6,13.0
+Veículo Leve,45.9,96,6,12330.0
+Moto,1.3,96,6,343.0
+Ônibus,1.9,96,6,507.0
+Caminhão Leve,19.7,96,6,5294.0
+Truck,0.6,96,6,173.0
+Semirreboques,23.4,96,6,6278.0
+Semirreboques Especiais,5.4,96,6,1447.0
+Reboques,1.9,96,6,503.0
+Veículo Leve,53.9,152,6,25188.0
+Moto,3.2,152,6,1508.0
+Ônibus,3.5,152,6,1659.0
+Caminhão Leve,12.9,152,6,6031.0
+Truck,0.2,152,6,116.0
+Semirreboques,18.7,152,6,8747.0
+Semirreboques Especiais,7.3,152,6,3415.0
+Reboques,0.2,152,6,94.0
+Veículo Leve,46.1,28,6,28309.0
+Moto,3.4,28,6,2108.0
+Ônibus,3.1,28,6,1926.0
+Caminhão Leve,16.0,28,6,9861.0
+Truck,0.3,28,6,203.0
+Semirreboques,24.7,28,6,15201.0
+Semirreboques Especiais,6.0,28,6,3659.0
+Reboques,0.3,28,6,179.0
+Veículo Leve,42.6,39,6,16033.0
+Moto,1.0,39,6,384.0
+Ônibus,2.9,39,6,1086.0
+Caminhão Leve,17.6,39,6,6621.0
+Truck,0.4,39,6,147.0
+Semirreboques,27.1,39,6,10215.0
+Semirreboques Especiais,8.4,39,6,3148.0
+Reboques,0.1,39,6,45.0
+Veículo Leve,62.4,139,6,29835.0
+Moto,8.3,139,6,3989.0
+Ônibus,3.3,139,6,1555.0
+Caminhão Leve,14.2,139,6,6771.0
+Truck,0.4,139,6,192.0
+Semirreboques,8.2,139,6,3941.0
+Semirreboques Especiais,3.0,139,6,1430.0
+Reboques,0.1,139,6,68.0
+Veículo Leve,60.2,124,6,21095.0
+Moto,2.9,124,6,1028.0
+Ônibus,3.1,124,6,1070.0
+Caminhão Leve,18.3,124,6,6411.0
+Truck,1.5,124,6,523.0
+Semirreboques,9.7,124,6,3399.0
+Semirreboques Especiais,3.1,124,6,1091.0
+Reboques,1.1,124,6,399.0
+Veículo Leve,55.1,228,6,33023.0
+Moto,19.0,228,6,11368.0
+Ônibus,3.3,228,6,1959.0
+Caminhão Leve,10.2,228,6,6113.0
+Truck,0.3,228,6,179.0
+Semirreboques,8.3,228,6,4978.0
+Semirreboques Especiais,3.2,228,6,1913.0
+Reboques,0.6,228,6,386.0
+Veículo Leve,69.9,18,6,29015.0
+Moto,5.0,18,6,2058.0
+Ônibus,2.9,18,6,1190.0
+Caminhão Leve,11.4,18,6,4749.0
+Truck,0.3,18,6,114.0
+Semirreboques,6.9,18,6,2863.0
+Semirreboques Especiais,3.5,18,6,1467.0
+Reboques,0.2,18,6,66.0
+Veículo Leve,55.7,185,6,16271.0
+Moto,1.6,185,6,470.0
+Ônibus,2.4,185,6,687.0
+Caminhão Leve,14.9,185,6,4355.0
+Truck,0.3,185,6,98.0
+Semirreboques,17.7,185,6,5167.0
+Semirreboques Especiais,7.3,185,6,2141.0
+Reboques,0.1,185,6,23.0
+Veículo Leve,52.7,61,6,17770.0
+Moto,19.1,61,6,6425.0
+Ônibus,2.4,61,6,810.0
+Caminhão Leve,12.8,61,6,4324.0
+Truck,0.4,61,6,141.0
+Semirreboques,8.3,61,6,2811.0
+Semirreboques Especiais,3.9,61,6,1308.0
+Reboques,0.3,61,6,109.0
+Veículo Leve,70.9,178,6,13910.0
+Moto,2.0,178,6,395.0
+Ônibus,2.2,178,6,430.0
+Caminhão Leve,15.8,178,6,3094.0
+Truck,0.2,178,6,42.0
+Semirreboques,7.5,178,6,1463.0
+Semirreboques Especiais,1.3,178,6,261.0
+Reboques,0.1,178,6,25.0
+Veículo Leve,47.7,222,6,11402.0
+Moto,9.0,222,6,2154.0
+Ônibus,1.8,222,6,426.0
+Caminhão Leve,18.2,222,6,4348.0
+Truck,0.2,222,6,37.0
+Semirreboques,16.1,222,6,3842.0
+Semirreboques Especiais,7.0,222,6,1684.0
+Reboques,0.0,222,6,9.0
+Veículo Leve,72.9,42,6,21464.0
+Moto,3.2,42,6,954.0
+Ônibus,2.0,42,6,594.0
+Caminhão Leve,13.4,42,6,3955.0
+Truck,0.2,42,6,52.0
+Semirreboques,6.2,42,6,1811.0
+Semirreboques Especiais,1.7,42,6,491.0
+Reboques,0.4,42,6,106.0
+Veículo Leve,51.2,157,6,10437.0
+Moto,18.3,157,6,3725.0
+Ônibus,2.1,157,6,421.0
+Caminhão Leve,14.8,157,6,3022.0
+Truck,0.2,157,6,44.0
+Semirreboques,10.6,157,6,2172.0
+Semirreboques Especiais,2.6,157,6,536.0
+Reboques,0.2,157,6,42.0
+Veículo Leve,60.3,203,6,19991.0
+Moto,2.9,203,6,954.0
+Ônibus,3.0,203,6,988.0
+Caminhão Leve,17.4,203,6,5769.0
+Truck,0.4,203,6,137.0
+Semirreboques,12.7,203,6,4204.0
+Semirreboques Especiais,3.2,203,6,1058.0
+Reboques,0.2,203,6,53.0
+Veículo Leve,38.3,226,6,2496.0
+Moto,26.9,226,6,1751.0
+Ônibus,5.5,226,6,356.0
+Caminhão Leve,11.3,226,6,737.0
+Truck,0.2,226,6,12.0
+Semirreboques,10.2,226,6,663.0
+Semirreboques Especiais,7.4,226,6,479.0
+Reboques,0.3,226,6,19.0
+Veículo Leve,53.5,246,6,7941.0
+Moto,2.6,246,6,383.0
+Ônibus,1.4,246,6,210.0
+Caminhão Leve,22.4,246,6,3332.0
+Truck,0.5,246,6,68.0
+Semirreboques,16.8,246,6,2489.0
+Semirreboques Especiais,2.9,246,6,431.0
+Reboques,0.0,246,6,2.0
+Veículo Leve,36.1,190,6,7653.0
+Moto,2.3,190,6,491.0
+Ônibus,0.6,190,6,135.0
+Caminhão Leve,23.7,190,6,5022.0
+Truck,0.7,190,6,150.0
+Semirreboques,25.6,190,6,5437.0
+Semirreboques Especiais,10.7,190,6,2265.0
+Reboques,0.2,190,6,46.0
+Veículo Leve,52.8,50,6,12618.0
+Moto,1.9,50,6,466.0
+Ônibus,2.5,50,6,600.0
+Caminhão Leve,10.0,50,6,2384.0
+Truck,0.7,50,6,161.0
+Semirreboques,11.7,50,6,2806.0
+Semirreboques Especiais,20.3,50,6,4851.0
+Reboques,0.1,50,6,33.0
+Veículo Leve,51.4,261,6,16995.0
+Moto,9.5,261,6,3144.0
+Ônibus,2.8,261,6,935.0
+Caminhão Leve,10.2,261,6,3355.0
+Truck,0.9,261,6,293.0
+Semirreboques,10.1,261,6,3323.0
+Semirreboques Especiais,14.6,261,6,4809.0
+Reboques,0.6,261,6,196.0
+Veículo Leve,71.0,248,6,31486.0
+Moto,18.0,248,6,7972.0
+Ônibus,2.3,248,6,1034.0
+Caminhão Leve,6.6,248,6,2933.0
+Truck,0.2,248,6,88.0
+Semirreboques,1.6,248,6,728.0
+Semirreboques Especiais,0.2,248,6,109.0
+Reboques,0.0,248,6,2.0
+Veículo Leve,60.6,258,6,23670.0
+Moto,10.9,258,6,4245.0
+Ônibus,2.1,258,6,801.0
+Caminhão Leve,8.2,258,6,3220.0
+Truck,0.4,258,6,164.0
+Semirreboques,6.5,258,6,2546.0
+Semirreboques Especiais,10.8,258,6,4221.0
+Reboques,0.4,258,6,170.0
+Veículo Leve,64.5,165,6,76195.0
+Moto,2.6,165,6,3022.0
+Ônibus,2.8,165,6,3328.0
+Caminhão Leve,15.7,165,6,18567.0
+Truck,0.1,165,6,137.0
+Semirreboques,11.7,165,6,13840.0
+Semirreboques Especiais,2.5,165,6,2948.0
+Reboques,0.1,165,6,102.0
+Veículo Leve,42.5,195,6,7257.0
+Moto,2.2,195,6,367.0
+Ônibus,4.7,195,6,798.0
+Caminhão Leve,18.1,195,6,3087.0
+Truck,0.4,195,6,60.0
+Semirreboques,22.8,195,6,3883.0
+Semirreboques Especiais,9.3,195,6,1594.0
+Reboques,0.1,195,6,13.0
+Veículo Leve,61.9,193,6,23684.0
+Moto,2.0,193,6,762.0
+Ônibus,2.1,193,6,817.0
+Caminhão Leve,15.7,193,6,6019.0
+Truck,0.4,193,6,156.0
+Semirreboques,12.9,193,6,4950.0
+Semirreboques Especiais,4.2,193,6,1611.0
+Reboques,0.6,193,6,236.0
+Veículo Leve,63.8,196,6,15295.0
+Moto,2.9,196,6,702.0
+Ônibus,2.4,196,6,585.0
+Caminhão Leve,9.6,196,6,2305.0
+Truck,0.1,196,6,33.0
+Semirreboques,11.5,196,6,2749.0
+Semirreboques Especiais,9.2,196,6,2199.0
+Reboques,0.4,196,6,101.0
+Veículo Leve,74.2,187,6,15222.0
+Moto,5.4,187,6,1112.0
+Ônibus,0.9,187,6,188.0
+Caminhão Leve,13.7,187,6,2819.0
+Truck,0.2,187,6,45.0
+Semirreboques,4.2,187,6,871.0
+Semirreboques Especiais,1.3,187,6,258.0
+Reboques,0.0,187,6,5.0
+Veículo Leve,50.9,247,6,11101.0
+Moto,22.0,247,6,4795.0
+Ônibus,1.1,247,6,231.0
+Caminhão Leve,14.7,247,6,3210.0
+Truck,0.1,247,6,27.0
+Semirreboques,10.0,247,6,2170.0
+Semirreboques Especiais,1.2,247,6,258.0
+Reboques,0.0,247,6,5.0
+Veículo Leve,61.1,135,6,6286.0
+Moto,21.8,135,6,2249.0
+Ônibus,2.3,135,6,235.0
+Caminhão Leve,13.4,135,6,1376.0
+Truck,0.1,135,6,10.0
+Semirreboques,0.9,135,6,93.0
+Semirreboques Especiais,0.4,135,6,43.0
+Reboques,0.0,135,6,1.0
+Veículo Leve,51.7,11,6,13422.0
+Moto,3.6,11,6,934.0
+Ônibus,3.6,11,6,945.0
+Caminhão Leve,22.2,11,6,5754.0
+Truck,0.3,11,6,75.0
+Semirreboques,15.1,11,6,3909.0
+Semirreboques Especiais,3.4,11,6,875.0
+Reboques,0.2,11,6,42.0
+Veículo Leve,50.4,225,6,7311.0
+Moto,13.1,225,6,1901.0
+Ônibus,3.4,225,6,498.0
+Caminhão Leve,19.8,225,6,2878.0
+Truck,1.0,225,6,148.0
+Semirreboques,10.6,225,6,1538.0
+Semirreboques Especiais,1.3,225,6,184.0
+Reboques,0.4,225,6,61.0
+Veículo Leve,73.1,23,6,9588.0
+Moto,1.9,23,6,246.0
+Ônibus,2.3,23,6,303.0
+Caminhão Leve,9.5,23,6,1241.0
+Truck,0.2,23,6,31.0
+Semirreboques,8.3,23,6,1093.0
+Semirreboques Especiais,4.7,23,6,612.0
+Reboques,0.1,23,6,10.0
+Veículo Leve,67.1,125,6,12606.0
+Moto,20.7,125,6,3890.0
+Ônibus,2.1,125,6,386.0
+Caminhão Leve,9.8,125,6,1841.0
+Truck,0.0,125,6,4.0
+Semirreboques,0.2,125,6,35.0
+Semirreboques Especiais,0.1,125,6,17.0
+Reboques,0.0,125,6,0.0
