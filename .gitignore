@@ -5,3 +5,7 @@ paths/
 transporte/data/
 
 .DS_Store
+
+*.csv
+*.png
+*.xlsx
