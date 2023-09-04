@@ -9,3 +9,6 @@ transporte/data/
 *.csv
 *.png
 *.xlsx
+*.csv
+dados_final/4_dados_calculados/arr_calculo_qtd_fluxo.csv
+*.csv
