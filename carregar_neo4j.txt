@@ -100,6 +100,7 @@ MERGE (origem)-[r:FLUXO_TRANSPORTE{
 fluxo_geral: toFloat(row.prob_total), 
 fluxo_aereo: toFloat(row.prob_aereo), 
 fluxo_rodo: toFloat(row.prob_rodov),
+fluxo_hidro: toFloat(row.prob_hidro),
 total_pessoas:toInteger(row.passageiros_total) }]->(destino)  
 
 

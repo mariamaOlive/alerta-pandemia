@@ -562,6 +562,7 @@ CALL gds.allShortestPaths.delta.stream('myGraph', {
     relationshipWeightProperty: 'fluxo_invertido',
     delta: 3.0
 })
+
 YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
 WITH sourceNode AS source, targetNode AS target, nodeIds, path
 MATCH (c_spreader:Cidade)-[r]->(h:Hierarquia) WHERE h.hierarquia = "1C"
@@ -609,7 +610,7 @@ RETURN
     totalCost as totalCost,
     [nodeId IN nodeIds | gds.util.asNode(nodeId).cod_mun] AS cod_nos,
     costs as costs" AS query
-CALL apoc.export.csv.query(query, "teste.csv", {})
+CALL apoc.export.csv.query(query, "saopaulo_cap.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
 
