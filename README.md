@@ -12,7 +12,8 @@ An interactive visualization tool that uses human mobility data to calculate pot
 ### Published Work
 
 Part of the work done on this project was presented as a paper at SBBD 2023. 
-[Epiflow: a Hybrid Approach to Track Infectious Disease Spread in Brazil Based on Travel Data and Graph Databases.](https://github.com/mariamaOlive/alerta-pandemia/files/13904817/SBBD_2023___Epiflow___Versao_Final.pdf)
+
+[Epiflow: a Hybrid Approach to Track Infectious Disease Spread in Brazil Based on Travel Data and Graph Databases.](https://github.com/mariamaOlive/alerta-pandemia/files/13904837/SBBD_2023___Epiflow__Final_Version.pdf)
 
 ### Authors: 
 - Mariama Oliveira
